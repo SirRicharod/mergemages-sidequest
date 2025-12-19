@@ -1,4 +1,7 @@
-# Merge Mages - SideQuest
+<div id="toc">
+<h1>Merge Mages - SideQuest</h1>
+</div>
+<img src="https://cdn.discordapp.com/attachments/1451564147585318945/1451578654575427710/BCO.png?ex=6946af78&is=69455df8&hm=ce896e866ad0506c4f2a56620b4620c88198621df4829379f2c9d2543deffc8d&">
 
 ## What is SideQuest?
 SideQuest is a collaboration platform for students to team up across different disciplines. Whether you're a graphic design student who wants your artwork turned into a 3D model, or a programmer looking for custom assets, SideQuest makes it easy to find help from classmates with the right skills.
