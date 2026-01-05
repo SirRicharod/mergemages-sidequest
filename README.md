@@ -16,7 +16,7 @@ Students can post project requests — called “sidequests” — and others ca
 - **Variables & Functions**: `camelCase`
 - **Classes & Components**: `PascalCase`
 - **Constants**: `UPPER_SNAKE_CASE`
-- **Files**: `kebab-case` for components/modules, `camelCase` for utilities
+- **Files**: `kebab-case`
 - **Database Tables**: `snake_case`
 - **API Endpoints**: `kebab-case` (e.g., `/api/user-profiles`)
 
@@ -41,51 +41,7 @@ Follow the Conventional Commits specification:
 - `test: add unit tests for auth module`
 - `chore: update dependencies`
 
-Use present tense, imperative mood ("add" not "added" or "adds")
-
 ---
-
-### Frontend Conventions
-
-#### File Structure
-```
-frontend/
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/          # Page-level components
-│   ├── services/       # API calls and external services
-│   ├── hooks/          # Custom React hooks
-│   ├── utils/          # Helper functions
-│   ├── context/        # React context providers
-│   ├── types/          # TypeScript type definitions
-│   ├── styles/         # Global styles and themes
-│   └── assets/         # Images, fonts, etc.
-```
-
-#### Component Guidelines
-- One component per file
-- Use functional components with hooks
-- Extract business logic into custom hooks
-- Props should be typed with TypeScript interfaces
-- Use named exports for components
-
----
-
-### Backend Conventions
-
-#### File Structure
-```
-api/
-├── src/
-│   ├── controllers/    # Request handlers
-│   ├── models/         # Database models
-│   ├── services/       # Business logic
-│   ├── routes/         # API route definitions
-│   ├── middleware/     # Express middleware
-│   ├── utils/          # Helper functions
-│   ├── validators/     # Input validation schemas
-│   └── config/         # Configuration files
-```
 
 #### API Design
 - Use RESTful conventions
@@ -126,30 +82,6 @@ api/
 - Primary key: `id` (auto-increment integer or UUID)
 - Timestamps: `created_at`, `updated_at` on all tables
 - Foreign keys: `{table_name}_id` (e.g., `user_id`)
-- Use indexes on frequently queried columns
-
----
-
-### Testing
-
-#### Coverage Requirements
-- Minimum 70% code coverage
-- 100% coverage for critical business logic
-- Test files: `*.test.ts` or `*.spec.ts`
-
-#### Testing Structure
-- **Unit Tests**: Individual functions and components
-- **Integration Tests**: API endpoints and database operations
-- **E2E Tests**: Critical user flows
-
-#### Test Naming
-```javascript
-describe('Component/Function Name', () => {
-  it('should perform expected behavior', () => {
-    // Test implementation
-  });
-});
-```
 
 ---
 
@@ -158,19 +90,8 @@ describe('Component/Function Name', () => {
 - Never commit secrets, API keys, or credentials
 - Use environment variables for configuration
 - Sanitize all user inputs
-- Implement rate limiting on API endpoints
-- Use HTTPS in production
 - Hash passwords with bcrypt (minimum 10 rounds)
 - Validate and sanitize file uploads
-
----
-
-### Documentation
-
-- Document all public APIs
-- Keep README.md up to date
-- Document environment variables in `.env.example`
-- Maintain a CHANGELOG.md for version history
 
 ---
 
