@@ -1,12 +1,12 @@
 <div id="toc">
 <h1>Merge Mages - SideQuest</h1>
 </div>
-<img src="https://cdn.discordapp.com/attachments/1451564147585318945/1451578654575427710/BCO.png?ex=6946af78&is=69455df8&hm=ce896e866ad0506c4f2a56620b4620c88198621df4829379f2c9d2543deffc8d&" alt="drawing" width="200">
+<img src="" alt="drawing" width="200">
 
 ## What is SideQuest?
-SideQuest is a collaboration platform for students to team up across different disciplines. Whether you're a graphic design student who wants your artwork turned into a 3D model, or a programmer looking for custom assets, SideQuest makes it easy to find help from classmates with the right skills.
+SideQuest is a collaboration platform for students to team up across different disciplines. Whether a graphic design student wants their artwork turned into a 3D model, or a programmer looking for custom assets, SideQuest makes it easy to find help from classmates with the right skills.
 
-Students can post project requests — called “sidequests” — and others can join in to contribute, learn, and build something together. It’s a fun, flexible way to connect, share talent, and turn creative ideas into real projects.
+Students can post project requests, called “sidequests”, and others can join in to contribute, learn, and build something together. It’s a fun, flexible way to connect, share talent, and turn creative ideas into real projects.
 
 ---
 
@@ -44,7 +44,6 @@ Follow the Conventional Commits specification:
 ---
 
 #### API Design
-- Use RESTful conventions
 - Version APIs: `/api/v1/resource`
 - HTTP Methods:
   - `GET` - Retrieve resources
@@ -97,8 +96,9 @@ Follow the Conventional Commits specification:
 
 ### Code Review
 
-- All code must be reviewed before merging
-- Address all comments before merging
+- Review code before merging
+- Address comments before merging
 - Test locally before requesting review
 - Keep PRs focused and under 400 lines when possible
-- Update tests with code changes
+
+---
