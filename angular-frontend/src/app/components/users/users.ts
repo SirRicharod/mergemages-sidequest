@@ -1,28 +1,31 @@
+// src/app/components/users/users.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService, User } from '../../services/user.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-users',
+  standalone: true,
   imports: [CommonModule],
-  templateUrl: '../pages/home.html',
-  styleUrl: './pages/home.css',
+  templateUrl: './users.html',
+  styleUrls: ['./users.css']
 })
-export class Home implements OnInit {
+export class UsersComponent implements OnInit {
   users: User[] = [];
   loading = true;
   error: string | null = null;
 
   constructor(private userService: UserService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUsers();
   }
 
-  loadUsers() {
+  private loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (response) => {
-        this.users = response.users;
+        // Adjust this shape if your API returns a different structure
+        this.users = response.users ?? response ?? [];
         this.loading = false;
       },
       error: (err) => {
