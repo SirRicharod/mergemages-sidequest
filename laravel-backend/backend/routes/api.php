@@ -20,6 +20,18 @@ use App\Models\User;
 // ==========================================
 
 /**
+ * GET /api/users
+ * Get all users (public endpoint)
+ */
+Route::get('/users', function () {
+    $users = User::select('user_id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
+
+    return response()->json([
+        'users' => $users,
+    ]);
+});
+
+/**
  * POST /api/register
  * Create a new user account
  */
@@ -106,14 +118,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /**
-     * GET /api/users
-     * Get all users (protected endpoint)
+     * GET /api/profile
+     * Get current authenticated user profile
      */
-    Route::get('/users', function () {
-        $users = User::select('id', 'name', 'email', 'created_at')->get();
-
+    Route::get('/profile', function (Request $request) {
         return response()->json([
-            'users' => $users,
+            'user' => $request->user(),
         ]);
     });
 });

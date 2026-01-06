@@ -1,0 +1,50 @@
+<div class="home-container">
+    <h1>Users</h1>
+
+    @if (loading) {
+    <div class="loading">
+        <p>Loading users...</p>
+    </div>
+    }
+
+    @if (error) {
+    <div class="error">
+        <p>{{ error }}</p>
+    </div>
+    }
+
+    @if (!loading && !error) {
+    <div class="users-grid">
+        @for (user of users; track user.user_id) {
+        <div class="user-card">
+            <div class="user-avatar">
+                @if (user.avatar_url) {
+                <img [src]="user.avatar_url" [alt]="user.name || 'User avatar'">
+                } @else {
+                <div class="avatar-placeholder">
+                    {{ user.name?.charAt(0)?.toUpperCase() || '?' }}
+                </div>
+                }
+            </div>
+            <div class="user-info">
+                <h3>{{ user.name }}</h3>
+                <p class="email">{{ user.email }}</p>
+                @if (user.bio) {
+                <p class="bio">{{ user.bio }}</p>
+                }
+                @if (user.birth_date) {
+                <p class="birth-date">Born: {{ user.birth_date }}</p>
+                }
+                <p class="created-at">Joined: {{ user.created_at | date:'short' }}</p>
+            </div>
+        </div>
+        }
+    </div>
+
+    @if (users && users.length === 0) {
+    <div class="no-users">
+        <p>No users found</p>
+    </div>
+    }
+    }
+</div>
