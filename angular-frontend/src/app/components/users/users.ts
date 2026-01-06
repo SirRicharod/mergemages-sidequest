@@ -5,15 +5,15 @@ import { UserService, User } from '../../services/user.service';
 @Component({
   selector: 'app-home',
   imports: [CommonModule],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+  templateUrl: '../pages/home.html',
+  styleUrl: './pages/home.css',
 })
 export class Home implements OnInit {
   users: User[] = [];
   loading = true;
   error: string | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.loadUsers();
