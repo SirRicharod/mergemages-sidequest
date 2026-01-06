@@ -1,1 +1,36 @@
-<p>home works!</p>
+<div class="container my-4">
+    <div class="row g-4">
+        <!-- Left: sticky profile -->
+        <div class="col-12 col-lg-3">
+            <app-profile-card [avatarUrl]="avatarUrl" [username]="username" [email]="email" [points]="points"
+                [badges]="badges">
+            </app-profile-card>
+        </div>
+
+        <!-- Center: composer + feed -->
+        <div class="col-12 col-lg-6">
+            <app-post-composer (submitPost)="onSubmitPost(feedRef, $event)"></app-post-composer>
+
+            <!-- actions row aligned to feed width (optional) -->
+            <div class="d-flex align-items-center gap-3 my-3">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="switchSearch"
+                        [checked]="searchMode === 'switch'" (change)="toggleSearchMode()">
+                    <label class="form-check-label" for="switchSearch">switch search</label>
+                </div>
+
+                <button class="btn btn-outline-warning d-flex align-items-center" [class.active]="urgentOnly"
+                    (click)="toggleUrgent()">
+                    <span class="me-2">⚠️</span> urgent only
+                </button>
+            </div>
+
+            <app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode"></app-feed>
+        </div>
+
+        <!-- Right: optional column (kept empty for now) -->
+        <div class="col-12 col-lg-3">
+            <!-- reserved for future widgets -->
+        </div>
+    </div>
+</div>
