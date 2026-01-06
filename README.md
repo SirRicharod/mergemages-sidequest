@@ -4,7 +4,7 @@
 <img src="" alt="drawing" width="200">
 
 ## What is SideQuest?
-SideQuest is a collaboration platform for students to team up across different disciplines. Whether a graphic design student wants their artwork turned into a 3D model, or a programmer looking for custom assets, SideQuest makes it easy to find help from classmates with the right skills.
+SideQuest is a collaboration platform for students to team up across different disciplines. Whether a graphic design student wants their artwork turned into a 3D model, or a programmer looking for custom assets. SideQuest makes it easy to find help from classmates with the right skills.
 
 Students can post project requests, called “sidequests”, and others can join in to contribute, learn, and build something together. It’s a fun, flexible way to connect, share talent, and turn creative ideas into real projects.
 ---
