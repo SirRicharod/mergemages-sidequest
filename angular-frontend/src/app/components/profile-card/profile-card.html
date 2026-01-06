@@ -1,0 +1,32 @@
+<div class="card profile-card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex align-items-center mb-3">
+      <div class="avatar me-3">
+        <img *ngIf="avatarUrl; else initial" [src]="avatarUrl" alt="avatar">
+        <ng-template #initial>
+          <div class="avatar-initial">{{ (username || '?')[0] | uppercase }}</div>
+        </ng-template>
+      </div>
+      <div>
+        <div class="fw-semibold">{{ username }}</div>
+        <div class="text-muted small">{{ email }}</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex align-items-center">
+        <span class="me-2">⭐</span>
+        <strong>Points</strong>
+        <span class="ms-2">{{ points }}</span>
+      </div>
+    </div>
+
+    <div>
+      <strong class="d-block mb-1">Badges</strong>
+      <div class="d-flex flex-wrap gap-2">
+        <span *ngFor="let b of badges" class="badge text-bg-primary">{{ b }}</span>
+        <span *ngIf="badges.length === 0" class="text-muted small">No badges yet</span>
+      </div>
+    </div>
+  </div>
+</div>
