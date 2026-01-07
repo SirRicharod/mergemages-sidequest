@@ -24,7 +24,7 @@ use App\Models\User;
  * Get all users (public endpoint)
  */
 Route::get('/users', function () {
-    $users = User::select('user_id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
+    $users = User::select('id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
 
     return response()->json([
         'users' => $users,
@@ -58,7 +58,7 @@ Route::post('/register', function (Request $request) {
     return response()->json([
         'message' => 'User registered successfully',
         'user' => [
-            'id' => $user->user_id,
+            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
         ],
@@ -98,7 +98,7 @@ Route::post('/login', function (Request $request) {
         'message' => 'Login successful',
         'token' => $token,  // 👈 The frontend will save this
         'user' => [
-            'id' => $user->user_id,
+            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
         ],

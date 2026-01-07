@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface User {
-  user_id: string;
+  id: string;
   name: string;
   email: string;
   bio?: string;
