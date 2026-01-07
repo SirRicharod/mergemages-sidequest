@@ -1,28 +1,38 @@
 <div class="card right-sidebar shadow-sm">
-  <div class="card-body">
-    <h6 class="card-title mb-3">Filters</h6>
+    <div class="card-body">
+        <!-- Search box on top -->
+        <h6 class="card-title mb-2">Search</h6>
+        <form (submit)="$event.preventDefault(); submitSearch()">
+            <div class="mb-2">
+                <input [(ngModel)]="query" name="query" class="form-control" type="text"
+                    placeholder="Search sidequests..." />
+            </div>
+            <div class="mb-3">
+                <select [(ngModel)]="mode" name="mode" class="form-select" (change)="onModeChange()">
+                    <option value="keywords">Keywords</option>
+                    <option value="profile">Profile</option>
+                    <option value="skills">Skills</option>
+                    <option value="tags">Tags</option>
+                </select>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Search</button>
+        </form>
 
-    <!-- Switch: Requests vs Offers -->
-    <div class="form-check form-switch mb-3">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="switchSearch"
-        [checked]="searchMode === 'offers'"
-        (change)="toggleSearchMode.emit()"
-      />
-      <label class="form-check-label" for="switchSearch">
-        {{ searchMode === 'offers' ? 'Showing offers' : 'Showing requests' }}
-      </label>
+        <hr class="my-3">
+
+        <!-- Post type switch -->
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="switchSearch" [checked]="searchMode === 'offers'"
+                (change)="toggleSearchMode.emit()" />
+            <label class="form-check-label" for="switchSearch">
+                {{ searchMode === 'offers' ? 'Showing offers' : 'Showing requests' }}
+            </label>
+        </div>
+
+        <!-- Urgent-only button -->
+        <button class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center"
+            [class.active]="urgentOnly" (click)="toggleUrgent.emit()">
+            <span class="me-2">⚠️</span> urgent only
+        </button>
     </div>
-
-    <!-- Urgent only toggle -->
-    <button
-      class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center"
-      [class.active]="urgentOnly"
-      (click)="toggleUrgent.emit()"
-    >
-      <span class="me-2">⚠</span> urgent only
-    </button>
-  </div>
 </div>
