@@ -22,7 +22,7 @@
                 <img [src]="user.avatar_url" [alt]="user.name || 'User avatar'">
                 } @else {
                 <div class="avatar-placeholder">
-                    {{ user.name?.charAt(0)?.toUpperCase() || '?' }}
+                    {{ user.name.charAt(0).toUpperCase() || '?' }}
                 </div>
                 }
             </div>
