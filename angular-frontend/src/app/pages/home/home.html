@@ -9,24 +9,16 @@
         <div class="col-12 col-lg-6">
             <app-post-composer (submitPost)="onSubmitPost(feedRef, $event)"></app-post-composer>
 
-            <div class="d-flex align-items-center gap-3 my-3">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="switchSearch"
-                        [checked]="searchMode === 'offers'" (change)="toggleSearchMode()">
-                    <label class="form-check-label" for="switchSearch">
-                        {{ searchMode === 'offers' ? 'Showing offers' : 'Showing requests' }}
-                    </label>
-                </div>
-
-                <button class="btn btn-outline-warning d-flex align-items-center" [class.active]="urgentOnly"
-                    (click)="toggleUrgent()">
-                    <span class="me-2">⚠️</span> urgent only
-                </button>
-            </div>
-
-            <app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode"></app-feed>
+            <app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery"
+                [queryMode]="queryMode">
+            </app-feed>
         </div>
 
-        <div class="col-12 col-lg-3"></div>
+        <div class="col-12 col-lg-3">
+            <app-right-sidebar [searchMode]="searchMode" [urgentOnly]="urgentOnly"
+                (toggleSearchMode)="toggleSearchMode()" (toggleUrgent)="toggleUrgent()"
+                (searchChange)="onSearchChange($event)">
+            </app-right-sidebar>
+        </div>
     </div>
 </div>
