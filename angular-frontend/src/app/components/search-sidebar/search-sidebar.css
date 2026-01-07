@@ -1,0 +1,10 @@
+.right-sidebar {
+    position: sticky;
+    top: 80px;
+}
+
+.btn.active {
+    background-color: #ffc107;
+    color: #212529;
+    border-color: #ffc107;
+}

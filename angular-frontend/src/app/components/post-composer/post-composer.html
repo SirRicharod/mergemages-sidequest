@@ -1,0 +1,13 @@
+<div class="card shadow-sm composer">
+    <div class="card-body">
+        <h6 class="card-title mb-3">Create a post</h6>
+        <textarea [(ngModel)]="text" rows="3" class="form-control mb-3" placeholder="What's on your mind?"></textarea>
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="form-check">
+                <input id="urgent" type="checkbox" class="form-check-input" [(ngModel)]="urgent">
+                <label for="urgent" class="form-check-label">Mark as urgent</label>
+            </div>
+            <button class="btn btn-primary" (click)="onSubmit()">Post</button>
+        </div>
+    </div>
+</div>

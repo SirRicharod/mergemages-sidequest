@@ -1,0 +1,20 @@
+.profile-card {
+    position: sticky;
+    top: 80px;
+}
+
+@media (max-width: 991.98px) {
+    .profile-card {
+        position: static;
+    }
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.btn.active {
+    background-color: #ffc107;
+    color: #212529;
+    border-color: #ffc107;
+}

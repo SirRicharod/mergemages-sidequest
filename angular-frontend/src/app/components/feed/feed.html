@@ -1,0 +1,30 @@
+<div class="d-flex flex-column gap-3">
+    <div *ngFor="let item of visible" class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+                <h5 class="card-title mb-0 flex-grow-1">
+                    {{ item.title }}
+                    <span *ngIf="item.urgent" class="badge text-bg-warning ms-2">Urgent</span>
+                    <span class="badge ms-2" [class.text-bg-info]="item.type === 'offer'"
+                        [class.text-bg-primary]="item.type === 'request'">
+                        {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+                    </span>
+                </h5>
+                <div class="text-muted small">
+                    by {{ item.author }} • {{ item.createdAt }}
+                </div>
+            </div>
+            <p class="card-text">{{ item.description }}</p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary">
+                    {{ item.type === 'offer' ? 'Request help' : 'Accept Quest' }}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary">Details</button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="visible.length === 0" class="text-muted">
+        No {{ searchMode === 'offers' ? 'offers' : 'requests' }} match the current filters.
+    </div>
+</div>
