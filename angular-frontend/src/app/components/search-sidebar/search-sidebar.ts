@@ -1,11 +1,20 @@
-import { Component } from '@angular/core';
+// src/app/components/right-sidebar/right-sidebar.ts
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+type SearchMode = 'requests' | 'offers';
 
 @Component({
-  selector: 'app-search-sidebar',
-  imports: [],
+  selector: 'app-right-sidebar',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './search-sidebar.html',
-  styleUrl: './search-sidebar.css',
+  styleUrls: ['./search-sidebar.css']
 })
-export class SearchSidebar {
+export class RightSidebarComponent {
+  @Input() searchMode: SearchMode = 'requests';
+  @Input() urgentOnly: boolean = false;
 
+  @Output() toggleSearchMode = new EventEmitter<void>();
+  @Output() toggleUrgent = new EventEmitter<void>();
 }
