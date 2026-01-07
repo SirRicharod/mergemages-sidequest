@@ -1,5 +1,5 @@
 // src/app/pages/home/home.ts
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileCardComponent } from '../../components/profile-card/profile-card';
 import { PostComposerComponent } from '../../components/post-composer/post-composer';
@@ -16,32 +16,40 @@ type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
   styleUrls: ['./home.css']
 })
 export class HomeComponent {
-  // filters
+  @ViewChild('composerRef') composerRef?: PostComposerComponent;
+  @ViewChild('feedRef') feedRef?: FeedComponent;
+
   searchMode: 'requests' | 'offers' = 'requests';
   urgentOnly = false;
-
-  // search state (driven by right sidebar)
   searchQuery = '';
   queryMode: QueryMode = 'keywords';
 
-  // demo user
   avatarUrl: string | null = null;
   username = 'Sage Stockmans';
   email = 'sage.stockmans@proton.me';
   points = 120;
   badges = ['Helper', 'Designer', 'Top Contributor'];
 
-  onSubmitPost(feed: FeedComponent, evt: { text: string; urgent: boolean; type?: 'request' | 'offer' }) {
-    feed.addPost(evt.text, evt.urgent, evt.type ?? 'request');
+  openPostPopup(): void {
+    this.composerRef?.openPopup();
+  }
+
+  onSubmitPost(feed: FeedComponent, evt: {
+    title: string; description: string; type: 'request' | 'offer';
+    tags: string[]; deadline: string | null; boost: boolean;
+  }) {
+    const textLines = [
+      evt.title,
+      evt.description,
+      evt.deadline ? `Deadline: ${evt.deadline}` : '',
+      evt.tags.length ? `Tags: ${evt.tags.join(', ')}` : '',
+      evt.boost ? 'Boosted' : ''
+    ].filter(Boolean);
+    const text = textLines.join('\n');
+    feed.addPost(text, false, evt.type);
   }
 
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
-  toggleSearchMode(): void {
-    this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';
-  }
-
-  onSearchChange(evt: { query: string; mode: QueryMode }) {
-    this.searchQuery = evt.query;
-    this.queryMode = evt.mode;
-  }
+  toggleSearchMode(): void { this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests'; }
+  onSearchChange(evt: { query: string; mode: QueryMode }) { this.searchQuery = evt.query; this.queryMode = evt.mode; }
 }
