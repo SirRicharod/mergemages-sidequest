@@ -13,21 +13,22 @@ import { FeedComponent } from '../../components/feed/feed';
   styleUrls: ['./home.css']
 })
 export class HomeComponent {
-  searchMode: 'all' | 'switch' = 'all';
+  searchMode: 'requests' | 'offers' = 'requests';
   urgentOnly = false;
 
-  // Demo user data; later bind to real service
   avatarUrl: string | null = null;
   username = 'Sage Stockmans';
   email = 'sage.stockmans@proton.me';
   points = 120;
   badges = ['Helper', 'Designer', 'Top Contributor'];
 
-  // reference to feed to push new posts (template var via ViewChild is alternative)
   onSubmitPost(feed: FeedComponent, evt: { text: string; urgent: boolean }) {
-    feed.addPost(evt.text, evt.urgent);
+    // Default new posts to "request"; you could add a choice in the composer
+    feed.addPost(evt.text, evt.urgent, 'request');
   }
 
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
-  toggleSearchMode(): void { this.searchMode = this.searchMode === 'all' ? 'switch' : 'all'; }
+  toggleSearchMode(): void {
+    this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';
+  }
 }
