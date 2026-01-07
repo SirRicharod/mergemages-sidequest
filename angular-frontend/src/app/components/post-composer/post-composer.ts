@@ -13,27 +13,40 @@ type PostType = 'request' | 'offer';
   styleUrls: ['./post-composer.css']
 })
 export class PostComposerComponent {
-  // Popup visibility
+  // Popup visibility (kept from previous step)
   popupVisible = false;
+
+  // Preset school tags (extend as needed)
+  readonly presetTags = [
+    'art',
+    'programming',
+    'maths',
+    'architecture',
+    'design',
+    'backend',
+    'frontend',
+    '3d',
+    'illustration',
+    'uiux'
+  ];
 
   // Form model
   title = '';
   description = '';
-  type: PostType = 'request';     // "I'm looking for" vs "I can do"
-  tagsInput = '';                 // comma-separated
-  deadline: string = '';          // yyyy-MM-dd
+  type: PostType = 'request';       // "I'm looking for" vs "I can do"
+  selectedTags: string[] = [];      // MULTI-SELECT PRESET TAGS
+  deadline: string = '';            // yyyy-MM-dd
   boost = false;
 
   @Output() submitPost = new EventEmitter<{
     title: string;
     description: string;
     type: PostType;
-    tags: string[];
+    tags: string[];           // ← will carry selectedTags
     deadline: string | null;
     boost: boolean;
   }>();
 
-  // Trigger from Home
   openPopup(): void {
     this.popupVisible = true;
     document.body.style.overflow = 'hidden';
@@ -43,18 +56,24 @@ export class PostComposerComponent {
     document.body.style.overflow = '';
   }
 
+  toggleTag(tag: string, checked: boolean): void {
+    if (checked) {
+      if (!this.selectedTags.includes(tag)) this.selectedTags = [...this.selectedTags, tag];
+    } else {
+      this.selectedTags = this.selectedTags.filter(t => t !== tag);
+    }
+  }
+
   onSubmit(): void {
     const title = this.title.trim();
     const description = this.description.trim();
     if (!title || !description) return;
 
-    const tags = this.tagsInput.split(',').map(t => t.trim()).filter(Boolean);
-
     this.submitPost.emit({
       title,
       description,
       type: this.type,
-      tags,
+      tags: this.selectedTags,
       deadline: this.deadline || null,
       boost: this.boost
     });
@@ -63,7 +82,7 @@ export class PostComposerComponent {
     this.title = '';
     this.description = '';
     this.type = 'request';
-    this.tagsInput = '';
+    this.selectedTags = [];
     this.deadline = '';
     this.boost = false;
     this.closePopup();
