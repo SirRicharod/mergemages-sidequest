@@ -38,23 +38,27 @@ Route::get('/users', function () {
 Route::post('/register', function (Request $request) {
     // Step 1: Validate the incoming data
     $validated = $request->validate([
-        'name' => 'required|string|max:255',
+        'name' => 'required|string|max:120|regex:/^[\p{L}\s.\-\']+$/u',
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string|min:8|confirmed',
     ]);
 
-    // Step 2: Create the user (password is automatically hashed!)
+    // Step 2: Sanitize inputs
+    $sanitizedName = trim(strip_tags($validated['name']));
+    $sanitizedEmail = trim(strtolower($validated['email']));
+
+    // Step 3: Create the user (password is automatically hashed!)
     $user = User::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
+        'name' => $sanitizedName,
+        'email' => $sanitizedEmail,
+        'password_hash' => Hash::make($validated['password']),
     ]);
 
     // Step 3: Return a nice JSON response
     return response()->json([
         'message' => 'User registered successfully',
         'user' => [
-            'id' => $user->id,
+            'id' => $user->user_id,
             'name' => $user->name,
             'email' => $user->email,
         ],
@@ -72,11 +76,14 @@ Route::post('/login', function (Request $request) {
         'password' => 'required',
     ]);
 
-    // Step 2: Find the user
-    $user = User::where('email', $validated['email'])->first();
+    // Step 2: Sanitize email input
+    $sanitizedEmail = trim(strtolower($validated['email']));
+
+    // Step 3: Find the user
+    $user = User::where('email', $sanitizedEmail)->first();
 
     // Step 3: Check credentials
-    if (!$user || !Hash::check($validated['password'], $user->password)) {
+    if (!$user || !Hash::check($validated['password'], $user->password_hash)) {
         return response()->json([
             'message' => 'Invalid credentials',
         ], 401);  // 401 = "Unauthorized"
@@ -91,7 +98,7 @@ Route::post('/login', function (Request $request) {
         'message' => 'Login successful',
         'token' => $token,  // 👈 The frontend will save this
         'user' => [
-            'id' => $user->id,
+            'id' => $user->user_id,
             'name' => $user->name,
             'email' => $user->email,
         ],

@@ -3,10 +3,11 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Profile } from './pages/profile/profile';
 import { LoginRegistration } from './pages/login-registration/login-registration';
+import { authGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', component: Home, pathMatch: 'full' },
-    { path: 'profile', component: Profile },
-    { path: 'login', component: LoginRegistration },
+    { path: 'profile', component: Profile, canActivate: [authGuard] },
+    { path: 'login', component: LoginRegistration, canActivate: [guestGuard] },
     { path: '**', redirectTo: '' }
 ];
