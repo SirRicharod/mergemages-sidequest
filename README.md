@@ -1,7 +1,7 @@
 <div id="toc">
 <h1>Merge Mages - SideQuest</h1>
 </div>
-<img src="mergemageslogo.png" alt="drawing" width="200">
+<img src="mergemageslogo.png" alt="merge mages logo">
 
 ## What is SideQuest?
 SideQuest is a collaboration platform for students to team up across different disciplines. Whether a graphic design student wants their artwork turned into a 3D model, or a programmer looking for a new logo for their site. SideQuest makes it easy to find help from classmates with the right skills.
