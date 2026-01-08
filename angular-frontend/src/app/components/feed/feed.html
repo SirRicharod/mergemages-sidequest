@@ -63,7 +63,7 @@
         <span class="status-pill inline" [class.offer]="p.type==='offer'" [class.request]="p.type==='request'">
           {{ p.type === 'offer' ? 'Offer' : 'Request' }}
         </span>
-        <span *ngIf="p.urgent" class="ms-2 status-urgent">• Urgent</span>
+        <span *ngIf="p.urgent" class="ms-2 status-urgent-pill">Urgent</span>
         <span *ngIf="p.deadline" class="ms-2">• Deadline: {{ p.deadline }}</span>
       </div>
 
