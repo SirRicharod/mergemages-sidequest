@@ -47,6 +47,14 @@
   overflow: hidden;
 }
 
+.status-urgent-pill {
+  border-radius: 10px;
+  padding: 4px 10px;
+  background-color: var(--sq-533747);
+  color: #fff;
+  font-weight: 600;
+}
+
 /* Popup overlay styling (consistent with composer) */
 .popup-backdrop {
   position: fixed;
