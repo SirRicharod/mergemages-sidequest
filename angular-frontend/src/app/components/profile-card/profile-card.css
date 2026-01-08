@@ -1,9 +1,9 @@
-/* src/app/components/profile-card/profile-card.css */
 .profile-card {
     position: sticky;
     top: 80px;
 }
 
+/* Circle avatar */
 .avatar {
     width: 64px;
     height: 64px;
@@ -30,20 +30,15 @@
     color: var(--sq-text);
 }
 
-/* Ensure text area can shrink and wrap without overflowing */
+/* Allow wrapping; prevent overflow */
 .profile-text {
     min-width: 0;
-    /* critical for flex children to allow wrapping */
 }
 
-.profile-text .email {
+.email {
     overflow-wrap: anywhere;
-    /* allow breaking long words/emails anywhere */
     word-break: break-word;
-    /* fallback */
     white-space: normal;
-    /* ensure it wraps */
-    display: block;
 }
 
 /* Subtle outlined badges */
@@ -58,7 +53,7 @@
     font-size: 0.8rem;
 }
 
-/* Card theme */
+/* Card theming */
 .card {
     background: var(--sq-surface);
     border: 1px solid var(--sq-border);
