@@ -2,7 +2,7 @@
 .popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(47, 62, 70, 0.45);
     z-index: 1040;
 }
 
@@ -18,7 +18,8 @@
     width: min(640px, 92vw);
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--sq-border);
+    box-shadow: 0 14px 40px rgba(47, 62, 70, 0.18);
 }
 
 .popup-header,

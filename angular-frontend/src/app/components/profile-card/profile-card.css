@@ -1,15 +1,9 @@
-.profile-card {
-    position: sticky;
-    top: 80px;
-}
-
-/* adjusts for navbar height */
 .avatar {
     width: 56px;
     height: 56px;
     border-radius: 50%;
     overflow: hidden;
-    background: #e9ecef;
+    background: #E9EEF0;
 }
 
 .avatar img {
@@ -25,4 +19,5 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
+    color: var(--sq-text);
 }
