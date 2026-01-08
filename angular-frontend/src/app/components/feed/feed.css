@@ -1,2 +1,13 @@
-.card-title { display: flex; align-items: center; }
-.badge { border-radius: 8px; }
+.badge {
+    border-radius: 8px;
+}
+
+.badge.offer {
+    background-color: var(--sq-84A98C);
+    color: #fff;
+}
+
+.badge.request {
+    background-color: var(--sq-354F52);
+    color: #fff;
+}
