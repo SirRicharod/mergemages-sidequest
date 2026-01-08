@@ -1,0 +1,66 @@
+.sq-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    /* above content, below modals */
+    background: #fff;
+    border-top: 1px solid var(--sq-border);
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
+    padding-bottom: env(safe-area-inset-bottom);
+    /* iOS notch */
+}
+
+.sq-bottom-nav-inner {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 8px 12px;
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border: none;
+    background: transparent;
+    color: var(--sq-6A6B83);
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.nav-btn .icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+    color: var(--sq-primary);
+    text-decoration: none;
+}
+
+.make-post {
+    color: #fff;
+    background: var(--sq-primary);
+    border-radius: 999px;
+    padding: 6px 0;
+}
+
+.make-post .icon {
+    font-size: 20px;
+}
+
+/* Prevent content from being hidden under the bar */
+@media (max-width: 991.98px) {
+    body {
+        padding-bottom: 64px;
+    }
+
+    /* reserve space roughly equal to nav height */
+}
