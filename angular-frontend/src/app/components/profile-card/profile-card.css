@@ -1,16 +1,67 @@
+/* src/app/components/profile-card/profile-card.css */
 .profile-card {
     position: sticky;
     top: 80px;
 }
 
 .avatar {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     overflow: hidden;
     background: #E9EEF0;
+    flex: 0 0 64px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .avatar-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
     color: var(--sq-text);
+}
+
+/* Ensure text area can shrink and wrap without overflowing */
+.profile-text {
+    min-width: 0;
+    /* critical for flex children to allow wrapping */
+}
+
+.profile-text .email {
+    overflow-wrap: anywhere;
+    /* allow breaking long words/emails anywhere */
+    word-break: break-word;
+    /* fallback */
+    white-space: normal;
+    /* ensure it wraps */
+    display: block;
+}
+
+/* Subtle outlined badges */
+.badge-outline {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--sq-border);
+    color: var(--sq-6A6B83);
+    background: transparent;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+/* Card theme */
+.card {
+    background: var(--sq-surface);
+    border: 1px solid var(--sq-border);
+    border-radius: 12px;
+    box-shadow: var(--sq-shadow);
 }
