@@ -14,15 +14,16 @@
 
 .feed-content {
     max-width: 680px;
-    /* keep readable width; adjust as needed */
+    /* readable width */
 }
 
 .feed-actions {
-    min-width: 220px;
-    /* ensures room for badges + buttons */
+    min-width: 320px;
+    /* ensures room for button + badges */
+    text-align: right;
 }
 
-/* Post type badges styled with your palette */
+/* Post type badge palette */
 .post-type {
     border-radius: 8px;
     color: #fff;
@@ -33,24 +34,22 @@
     background-color: var(--sq-86BBBD);
 }
 
+/* teal accent */
 .post-type.request {
     background-color: var(--sq-76949F);
 }
 
-/* Keep card title tight */
+/* soft teal-grey */
+
 .card-title {
     margin-bottom: 0.25rem;
 }
 
-/* Responsive: stack actions below on small screens */
+/* Responsive: stack the right row under content on small screens */
 @media (max-width: 576px) {
     .feed-actions {
         text-align: left;
-        margin-top: 0.75rem;
         min-width: auto;
-    }
-
-    .d-flex.flex-wrap.align-items-start.justify-content-between {
-        gap: 0.75rem;
+        margin-top: 0.75rem;
     }
 }

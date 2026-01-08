@@ -1,58 +1,51 @@
 <div class="d-flex flex-column gap-3">
-  <div *ngFor="let item of visible" class="card shadow-sm">
-    <div class="card-body">
-      <!-- Top row: content left, badges + actions right -->
-      <div class="d-flex flex-wrap align-items-start justify-content-between">
-        <!-- Left: content block with your order -->
-        <div class="feed-content">
-          <!-- 1. Title -->
-          <h5 class="card-title mb-2">{{ item.title }}</h5>
+    <div *ngFor="let item of visible" class="card shadow-sm">
+        <!-- Header: title left, badges right -->
+        <div class="card-header bg-transparent border-0 pb-0">
+            <div class="d-flex align-items-start justify-content-between">
+                <h5 class="card-title mb-2">{{ item.title }}</h5>
 
-          <!-- 2. Description -->
-          <p class="card-text mb-3">{{ item.description }}</p>
-
-          <!-- 3. Points they offer -->
-          <div class="mb-2 d-flex align-items-center">
-            <span class="me-2">⭐</span>
-            <strong>Points offered:</strong>
-            <span class="ms-2">{{ item.points }}</span>
-          </div>
-
-          <!-- 4. Tags -->
-          <div class="mb-3">
-            <strong class="me-2">Tags:</strong>
-            <span *ngFor="let t of item.tags" class="badge text-bg-primary me-1">{{ t }}</span>
-            <span *ngIf="item.tags.length === 0" class="text-muted small">None</span>
-          </div>
-
-          <!-- 5. "by" and date -->
-          <div class="text-muted small">
-            by {{ item.author }} • {{ item.createdAt }}
-          </div>
+                <!-- Right-aligned badges on the same line -->
+                <div class="feed-header-badges d-flex align-items-center gap-2 flex-wrap justify-content-end">
+                    <span class="badge post-type" [class.offer]="item.type==='offer'"
+                        [class.request]="item.type==='request'">
+                        {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+                    </span>
+                    <span *ngIf="item.urgent" class="badge text-bg-warning">Urgent</span>
+                    <span *ngIf="item.deadline" class="badge text-bg-secondary">Deadline: {{ item.deadline }}</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Right: badges + actions column -->
-        <div class="feed-actions text-end ms-auto">
-          <!-- badges in top-right -->
-          <div class="d-flex justify-content-end gap-2 flex-wrap mb-2">
-            <span class="badge post-type" [class.offer]="item.type==='offer'" [class.request]="item.type==='request'">
-              {{ item.type === 'offer' ? 'Offer' : 'Request' }}
-            </span>
-            <span *ngIf="item.urgent" class="badge text-bg-warning">Urgent</span>
-            <span *ngIf="item.deadline" class="badge text-bg-secondary">Deadline: {{ item.deadline }}</span>
-          </div>
+        <div class="card-body">
+            <!-- Description -->
+            <p class="card-text mb-3">{{ item.description }}</p>
 
-          <!-- 6. Buttons to accept the quest and details -->
-          <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-sm btn-primary">
-              {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
-            </button>
-            <button class="btn btn-sm btn-outline-secondary">Details</button>
-          </div>
+            <!-- Points -->
+            <div class="mb-2 d-flex align-items-center">
+                <span class="me-2">⭐</span>
+                <strong>Points offered:</strong>
+                <span class="ms-2">{{ item.points }}</span>
+            </div>
+
+            <!-- Tags -->
+            <div class="mb-0">
+                <strong class="me-2">Tags:</strong>
+                <span *ngFor="let t of item.tags" class="badge text-bg-primary me-1">{{ t }}</span>
+                <span *ngIf="item.tags.length === 0" class="text-muted small">None</span>
+            </div>
         </div>
-      </div>
+
+        <!-- Footer: by/date left, action button right -->
+        <div class="card-footer bg-transparent border-0 pt-0">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="text-muted small">by {{ item.author }} • {{ item.createdAt }}</div>
+                <button class="btn btn-sm btn-primary">
+                    {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
+    <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
 </div>
