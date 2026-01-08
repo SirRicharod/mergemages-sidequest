@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfileCardComponent {
   @Input() avatarUrl: string | null = null;
-  @Input() username = 'User';
-  @Input() email = 'user@example.com';
+  @Input() username = '';
+  @Input() email = '';
   @Input() points = 0;
   @Input() badges: string[] = [];
 }
