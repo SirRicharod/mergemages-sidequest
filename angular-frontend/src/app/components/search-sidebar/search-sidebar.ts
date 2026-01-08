@@ -14,24 +14,43 @@ export type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
   styleUrls: ['./search-sidebar.css']
 })
 export class RightSidebarComponent {
-  // Existing filters
   @Input() searchMode: PostTypeMode = 'requests';
   @Input() urgentOnly = false;
 
   @Output() toggleSearchMode = new EventEmitter<void>();
   @Output() toggleUrgent = new EventEmitter<void>();
 
-  // Search inputs (kept local in the sidebar)
   query = '';
   mode: QueryMode = 'keywords';
 
   @Output() searchChange = new EventEmitter<{ query: string; mode: QueryMode }>();
 
+  // simple debounce
+  private debounceTimer: any;
+  private readonly debounceMs = 300;
+
   submitSearch(): void {
-    this.searchChange.emit({ query: this.query.trim(), mode: this.mode });
+    const q = this.query.trim();
+    if (q.length === 0) {
+      // emit empty search to clear results/filters
+      this.searchChange.emit({ query: '', mode: this.mode });
+      return;
+    }
+    if (q.length < 2) return; // minimal length to avoid noise
+    this.searchChange.emit({ query: q, mode: this.mode });
   }
 
   onModeChange(): void {
     this.submitSearch();
+  }
+
+  onQueryChange(val: string): void {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => this.submitSearch(), this.debounceMs);
+  }
+
+  clearQuery(): void {
+    this.query = '';
+    this.searchChange.emit({ query: '', mode: this.mode });
   }
 }
