@@ -5,13 +5,14 @@ import { ProfileCardComponent } from '../../components/profile-card/profile-card
 import { PostComposerComponent } from '../../components/post-composer/post-composer';
 import { FeedComponent } from '../../components/feed/feed';
 import { RightSidebarComponent } from '../../components/search-sidebar/search-sidebar';
+import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ProfileCardComponent, PostComposerComponent, FeedComponent, RightSidebarComponent],
+  imports: [CommonModule, ProfileCardComponent, PostComposerComponent, FeedComponent, RightSidebarComponent, BottomNavComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
