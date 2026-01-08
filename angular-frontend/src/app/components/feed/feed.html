@@ -1,51 +1,95 @@
 <div class="d-flex flex-column gap-3">
-    <div *ngFor="let item of visible" class="card shadow-sm">
-        <!-- Header: title left, badges right -->
-        <div class="card-header bg-transparent border-0 pb-0">
-            <div class="d-flex align-items-start justify-content-between">
-                <h5 class="card-title mb-2">{{ item.title }}</h5>
-
-                <!-- Right-aligned badges on the same line -->
-                <div class="feed-header-badges d-flex align-items-center gap-2 flex-wrap justify-content-end">
-                    <span class="badge post-type" [class.offer]="item.type==='offer'"
-                        [class.request]="item.type==='request'">
-                        {{ item.type === 'offer' ? 'Offer' : 'Request' }}
-                    </span>
-                    <span *ngIf="item.urgent" class="badge text-bg-warning">Urgent</span>
-                    <span *ngIf="item.deadline" class="badge text-bg-secondary">Deadline: {{ item.deadline }}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <!-- Description -->
-            <p class="card-text mb-3">{{ item.description }}</p>
-
-            <!-- Points -->
-            <div class="mb-2 d-flex align-items-center">
-                <span class="me-2">⭐</span>
-                <strong>Points offered:</strong>
-                <span class="ms-2">{{ item.points }}</span>
-            </div>
-
-            <!-- Tags -->
-            <div class="mb-0">
-                <strong class="me-2">Tags:</strong>
-                <span *ngFor="let t of item.tags" class="badge text-bg-primary me-1">{{ t }}</span>
-                <span *ngIf="item.tags.length === 0" class="text-muted small">None</span>
-            </div>
-        </div>
-
-        <!-- Footer: by/date left, action button right -->
-        <div class="card-footer bg-transparent border-0 pt-0">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="text-muted small">by {{ item.author }} • {{ item.createdAt }}</div>
-                <button class="btn btn-sm btn-primary">
-                    {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
-                </button>
-            </div>
-        </div>
+  <div *ngFor="let item of visible" class="card shadow-sm">
+    <!-- Header: title left, Request/Offer right -->
+    <div class="card-header bg-transparent border-0 pb-0">
+      <div class="d-flex align-items-start justify-content-between">
+        <h5 class="card-title mb-2">{{ item.title }}</h5>
+        <span class="status-pill"
+              [class.offer]="item.type==='offer'"
+              [class.request]="item.type==='request'">
+          {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+        </span>
+      </div>
     </div>
 
-    <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
+    <div class="card-body">
+      <!-- Description -->
+      <p class="card-text text-truncate-3 mb-5">{{ item.description }}</p>
+
+      <!-- Points (minimized post view) -->
+      <div class="mb-4 d-flex align-items-center">
+        <span class="me-2">⭐</span>
+        <strong>Points offered:</strong>
+        <span class="ms-2">{{ item.points }}</span>
+      </div>
+
+      <!-- Actions row: buttons left, author/date right -->
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-primary">
+            {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" (click)="openDetails(item)">
+            Details
+          </button>
+        </div>
+
+        <div class="text-muted small">
+          by {{ item.author }} • {{ item.createdAt }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
+</div>
+
+<!-- Details popup -->
+<div class="popup-backdrop" *ngIf="detailsPost"></div>
+<div class="popup" *ngIf="detailsPost" role="dialog" aria-modal="true">
+  <div class="popup-card">
+    <div class="popup-header">
+      <strong>Post details</strong>
+      <button class="btn-close" aria-label="Close" (click)="closeDetails()"></button>
+    </div>
+
+    <div class="popup-body" *ngIf="detailsPost as p">
+      <h5 class="mb-2">{{ p.title }}</h5>
+
+      <div class="text-muted mb-3">
+        <span class="status-pill inline" [class.offer]="p.type==='offer'" [class.request]="p.type==='request'">
+          {{ p.type === 'offer' ? 'Offer' : 'Request' }}
+        </span>
+        <span *ngIf="p.urgent" class="ms-2 status-urgent">• Urgent</span>
+        <span *ngIf="p.deadline" class="ms-2">• Deadline: {{ p.deadline }}</span>
+      </div>
+
+      <p class="mb-3">{{ p.description }}</p>
+
+      <div class="mb-2 d-flex align-items-center">
+        <span class="me-2">⭐</span>
+        <strong>Points offered:</strong>
+        <span class="ms-2">{{ p.points }}</span>
+      </div>
+
+      <div class="mb-3">
+        <strong class="me-2">Tags:</strong>
+        <ng-container *ngIf="p.tags.length > 0; else noTags">
+          <span *ngFor="let t of p.tags" class="chip chip-muted me-1">{{ t }}</span>
+        </ng-container>
+        <ng-template #noTags>
+          <span class="text-muted small">None</span>
+        </ng-template>
+      </div>
+
+      <div class="text-muted small">by {{ p.author }} • {{ p.createdAt }}</div>
+    </div>
+
+    <div class="popup-footer">
+      <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
+      <button class="btn btn-primary">
+        {{ detailsPost?.type === 'offer' ? 'Request help' : 'Accept quest' }}
+      </button>
+    </div>
+  </div>
 </div>
