@@ -1,30 +1,55 @@
 <div class="d-flex flex-column gap-3">
     <div *ngFor="let item of visible" class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex align-items-center mb-2">
-                <h5 class="card-title mb-0 flex-grow-1">
-                    {{ item.title }}
-                    <span *ngIf="item.urgent" class="badge text-bg-warning ms-2">Urgent</span>
-                    <span class="badge ms-2" [class.text-bg-info]="item.type === 'offer'"
-                        [class.text-bg-primary]="item.type === 'request'">
+        <!-- Top bar: badges right -->
+        <div class="card-header bg-transparent border-0 pb-0">
+            <div class="d-flex">
+                <div class="flex-grow-1"></div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge post-type" [class.offer]="item.type==='offer'"
+                        [class.request]="item.type==='request'">
                         {{ item.type === 'offer' ? 'Offer' : 'Request' }}
                     </span>
-                </h5>
-                <div class="text-muted small">
-                    by {{ item.author }} • {{ item.createdAt }}
+                    <span *ngIf="item.urgent" class="badge text-bg-warning">Urgent</span>
+                    <span *ngIf="item.deadline" class="badge text-bg-secondary">Deadline: {{ item.deadline }}</span>
                 </div>
             </div>
-            <p class="card-text">{{ item.description }}</p>
+        </div>
+
+        <div class="card-body">
+            <!-- 1. Title -->
+            <h5 class="card-title mb-2">{{ item.title }}</h5>
+
+            <!-- 2. Description -->
+            <p class="card-text mb-3">{{ item.description }}</p>
+
+            <!-- 3. Points they offer -->
+            <div class="mb-2 d-flex align-items-center">
+                <span class="me-2">⭐</span>
+                <strong>Points offered:</strong>
+                <span class="ms-2">{{ item.points }}</span>
+            </div>
+
+            <!-- 4. Tags -->
+            <div class="mb-3">
+                <strong class="me-2">Tags:</strong>
+                <span *ngFor="let t of item.tags" class="badge text-bg-primary me-1">{{ t }}</span>
+                <span *ngIf="item.tags.length === 0" class="text-muted small">None</span>
+            </div>
+
+            <!-- 5. "by" and date -->
+            <div class="text-muted small mb-3">
+                by {{ item.author }} • {{ item.createdAt }}
+            </div>
+
+            <!-- 6. Buttons -->
             <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-primary">
-                    {{ item.type === 'offer' ? 'Request help' : 'Accept Quest' }}
+                <button class="btn btn-sm btn-primary">
+                    {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
                 </button>
                 <button class="btn btn-sm btn-outline-secondary">Details</button>
             </div>
         </div>
     </div>
 
-    <div *ngIf="visible.length === 0" class="text-muted">
-        No {{ searchMode === 'offers' ? 'offers' : 'requests' }} match the current filters.
-    </div>
+    <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
 </div>

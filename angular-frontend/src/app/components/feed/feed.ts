@@ -1,20 +1,21 @@
-// src/app/components/feed/feed.ts
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
-interface Sidequest {
+export interface Sidequest {
   id: number;
   title: string;
   description: string;
+  type: PostType;           // request | offer
   urgent: boolean;
+  deadline?: string | null; // ISO date (YYYY-MM-DD) or null
+  points: number;           // points offered
+  tags: string[];           // selected preset tags
   author: string;
-  createdAt: string;
-  type: 'request' | 'offer';
-  skills?: string[];   // NEW (optional)
-  tags?: string[];     // NEW (optional)
+  createdAt: string;        // YYYY-MM-DD
 }
 
 @Component({
@@ -30,25 +31,69 @@ export class FeedComponent {
   @Input() searchQuery: string = '';
   @Input() queryMode: QueryMode = 'keywords';
 
+  // Demo data with points/tags/deadline filled
   items: Sidequest[] = [
-    { id: 1, title: 'Turn my 2D logo into a 3D model', description: 'Looking for Blender help. I have SVG and references.', urgent: true, author: 'Ember', createdAt: '2026-01-05', type: 'request', skills: ['blender', '3d'], tags: ['design'] },
-    { id: 2, title: 'I can design logos and brand kits', description: 'Offering graphic design help. Quick turnaround.', urgent: false, author: 'Moeke', createdAt: '2026-01-03', type: 'offer', skills: ['logo', 'branding'], tags: ['design'] },
-    { id: 3, title: 'Create animated landing page with GSAP', description: 'Need smooth scroll and section reveals.', urgent: false, author: 'Courtney', createdAt: '2026-01-02', type: 'request', skills: ['gsap', 'frontend'], tags: ['web'] },
-    { id: 4, title: 'I build REST APIs (Laravel, Node)', description: 'Happy to help with backend tasks and auth.', urgent: false, author: 'Sage', createdAt: '2026-01-01', type: 'offer', skills: ['laravel', 'node', 'api'], tags: ['backend'] }
+    {
+      id: 1,
+      title: 'Turn my 2D logo into a 3D model',
+      description: 'Looking for Blender help. I have SVG and references.',
+      type: 'request',
+      urgent: true,
+      deadline: '2026-01-12',
+      points: 50,
+      tags: ['art', '3d', 'design'],
+      author: 'Ember',
+      createdAt: '2026-01-05'
+    },
+    {
+      id: 2,
+      title: 'I can design logos and brand kits',
+      description: 'Offering graphic design help. Quick turnaround.',
+      type: 'offer',
+      urgent: false,
+      deadline: null,
+      points: 30,
+      tags: ['art', 'design'],
+      author: 'Moeke',
+      createdAt: '2026-01-03'
+    },
+    {
+      id: 3,
+      title: 'Create animated landing page with GSAP',
+      description: 'Need smooth scroll and section reveals.',
+      type: 'request',
+      urgent: false,
+      deadline: '2026-01-20',
+      points: 40,
+      tags: ['frontend', 'uiux'],
+      author: 'Courtney',
+      createdAt: '2026-01-02'
+    },
+    {
+      id: 4,
+      title: 'I build REST APIs (Laravel, Node)',
+      description: 'Happy to help with backend tasks and auth.',
+      type: 'offer',
+      urgent: false,
+      deadline: null,
+      points: 25,
+      tags: ['backend', 'programming'],
+      author: 'Sage',
+      createdAt: '2026-01-01'
+    }
   ];
 
   get visible(): Sidequest[] {
-    const q = this.searchQuery.trim().toLowerCase();
-
-    // 1) Filter by post type (requests/offers)
+    // Type toggle
     let base = this.items.filter(x =>
       this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer'
     );
 
-    // 2) Apply urgent-only
+    // Urgent-only
     if (this.urgentOnly) base = base.filter(x => x.urgent);
 
-    // 3) Apply search query by mode
+    // Query filtering
+    const q = this.searchQuery.trim().toLowerCase();
     if (q) {
       base = base.filter(x => {
         switch (this.queryMode) {
@@ -56,10 +101,10 @@ export class FeedComponent {
             return (x.title + ' ' + x.description).toLowerCase().includes(q);
           case 'profile':
             return x.author.toLowerCase().includes(q);
-          case 'skills':
-            return (x.skills || []).some(s => s.toLowerCase().includes(q));
+          case 'skills': // reuse tags as skills for now
+            return x.tags.some(t => t.toLowerCase().includes(q));
           case 'tags':
-            return (x.tags || []).some(t => t.toLowerCase().includes(q));
+            return x.tags.some(t => t.toLowerCase().includes(q));
           default:
             return true;
         }
@@ -69,17 +114,20 @@ export class FeedComponent {
     return base;
   }
 
-  addPost(text: string, urgent: boolean, type: 'request' | 'offer' = 'request') {
+  addPost(text: string, urgent: boolean, type: PostType = 'request') {
+    // Simple demo adapter: split text by first line as title, rest as description
+    const [firstLine, ...rest] = text.split('\n');
     this.items.unshift({
       id: Date.now(),
-      title: text.slice(0, 40),
-      description: text,
-      urgent,
-      author: 'You',
-      createdAt: new Date().toISOString().slice(0, 10),
+      title: firstLine || 'Untitled',
+      description: rest.join('\n') || '',
       type,
-      skills: [],
-      tags: []
+      urgent,
+      deadline: null,
+      points: 10,        // default demo points; replace with real value on create
+      tags: [],          // will be set by composer when wired fully
+      author: 'You',
+      createdAt: new Date().toISOString().slice(0, 10)
     });
   }
 }
