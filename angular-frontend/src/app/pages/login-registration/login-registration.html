@@ -1,170 +1,173 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-      <div class="card shadow">
-        <div class="card-body p-5">
-          <!-- Header -->
-          <h2 class="text-center mb-4">
-            {{ isLoginMode() ? 'Login' : 'Register' }}
-          </h2>
+<div class="login-wrapper">
 
-          <!-- Alert Messages -->
-          @if (errorMessage()) {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              {{ errorMessage() }}
-              <button type="button" class="btn-close" (click)="errorMessage.set(null)"></button>
-            </div>
-          }
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        
+        <div class="card shadow login-card">
+          <div class="card-body p-5">
+            
+            <h2 class="text-center mb-4" style="color: var(--sq-533747); font-weight: 700;">
+              {{ isLoginMode() ? 'Login' : 'Register' }}
+            </h2>
 
-          @if (successMessage()) {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              {{ successMessage() }}
-              <button type="button" class="btn-close" (click)="successMessage.set(null)"></button>
-            </div>
-          }
-
-          <!-- Login Form -->
-          @if (isLoginMode()) {
-            <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-              <div class="mb-3">
-                <label for="loginEmail" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="loginEmail"
-                  name="email"
-                  [(ngModel)]="loginData.email"
-                  required
-                  email
-                  placeholder="Enter your email"
-                  [disabled]="loading()"
-                />
+            @if (errorMessage()) {
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ errorMessage() }}
+                <button type="button" class="btn-close" (click)="errorMessage.set(null)"></button>
               </div>
+            }
 
-              <div class="mb-3">
-                <label for="loginPassword" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="loginPassword"
-                  name="password"
-                  [(ngModel)]="loginData.password"
-                  required
-                  placeholder="Enter your password"
-                  [disabled]="loading()"
-                />
+            @if (successMessage()) {
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ successMessage() }}
+                <button type="button" class="btn-close" (click)="successMessage.set(null)"></button>
               </div>
+            }
 
-              <button
-                type="submit"
-                class="btn btn-primary w-100 mb-3"
-                [disabled]="!loginForm.valid || loading()"
-              >
-                @if (loading()) {
-                  <span class="spinner-border spinner-border-sm me-2"></span>
-                  Logging in...
+            @if (isLoginMode()) {
+              <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+                <div class="mb-3">
+                  <label for="loginEmail" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control custom-input"
+                    id="loginEmail"
+                    name="email"
+                    [(ngModel)]="loginData.email"
+                    required
+                    email
+                    placeholder="Enter your email"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="loginPassword" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control custom-input"
+                    id="loginPassword"
+                    name="password"
+                    [(ngModel)]="loginData.password"
+                    required
+                    placeholder="Enter your password"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-primary w-100 mb-3 btn-plum"
+                  [disabled]="!loginForm.valid || loading()"
+                >
+                  @if (loading()) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Logging in...
+                  } @else {
+                    Login
+                  }
+                </button>
+              </form>
+            }
+
+            @if (!isLoginMode()) {
+              <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+                <div class="mb-3">
+                  <label for="registerName" class="form-label">Name</label>
+                  <input
+                    type="text"
+                    class="form-control custom-input"
+                    id="registerName"
+                    name="name"
+                    [(ngModel)]="registerData.name"
+                    required
+                    placeholder="Enter your name"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="registerEmail" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control custom-input"
+                    id="registerEmail"
+                    name="email"
+                    [(ngModel)]="registerData.email"
+                    required
+                    email
+                    placeholder="Enter your email"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="registerPassword" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control custom-input"
+                    id="registerPassword"
+                    name="password"
+                    [(ngModel)]="registerData.password"
+                    required
+                    minlength="8"
+                    placeholder="At least 8 characters"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="registerPasswordConfirmation" class="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    class="form-control custom-input"
+                    id="registerPasswordConfirmation"
+                    name="passwordConfirmation"
+                    [(ngModel)]="registerData.passwordConfirmation"
+                    required
+                    minlength="8"
+                    placeholder="Re-enter your password"
+                    [disabled]="loading()"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-success w-100 mb-3 btn-plum"
+                  [disabled]="!registerForm.valid || loading()"
+                >
+                  @if (loading()) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Registering...
+                  } @else {
+                    Register
+                  }
+                </button>
+              </form>
+            }
+
+            <div class="text-center">
+              <p class="mb-0 text-muted">
+                @if (isLoginMode()) {
+                  Don't have an account?
+                  <a href="javascript:void(0)" (click)="toggleMode()" style="color: var(--sq-533747); font-weight: 600; text-decoration: none;">
+                    Register here
+                  </a>
                 } @else {
-                  Login
+                  Already have an account?
+                  <a href="javascript:void(0)" (click)="toggleMode()" style="color: var(--sq-533747); font-weight: 600; text-decoration: none;">
+                    Login here
+                  </a>
                 }
-              </button>
-            </form>
-          }
+              </p>
+            </div>
 
-          <!-- Registration Form -->
-          @if (!isLoginMode()) {
-            <form (ngSubmit)="onRegister()" #registerForm="ngForm">
-              <div class="mb-3">
-                <label for="registerName" class="form-label">Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="registerName"
-                  name="name"
-                  [(ngModel)]="registerData.name"
-                  required
-                  placeholder="Enter your name"
-                  [disabled]="loading()"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="registerEmail" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="registerEmail"
-                  name="email"
-                  [(ngModel)]="registerData.email"
-                  required
-                  email
-                  placeholder="Enter your email"
-                  [disabled]="loading()"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="registerPassword" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="registerPassword"
-                  name="password"
-                  [(ngModel)]="registerData.password"
-                  required
-                  minlength="8"
-                  placeholder="At least 8 characters"
-                  [disabled]="loading()"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="registerPasswordConfirmation" class="form-label">Confirm Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="registerPasswordConfirmation"
-                  name="passwordConfirmation"
-                  [(ngModel)]="registerData.passwordConfirmation"
-                  required
-                  minlength="8"
-                  placeholder="Re-enter your password"
-                  [disabled]="loading()"
-                />
-              </div>
-
-              <button
-                type="submit"
-                class="btn btn-success w-100 mb-3"
-                [disabled]="!registerForm.valid || loading()"
-              >
-                @if (loading()) {
-                  <span class="spinner-border spinner-border-sm me-2"></span>
-                  Registering...
-                } @else {
-                  Register
-                }
-              </button>
-            </form>
-          }
-
-          <!-- Toggle Link -->
-          <div class="text-center">
-            <p class="mb-0">
-              @if (isLoginMode()) {
-                Don't have an account?
-                <a href="javascript:void(0)" (click)="toggleMode()" class="text-decoration-none">
-                  Register here
-                </a>
-              } @else {
-                Already have an account?
-                <a href="javascript:void(0)" (click)="toggleMode()" class="text-decoration-none">
-                  Login here
-                </a>
-              }
-            </p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+</div> ```
+

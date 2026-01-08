@@ -1,0 +1,95 @@
+/* navbar.css */
+
+/* 1. De balk zelf */
+.custom-navbar {
+    /* De 'Dark Plum' huiskleur */
+    background-color: var(--sq-533747, #533747) !important;
+    
+    /* Zorgt dat de balk bovenop de rest zweeft */
+    position: relative;
+    z-index: 1000;
+    
+    /* Een zachte schaduw aan de onderkant */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    
+    /* Iets meer ruimte voor een luxere uitstraling */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* 2. De merknaam 'SideQuest' */
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: 800; /* Extra dikgedrukt */
+    font-size: 1.6rem;
+    letter-spacing: -0.5px;
+}
+
+/* 3. De menu-items */
+.nav-link {
+    /* Wit met een heel klein beetje transparantie */
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    margin-left: 15px;
+    margin-right: 15px;
+    transition: all 0.3s ease; /* Zorgt voor een soepele kleurovergang */
+}
+
+/* 4. Hover effect (muis eroverheen) */
+.nav-link:hover, .nav-link:focus {
+    /* De tekst wordt jouw 'Teal' accentkleur */
+    color: var(--sq-86BBBD, #86BBBD) !important;
+    transform: translateY(-2px); /* Het linkje zweeft iets omhoog */
+}
+
+/* 5. De Logout knop styling */
+button.nav-link {
+    background: none;
+    border: none;
+    padding: 8px 0; /* Correctie voor knoppen */
+}
+
+/* 6. Het hamburger menu (voor mobiel) */
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.3);
+}
+/* Check of dit nog in je login-registration.css staat! */
+.login-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* De gradient achtergrond */
+    background: linear-gradient(135deg, var(--sq-86BBBD) 0%, var(--sq-76949F) 100%);
+    z-index: 0; /* Moet lager zijn dan de navbar (1000) */
+    /* ... en de rest van de flexbox instellingen ... */
+}
+/* --- DE ONTBREKENDE KNOP STYLING --- */
+
+/* We zorgen dat ELKE knop met de class 'btn-plum' paars wordt */
+.btn-plum {
+    background-color: var(--sq-533747, #533747) !important; /* Forceer Dark Plum */
+    border-color: var(--sq-533747, #533747) !important;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 10px;
+    width: 100%; /* Zorg dat hij de hele breedte vult */
+    transition: all 0.3s ease;
+}
+
+/* Hover: Als je er met de muis op staat */
+.btn-plum:hover {
+    background-color: var(--sq-5F506B, #5F506B) !important; /* Iets lichter paars */
+    border-color: var(--sq-5F506B, #5F506B) !important;
+    transform: translateY(-2px); /* Klein effectje omhoog */
+}
+
+/* Disabled: Als je nog niets hebt ingevuld */
+.btn-plum:disabled {
+    background-color: var(--sq-6A6B83, #6A6B83) !important; /* Grijs/Paars */
+    border-color: var(--sq-6A6B83, #6A6B83) !important;
+    cursor: not-allowed;
+    transform: none;
+}
