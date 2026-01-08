@@ -1,1 +1,98 @@
-/* You can add global styles to this file, and also import other style files */
+/* Base color variables */
+:root {
+    --sq-bg: #FFFFFF;
+    --sq-text: #2F3E46;
+    /* darkest for text */
+    --sq-muted: #52796F;
+    /* muted labels, secondary text */
+
+    --sq-primary: #84A98C;
+    /* primary accent (buttons, links) */
+    --sq-primary-dark: #52796F;
+
+    --sq-surface: #F7F9FA;
+    /* card background subtle */
+    --sq-border: #E5EAED;
+    /* soft borders */
+    --sq-shadow: 0 8px 24px rgba(47, 62, 70, 0.08);
+
+    /* Brand swatches as tokens */
+    --sq-533747: #533747;
+    /* deep plum (for highlights/badges) */
+    --sq-84A98C: #84A98C;
+    --sq-52796F: #52796F;
+    --sq-354F52: #354F52;
+    --sq-2F3E46: #2F3E46;
+}
+
+/* Global typography + background */
+body {
+    background: var(--sq-bg);
+    color: var(--sq-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cards */
+.card {
+    background: var(--sq-surface);
+    border: 1px solid var(--sq-border);
+    border-radius: 12px;
+    box-shadow: var(--sq-shadow);
+}
+
+/* Primary button */
+.btn-primary {
+    background-color: var(--sq-primary);
+    border-color: var(--sq-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: var(--sq-primary-dark);
+    border-color: var(--sq-primary-dark);
+}
+
+/* Outline warning (urgent) */
+.btn-outline-warning {
+    color: var(--sq-533747);
+    border-color: var(--sq-533747);
+}
+
+.btn-outline-warning.active,
+.btn-outline-warning:hover {
+    background-color: var(--sq-533747);
+    border-color: var(--sq-533747);
+    color: #fff;
+}
+
+/* Badges */
+.badge.text-bg-primary {
+    background-color: var(--sq-primary) !important;
+}
+
+.badge.text-bg-warning {
+    background-color: #f9c74f !important;
+    /* readable warm warning */
+    color: #1f1f1f;
+}
+
+/* Sidebar sticky */
+.right-sidebar,
+.profile-card {
+    position: sticky;
+    top: 80px;
+}
+
+/* Subtle form styling */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    border-color: var(--sq-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(132, 169, 140, 0.25);
+    border-color: var(--sq-primary);
+}
