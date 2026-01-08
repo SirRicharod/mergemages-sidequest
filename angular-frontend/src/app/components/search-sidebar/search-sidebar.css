@@ -8,3 +8,14 @@
     color: #fff;
     border-color: var(--sq-533747);
 }
+
+.search-btn {
+    background-color: var(--sq-86BBBD);
+    border-color: var(--sq-86BBBD);
+    color: #fff;
+}
+
+.search-btn:hover {
+    background-color: var(--sq-76949F);
+    border-color: var(--sq-76949F);
+}
