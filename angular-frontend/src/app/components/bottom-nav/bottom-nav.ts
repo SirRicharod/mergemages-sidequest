@@ -1,11 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-bottom-nav',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './bottom-nav.html',
-  styleUrl: './bottom-nav.css',
+  styleUrls: ['./bottom-nav.css']
 })
-export class BottomNav {
+export class BottomNavComponent {
+  @Output() makePost = new EventEmitter<void>();
 
+  onMakePost(): void {
+    this.makePost.emit();
+  }
 }
