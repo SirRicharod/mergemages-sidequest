@@ -3,10 +3,16 @@
         <!-- Search box on top -->
         <h6 class="card-title mb-2">Search</h6>
         <form (submit)="$event.preventDefault(); submitSearch()">
-            <div class="mb-2">
-                <input [(ngModel)]="query" name="query" class="form-control" type="text"
-                    placeholder="Search sidequests..." />
+            <!-- input + clear button -->
+            <div class="input-group mb-2">
+                <input [(ngModel)]="query" (ngModelChange)="onQueryChange($event)" name="query" class="form-control"
+                    type="text" placeholder="Search sidequests..." aria-label="Search sidequests" />
+                <button class="btn btn-outline-secondary" type="button" (click)="clearQuery()" [disabled]="!query">
+                    Clear
+                </button>
             </div>
+
+            <!-- mode select -->
             <div class="mb-3">
                 <select [(ngModel)]="mode" name="mode" class="form-select" (change)="onModeChange()">
                     <option value="keywords">Keywords</option>
@@ -15,10 +21,18 @@
                     <option value="tags">Tags</option>
                 </select>
             </div>
+
             <button class="btn btn-primary w-100" type="submit">Search</button>
         </form>
 
-        <hr class="my-3">
+        <!-- active filters summary (subtle) -->
+        <div class="text-muted small mt-2">
+            {{ searchMode === 'offers' ? 'Offers' : 'Requests' }}
+            <span *ngIf="urgentOnly">• Urgent only</span>
+            <span *ngIf="query">• "{{ query }}" ({{ mode }})</span>
+        </div>
+
+        <hr class="my-3" />
 
         <!-- Post type switch -->
         <div class="form-check form-switch mb-3">
@@ -32,7 +46,7 @@
         <!-- Urgent-only button -->
         <button class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center"
             [class.active]="urgentOnly" (click)="toggleUrgent.emit()">
-            <span class="me-2">⚠️</span> urgent only
+            <span class="me-2">⚠</span>Urgent Only
         </button>
     </div>
 </div>
