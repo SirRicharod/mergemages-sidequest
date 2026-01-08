@@ -1,7 +1,7 @@
-<!-- src/app/components/profile-card/profile-card.html -->
 <div class="card profile-card shadow-sm">
   <div class="card-body">
-    <div class="d-flex align-items-center mb-3">
+    <!-- Header row: avatar + name -->
+    <div class="d-flex align-items-center mb-2">
       <div class="avatar me-3">
         <img *ngIf="avatarUrl; else initials" [src]="avatarUrl" alt="Profile picture">
         <ng-template #initials>
@@ -11,16 +11,27 @@
 
       <div class="flex-grow-1 profile-text">
         <div class="fw-semibold">{{ username }}</div>
-        <div class="text-muted small email">{{ email }}</div>
       </div>
     </div>
 
-    <div class="mb-3 d-flex align-items-center">
-      <!-- <span class="me-2">⭐</span> -->
-      <strong>Points:</strong>
-      <span class="ms-2">{{ points }}</span>
+    <!-- Email moved below name, full-width, clean wrapping -->
+    <div class="text-muted small email mb-3">{{ email }}</div>
+
+    <!-- Points + ongoing quests -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <!-- <span class="me-2">⭐</span> -->
+        <strong>Points:</strong>
+        <span class="ms-2">{{ points }}</span>
+      </div>
     </div>
 
+    <div class="text-muted small mb-3">
+      <strong>Ongoing quests:</strong>
+      <span class="ms-1">{{ ongoingQuests }}</span>
+    </div>
+
+    <!-- Badges -->
     <div>
       <strong class="d-block mb-2">Badges</strong>
       <div class="d-flex flex-wrap gap-2">
