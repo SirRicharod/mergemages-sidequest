@@ -1,0 +1,90 @@
+/* 1. De Gradient Achtergrond */
+.login-wrapper {
+    /* Zorg dat de achtergrond het HELE scherm vult */
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Jouw "Plum Delight" Teal Gradient */
+    background: linear-gradient(135deg, var(--sq-86BBBD, #86BBBD) 0%, var(--sq-76949F, #76949F) 100%) !important;
+    
+    /* Zorg dat deze ONDER de navbar ligt (die heeft z-index 1000) */
+    z-index: 0; 
+    
+    /* Centreren van de kaart */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Scrollen toestaan als het scherm te klein is */
+    overflow-y: auto;
+    padding: 20px;
+    padding-top: 80px; /* Extra ruimte zodat hij niet onder de navbar verdwijnt */
+}
+
+/* 2. De Witte Login Kaart */
+.login-card {
+    background-color: #ffffff !important;
+    border: none !important;
+    border-radius: 16px !important;
+    /* Een mooie zachte schaduw */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+    width: 100%;
+    max-width: 480px;
+}
+
+/* 3. De Knoppen (Weg met het blauw!) */
+.btn-plum {
+    background-color: var(--sq-533747, #533747) !important; /* Dark Plum */
+    border-color: var(--sq-533747, #533747) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect voor de knop */
+.btn-plum:hover {
+    background-color: var(--sq-5F506B, #5F506B) !important; /* Iets lichter paars */
+    border-color: var(--sq-5F506B, #5F506B) !important;
+    transform: translateY(-2px); /* Klein hupje omhoog */
+    box-shadow: 0 5px 15px rgba(83, 55, 71, 0.3);
+}
+
+/* Disabled state (als formulier niet geldig is) */
+.btn-plum:disabled {
+    background-color: var(--sq-6A6B83, #6A6B83) !important; /* Grijs/Paars */
+    border-color: var(--sq-6A6B83, #6A6B83) !important;
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 4. De Input Velden */
+.custom-input {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+/* Als je in een veld klikt */
+.custom-input:focus {
+    background-color: #fff;
+    border-color: var(--sq-533747, #533747) !important; /* Paarse rand */
+    box-shadow: 0 0 0 4px rgba(83, 55, 71, 0.15) !important; /* Paarse gloed */
+    outline: none;
+}
+
+/* 5. Labels styling */
+.form-label {
+    color: var(--sq-533747, #533747);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
