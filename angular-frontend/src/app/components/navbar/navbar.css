@@ -1,0 +1,17 @@
+.navbar {
+    background: var(--sq-5F506B, #2F3E46);
+    box-shadow: var(--sq-shadow, 0 8px 24px rgba(0, 0, 0, 0.08));
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: #fff;
+}
+
+.navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar .nav-link:hover {
+    color: #f2f2f2;
+}
