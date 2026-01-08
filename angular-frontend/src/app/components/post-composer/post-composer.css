@@ -1,8 +1,10 @@
-/* Alert-like popup overlay */
+.composer {
+    border-radius: 12px;
+}
+
 .popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(47, 62, 70, 0.45);
     z-index: 1040;
 }
 
@@ -18,8 +20,6 @@
     width: min(640px, 92vw);
     background: #fff;
     border-radius: 12px;
-    border: 1px solid var(--sq-border);
-    box-shadow: 0 14px 40px rgba(47, 62, 70, 0.18);
 }
 
 .popup-header,

@@ -1,3 +1,8 @@
+.right-sidebar {
+    position: sticky;
+    top: 80px;
+}
+
 .btn.active {
     background-color: var(--sq-533747);
     color: #fff;

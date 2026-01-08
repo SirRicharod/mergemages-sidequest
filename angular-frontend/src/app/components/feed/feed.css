@@ -3,11 +3,11 @@
 }
 
 .badge.offer {
-    background-color: var(--sq-84A98C);
+    background-color: var(--sq-86BBBD);
     color: #fff;
 }
 
 .badge.request {
-    background-color: var(--sq-354F52);
+    background-color: var(--sq-76949F);
     color: #fff;
 }

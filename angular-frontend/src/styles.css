@@ -1,37 +1,39 @@
-/* Base color variables */
 :root {
-    --sq-bg: #FFFFFF;
-    --sq-text: #2F3E46;
-    /* darkest for text */
-    --sq-muted: #52796F;
-    /* muted labels, secondary text */
-
-    --sq-primary: #84A98C;
-    /* primary accent (buttons, links) */
-    --sq-primary-dark: #52796F;
-
-    --sq-surface: #F7F9FA;
-    /* card background subtle */
-    --sq-border: #E5EAED;
-    /* soft borders */
-    --sq-shadow: 0 8px 24px rgba(47, 62, 70, 0.08);
-
-    /* Brand swatches as tokens */
+    /* Core brand tokens */
     --sq-533747: #533747;
-    /* deep plum (for highlights/badges) */
-    --sq-84A98C: #84A98C;
-    --sq-52796F: #52796F;
-    --sq-354F52: #354F52;
-    --sq-2F3E46: #2F3E46;
+    /* deep plum (alerts/highlights) */
+    --sq-5F506B: #5F506B;
+    /* muted purple-grey */
+    --sq-6A6B83: #6A6B83;
+    /* cool grey (secondary text) */
+    --sq-76949F: #76949F;
+    /* soft teal-grey */
+    --sq-86BBBD: #86BBBD;
+    /* teal accent (primary) */
+
+    /* Derived UI tokens */
+    --sq-bg: #FFFFFF;
+    --sq-text: #2A2F33;
+    /* near-black text for readability */
+    --sq-muted: var(--sq-6A6B83);
+    /* secondary text */
+    --sq-primary: var(--sq-86BBBD);
+    --sq-primary-dark: var(--sq-76949F);
+    --sq-surface: #F7F9FA;
+    /* cards */
+    --sq-border: #E5EAED;
+    /* subtle borders */
+    --sq-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* Global typography + background */
+/* Global base */
 body {
     background: var(--sq-bg);
     color: var(--sq-text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 
 /* Cards */
 .card {
@@ -41,7 +43,7 @@ body {
     box-shadow: var(--sq-shadow);
 }
 
-/* Primary button */
+/* Primary action */
 .btn-primary {
     background-color: var(--sq-primary);
     border-color: var(--sq-primary);
@@ -53,7 +55,7 @@ body {
     border-color: var(--sq-primary-dark);
 }
 
-/* Outline warning (urgent) */
+/* Urgent */
 .btn-outline-warning {
     color: var(--sq-533747);
     border-color: var(--sq-533747);
@@ -73,18 +75,10 @@ body {
 
 .badge.text-bg-warning {
     background-color: #f9c74f !important;
-    /* readable warm warning */
     color: #1f1f1f;
 }
 
-/* Sidebar sticky */
-.right-sidebar,
-.profile-card {
-    position: sticky;
-    top: 80px;
-}
-
-/* Subtle form styling */
+/* Forms */
 .form-control,
 .form-select {
     border-radius: 10px;
@@ -93,6 +87,25 @@ body {
 
 .form-control:focus,
 .form-select:focus {
-    box-shadow: 0 0 0 0.2rem rgba(132, 169, 140, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(134, 187, 189, 0.25);
+    /* based on --sq-86BBBD */
     border-color: var(--sq-primary);
+}
+
+/* Sticky panels */
+.right-sidebar,
+.profile-card {
+    position: sticky;
+    top: 80px;
+}
+
+/* Composer popup overlay */
+.popup-backdrop {
+    background: rgba(95, 80, 107, 0.45);
+}
+
+/* based on --sq-5F506B */
+.popup-card {
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    border: 1px solid var(--sq-border);
 }
