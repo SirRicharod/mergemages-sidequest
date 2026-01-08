@@ -1,14 +1,16 @@
 <div class="d-flex flex-column gap-3">
   <div *ngFor="let item of visible" class="card shadow-sm">
-    <!-- Header: title left, Request/Offer right -->
+    <!-- Header: title left, Request/Offer (+ Urgent) right -->
     <div class="card-header bg-transparent border-0 pb-0">
       <div class="d-flex align-items-start justify-content-between">
         <h5 class="card-title mb-2">{{ item.title }}</h5>
-        <span class="status-pill"
-              [class.offer]="item.type==='offer'"
-              [class.request]="item.type==='request'">
-          {{ item.type === 'offer' ? 'Offer' : 'Request' }}
-        </span>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="status-pill" [class.offer]="item.type==='offer'" [class.request]="item.type==='request'">
+            {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+          </span>
+          <span *ngIf="item.urgent" class="status-urgent-pill">Urgent</span>
+        </div>
       </div>
     </div>
 
@@ -16,8 +18,8 @@
       <!-- Description -->
       <p class="card-text text-truncate-3 mb-5">{{ item.description }}</p>
 
-      <!-- Points (minimized post view) -->
-      <div class="mb-4 d-flex align-items-center">
+      <!-- Points (minimized view) -->
+      <div class="mb-3 d-flex align-items-center">
         <span class="me-2">⭐</span>
         <strong>Points offered:</strong>
         <span class="ms-2">{{ item.points }}</span>
@@ -43,6 +45,7 @@
 
   <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
 </div>
+
 
 <!-- Details popup -->
 <div class="popup-backdrop" *ngIf="detailsPost"></div>
