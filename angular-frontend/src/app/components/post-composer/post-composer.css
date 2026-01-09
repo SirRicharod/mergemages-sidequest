@@ -2,34 +2,61 @@
     border-radius: 12px;
 }
 
+/* Backdrop stays fixed */
 .popup-backdrop {
     position: fixed;
     inset: 0;
+    background: rgba(95, 80, 107, 0.45);
     z-index: 1040;
 }
 
+/* Center container */
 .popup {
     position: fixed;
     inset: 0;
     display: grid;
     place-items: center;
     z-index: 1050;
+    padding: 12px;
 }
 
+/* Card with max height and scrollable body */
 .popup-card {
     width: min(640px, 92vw);
+    max-height: 80vh;
     background: #fff;
     border-radius: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    border: 1px solid var(--sq-border);
+    display: flex;
+    flex-direction: column;
 }
 
+/* Header and footer fixed; body scrolls */
 .popup-header,
-.popup-body {
-    padding: 16px;
+.popup-footer {
+    padding: 12px 16px;
+    flex: 0 0 auto;
 }
 
+.popup-body {
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1 1 auto;
+}
+
+/* Close button */
 .btn-close {
     border: none;
     background: transparent;
     width: 1.5rem;
     height: 1.5rem;
+}
+
+/* Mobile tweak: a bit shorter */
+@media (max-width: 576px) {
+    .popup-card {
+        max-height: 75vh;
+    }
 }

@@ -1,15 +1,15 @@
 <div class="container my-4">
     <div class="row g-4">
-        <div class="col-12 col-lg-3">
+        <!-- Profile: hide on phone -->
+        <div class="col-12 col-lg-3 d-none d-lg-block">
             <app-profile-card [avatarUrl]="avatarUrl" [username]="username" [email]="email" [points]="points"
                 [badges]="badges">
             </app-profile-card>
         </div>
 
         <div class="col-12 col-lg-6">
-
-            <!-- Make Post box -->
-            <div class="card shadow-sm composer mb-3">
+            <!-- Make Post box: hide on phone (use bottom nav to trigger popup) -->
+            <div class="card shadow-sm composer mb-3 d-none d-lg-block">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
                         <h6 class="card-title mb-1">Create a post</h6>
@@ -29,7 +29,8 @@
             </app-feed>
         </div>
 
-        <div class="col-12 col-lg-3">
+        <!-- Right sidebar: hide on phone -->
+        <div class="col-12 col-lg-3 d-none d-lg-block">
             <app-right-sidebar [searchMode]="searchMode" [urgentOnly]="urgentOnly"
                 (toggleSearchMode)="toggleSearchMode()" (toggleUrgent)="toggleUrgent()"
                 (searchChange)="onSearchChange($event)">
@@ -37,3 +38,6 @@
         </div>
     </div>
 </div>
+
+<!-- Bottom nav (phone mode only) -->
+<app-bottom-nav class="d-lg-none" (makePost)="openPostPopup()"></app-bottom-nav>
