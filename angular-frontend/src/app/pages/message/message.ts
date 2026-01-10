@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
+import { Router } from '@angular/router';
+import { ComposerCoordinatorService } from '../../components/composer-coordinator.service';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
@@ -14,16 +16,20 @@ type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 })
 export class MessagesComponent {
   searchMode: 'requests' | 'offers' = 'requests';
-
   mobileSearchVisible = false;
   mobileQuery = '';
   mobileQueryMode: QueryMode = 'keywords';
+
+  constructor(private router: Router, private composerCoordinator: ComposerCoordinatorService) {}
 
   toggleSearchMode(): void {
     this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';
   }
 
   openPostPopup(): void {
-    alert('Make post not available on Messages page yet. Please use the Feed.');
+    // Navigate to Home, then request composer open
+    this.router.navigate(['/']).then(() => {
+      this.composerCoordinator.requestOpen();
+    });
   }
 }
