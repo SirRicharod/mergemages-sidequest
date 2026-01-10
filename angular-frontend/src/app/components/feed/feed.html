@@ -29,11 +29,9 @@
       <!-- Author/date right -->
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-sm btn-primary">
-            <!-- <i class="bi" [ngClass]="item.type === 'offer' ? 'bi-person-plus' : 'bi-check2-circle'"></i> -->
-            <span class="ms-1">
-              {{ item.type === 'offer' ? 'Request help' : 'Accept quest!' }}
-            </span>
+          <button class="btn btn-sm btn-accept">
+            <i class="bi bi-check2-circle"></i>
+            <span class="ms-1">Accept quest</span>
           </button>
           <button class="btn btn-sm btn-outline-secondary" (click)="openDetails(item)">
             <i class="bi bi-info-circle"></i>
