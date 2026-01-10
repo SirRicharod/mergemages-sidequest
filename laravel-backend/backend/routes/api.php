@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Controllers\ReviewController; // <--- 1. Deze heb ik toegevoegd
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,12 @@ Route::get('/users', function () {
         'users' => $users,
     ]);
 });
+
+/**
+ * GET, POST, DELETE /api/reviews
+ * Routes for Reviews
+ */
+Route::apiResource('reviews', ReviewController::class); // <--- 2. Deze heb ik toegevoegd
 
 /**
  * POST /api/register

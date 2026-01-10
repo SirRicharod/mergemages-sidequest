@@ -3,33 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Review; // <--- Belangrijk: Dit vertelt de controller waar het Model is
 
 class ReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * (Oftewel: Haal alle reviews op uit de database)
      */
     public function index()
     {
-        return Review::all();
+        //
     }
 
     /**
      * Store a newly created resource in storage.
-     * (Oftewel: Sla een nieuwe review op)
      */
     public function store(Request $request)
     {
-        // 1. Validatie: Is alles goed ingevuld?
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5', // Cijfer moet tussen 1 en 5 zijn
-            'comment' => 'required|string',              // Er moet tekst zijn
-        ]);
-
-        // 2. Opslaan in de database
-        return Review::create($request->all());
+        //
     }
 
     /**
@@ -37,7 +27,7 @@ class ReviewController extends Controller
      */
     public function show(string $id)
     {
-        return Review::findOrFail($id);
+        //
     }
 
     /**
