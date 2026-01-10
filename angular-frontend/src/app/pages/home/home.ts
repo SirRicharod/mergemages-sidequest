@@ -48,9 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private composerCoordinator: ComposerCoordinatorService) { }
 
   ngOnInit(): void {
-    this.sub = this.composerCoordinator.openRequests$.subscribe(() => {
-      this.openPostPopup();
-    });
+    this.sub = this.composerCoordinator.open$.subscribe(() => this.openPostPopup());
   }
 
   ngOnDestroy(): void {

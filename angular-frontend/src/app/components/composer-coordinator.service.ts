@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ComposerCoordinatorService {
-  // Emits each time any page requests to open the composer
-  private _openRequests = new BehaviorSubject<number>(0);
-  readonly openRequests$ = this._openRequests.asObservable();
+  private _open = new Subject<void>();
+  readonly open$ = this._open.asObservable();
 
   requestOpen(): void {
-    this._openRequests.next(Date.now());
+    this._open.next();
   }
 }
