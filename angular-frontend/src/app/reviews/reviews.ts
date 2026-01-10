@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// BELANGRIJK: Hier verwijzen we naar jouw bestand 'review.ts'
 import { ReviewService } from '../services/review'; 
 
 @Component({
@@ -19,15 +18,18 @@ export class Reviews {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private reviewService: ReviewService) {}
+  // Hier injecteren we de tools die we nodig hebben
+  constructor(
+    private reviewService: ReviewService, 
+    private cdr: ChangeDetectorRef
+  ) {}
 
   submitReview() {
+    // 1. Start het verzenden
     this.isSubmitting = true;
     this.successMessage = '';
     this.errorMessage = '';
 
-  
-   // We sturen de review nu naar jouw eigen account om te testen
     const targetUserId = 'a0ce6cd7-da41-4b1f-83ea-4e089b5114e5'; 
 
     const data = {
@@ -41,14 +43,22 @@ export class Reviews {
     this.reviewService.postReview(data).subscribe({
       next: (res) => {
         console.log('Gelukt!', res);
+        
+        // 2. Update de status
         this.successMessage = 'Review geplaatst! 🎉';
-        this.comment = ''; // Veld leegmaken
+        this.comment = ''; 
         this.isSubmitting = false;
+
+        // 3. Vertel Angular dat het scherm ververst moet worden
+        this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Foutje:', err);
         this.errorMessage = 'Er ging iets mis. Ben je wel ingelogd?';
         this.isSubmitting = false;
+
+        // Ook bij een fout het scherm updaten om de foutmelding te tonen
+        this.cdr.detectChanges();
       }
     });
   }
