@@ -40,4 +40,9 @@
 </div>
 
 <!-- Bottom nav (phone mode only) -->
-<app-bottom-nav class="d-lg-none" (makePost)="openPostPopup()"></app-bottom-nav>
+<app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="mode" [searchQuery]="searchQuery" [queryMode]="queryMode">
+</app-feed>
+
+<app-bottom-nav class="d-lg-none" [mode]="mode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
+    (openSearch)="mobileSearchVisible = true">
+</app-bottom-nav>
