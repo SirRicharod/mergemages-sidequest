@@ -1,18 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrls: ['./navbar.css']
 })
-export class Navbar {
-  constructor(public authService: AuthService) {}
+export class NavbarComponent {
+  // Pass this from your root (or wire to AuthService later)
+  @Input() isAuthenticated = false;
+  @Input() username: string | null = null;
 
+  // Stub logout hook — replace with real service call
   onLogout(): void {
-    this.authService.logout().subscribe();
+    // TODO: integrate with your auth service (e.g., call /api/logout, clear token)
+    alert('Logged out (stub). Replace with your AuthService logout.');
   }
 }
