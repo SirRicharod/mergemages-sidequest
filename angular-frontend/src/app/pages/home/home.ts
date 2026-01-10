@@ -7,7 +7,7 @@ import { PostComposerComponent } from '../../components/post-composer/post-compo
 import { FeedComponent } from '../../components/feed/feed';
 import { RightSidebarComponent } from '../../components/search-sidebar/search-sidebar';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
-import { ComposerCoordinatorService } from '../../components/composer-coordinator.service';
+import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { Subscription } from 'rxjs';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
@@ -74,9 +74,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     feed.addPost(text, false, evt.type);
   }
 
+  mode: 'requests' | 'offers' = 'requests';
+
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
-  toggleSearchMode(): void { this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests'; }
-  onSearchChange(evt: { query: string; mode: QueryMode }) { this.searchQuery = evt.query; this.queryMode = evt.mode; }
+  toggleSearchMode(): void {
+    const next = this.searchMode === 'requests' ? 'offers' : 'requests';
+    this.searchMode = next;
+    this.mode = next; // keep both in sync
+  } onSearchChange(evt: { query: string; mode: QueryMode }) { this.searchQuery = evt.query; this.queryMode = evt.mode; }
 
   submitMobileSearch(): void {
     const q = this.mobileQuery.trim();
