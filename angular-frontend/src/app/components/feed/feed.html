@@ -1,51 +1,60 @@
-<div class="d-flex flex-column gap-3">
+<div class="feed-fixed-width d-flex flex-column gap-3">
   <div *ngFor="let item of visible" class="card shadow-sm">
-    <!-- Header: title left, Request/Offer (+ Urgent) right -->
+    <!-- Header: title left, compact status right -->
     <div class="card-header bg-transparent border-0 pb-0">
       <div class="d-flex align-items-start justify-content-between">
         <h5 class="card-title mb-2">{{ item.title }}</h5>
 
         <div class="d-flex align-items-center gap-2">
-          <span class="status-pill" [class.offer]="item.type==='offer'" [class.request]="item.type==='request'">
-            {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+          <span *ngIf="item.urgent" class="status-urgent-pill">
+            <i class="bi bi-exclamation-triangle-fill"></i>
           </span>
-          <span *ngIf="item.urgent" class="status-urgent-pill">Urgent</span>
         </div>
       </div>
     </div>
 
     <div class="card-body">
-      <!-- Description -->
-      <p class="card-text text-truncate-3 mb-5">{{ item.description }}</p>
+      <!-- Description (primary focus; consistent truncation) -->
+      <p class="card-text text-truncate-3 mb-3">{{ item.description }}</p>
 
-      <!-- Points (minimized view) -->
-      <div class="mb-3 d-flex align-items-center">
-        <span class="me-2">⭐</span>
-        <strong>Points offered:</strong>
-        <span class="ms-2">{{ item.points }}</span>
+      <!-- Minimal points line -->
+      <div class="feed-meta small text-muted mb-3">
+        <i class="bi bi-star-fill me-1"></i>
+        Points: <span class="fw-semibold">{{ item.points }}</span>
+
+        <!-- Dates faded out -->
+        <!-- <span *ngIf="item.deadline" class="ms-3">
+          <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
+        </span> -->
       </div>
 
-      <!-- Actions row: buttons left, author/date right -->
+      <!-- Author/date right -->
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-sm btn-primary">
-            {{ item.type === 'offer' ? 'Request help' : 'Accept quest' }}
+          <button class="btn btn-sm btn-accept">
+            <i class="bi bi-check2-circle"></i>
+            <span class="ms-1">Accept quest</span>
           </button>
           <button class="btn btn-sm btn-outline-secondary" (click)="openDetails(item)">
-            Details
+            <i class="bi bi-info-circle"></i>
+            <!-- <span class="ms-1">Details</span> -->
           </button>
         </div>
 
-        <div class="text-muted small">
-          by {{ item.author }} • {{ item.createdAt }}
-        </div>
+        <!-- Get author of post -->
+        <!-- <div class="text-muted small d-flex align-items-center">
+          <i class="bi bi-person me-1"></i> by {{ item.author }} • {{ item.createdAt }}
+        </div> -->
+
+        <span *ngIf="item.deadline" class="ms-3">
+          <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
+        </span>
       </div>
     </div>
   </div>
 
   <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
 </div>
-
 
 <!-- Details popup -->
 <div class="popup-backdrop" *ngIf="detailsPost"></div>
@@ -59,22 +68,25 @@
     <div class="popup-body" *ngIf="detailsPost as p">
       <h5 class="mb-2">{{ p.title }}</h5>
 
-      <div class="text-muted mb-3">
+      <!-- Integrated status -->
+      <div class="text-muted mb-3 d-flex align-items-center flex-wrap gap-2">
         <span class="status-pill inline" [class.offer]="p.type==='offer'" [class.request]="p.type==='request'">
           {{ p.type === 'offer' ? 'Offer' : 'Request' }}
         </span>
-        <span *ngIf="p.urgent" class="ms-2 status-urgent-pill">Urgent</span>
-        <span *ngIf="p.deadline" class="ms-2">• Deadline: {{ p.deadline }}</span>
+        <span *ngIf="p.urgent" class="status-urgent-pill"><i class="bi bi-exclamation-triangle-fill"></i> Urgent</span>
+        <span *ngIf="p.deadline"><i class="bi bi-calendar-event me-1"></i> Deadline: {{ p.deadline }}</span>
       </div>
 
       <p class="mb-3">{{ p.description }}</p>
 
+      <!-- Points -->
       <div class="mb-2 d-flex align-items-center">
-        <span class="me-2">⭐</span>
-        <strong>Points offered:</strong>
+        <i class="bi bi-star-fill me-2"></i>
+        <strong>Points:</strong>
         <span class="ms-2">{{ p.points }}</span>
       </div>
 
+      <!-- Tags (full list here, calm style) -->
       <div class="mb-3">
         <strong class="me-2">Tags:</strong>
         <ng-container *ngIf="p.tags.length > 0; else noTags">
@@ -85,14 +97,16 @@
         </ng-template>
       </div>
 
-      <div class="text-muted small">by {{ p.author }} • {{ p.createdAt }}</div>
+      <div class="text-muted small"><i class="bi bi-person me-1"></i> by {{ p.author }} • {{ p.createdAt }}</div>
     </div>
 
     <div class="popup-footer">
       <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
       <button class="btn btn-primary">
-        {{ detailsPost.type === 'offer' ? 'Request help' : 'Accept quest' }}
-
+        <i class="bi" [ngClass]="detailsPost?.type === 'offer' ? 'bi-person-plus' : 'bi-check2-circle'"></i>
+        <span class="ms-1">
+          {{ detailsPost?.type === 'offer' ? 'Request help' : 'Accept quest' }}
+        </span>
       </button>
     </div>
   </div>
