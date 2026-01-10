@@ -21,9 +21,11 @@
       <div class="feed-meta small text-muted mb-3">
         <i class="bi bi-star-fill me-1"></i>
         Points: <span class="fw-semibold">{{ item.points }}</span>
-        <span *ngIf="item.deadline" class="ms-3">
+
+        <!-- Dates faded out -->
+        <!-- <span *ngIf="item.deadline" class="ms-3">
           <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
-        </span>
+        </span> -->
       </div>
 
       <!-- Author/date right -->
@@ -39,9 +41,14 @@
           </button>
         </div>
 
-        <div class="text-muted small d-flex align-items-center">
+        <!-- Get author of post -->
+        <!-- <div class="text-muted small d-flex align-items-center">
           <i class="bi bi-person me-1"></i> by {{ item.author }} • {{ item.createdAt }}
-        </div>
+        </div> -->
+
+        <span *ngIf="item.deadline" class="ms-3">
+          <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
+        </span>
       </div>
     </div>
   </div>
