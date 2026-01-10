@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { Router } from '@angular/router';
-import { ComposerCoordinatorService } from '../../components/composer-coordinator.service';
+import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
