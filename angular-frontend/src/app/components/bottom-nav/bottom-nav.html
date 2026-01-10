@@ -1,28 +1,30 @@
 <nav class="sq-bottom-nav d-lg-none">
     <div class="sq-bottom-nav-inner">
-        <a class="nav-btn" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-            aria-label="Feed">
-            <span class="icon">🏠</span>
-            <span class="label">Feed</span>
-        </a>
+        <!-- Feed: toggles mode when already on feed; shows swap icon on feed, home elsewhere -->
+        <button class="nav-btn" type="button" (click)="onFeedPress()" aria-label="Feed">
+            <i class="bi" [ngClass]="isOnFeed ? 'bi-arrow-left-right' : 'bi-house-door'"></i>
+            <span class="label">
+                {{ isOnFeed ? (mode === 'requests' ? 'Requests' : 'Offers') : 'Feed' }}
+            </span>
+        </button>
 
         <a class="nav-btn" routerLink="/messages" routerLinkActive="active" aria-label="Messages">
-            <span class="icon">💬</span>
+            <i class="bi bi-chat-dots"></i>
             <span class="label">Messages</span>
         </a>
 
-        <button class="nav-btn make-post" type="button" (click)="onMakePost()" aria-label="Make post">
-            <span class="icon">＋</span>
+        <button class="nav-btn make-post" type="button" (click)="makePost.emit()" aria-label="Make post">
+            <i class="bi bi-plus-circle-fill"></i>
             <span class="label">Post</span>
         </button>
 
         <a class="nav-btn" routerLink="/quests" routerLinkActive="active" aria-label="Quests">
-            <span class="icon">🧭</span>
+            <i class="bi bi-flag"></i>
             <span class="label">Quests</span>
         </a>
 
         <a class="nav-btn" routerLink="/profile" routerLinkActive="active" aria-label="Profile">
-            <span class="icon">👤</span>
+            <i class="bi bi-person-circle"></i>
             <span class="label">Profile</span>
         </a>
     </div>

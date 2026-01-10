@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+
+type Mode = 'requests' | 'offers';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -10,9 +12,23 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./bottom-nav.css']
 })
 export class BottomNavComponent {
+  @Input() mode: Mode = 'requests';
+  @Output() toggleMode = new EventEmitter<void>();
   @Output() makePost = new EventEmitter<void>();
+  @Output() openSearch = new EventEmitter<void>();
 
-  onMakePost(): void {
-    this.makePost.emit();
+  constructor(private router: Router) { }
+
+  get isOnFeed(): boolean {
+    // Adjust if your feed is not '/'
+    return this.router.url === '/' || this.router.url.startsWith('/?');
+  }
+
+  onFeedPress(): void {
+    if (this.isOnFeed) {
+      this.toggleMode.emit();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

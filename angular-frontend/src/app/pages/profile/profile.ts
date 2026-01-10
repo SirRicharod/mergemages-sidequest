@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
+import { Router } from '@angular/router';
+import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
@@ -13,22 +15,21 @@ type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
   styleUrls: ['./profile.css']
 })
 export class ProfileComponent {
-  // Feed mode toggle (kept consistent across pages)
   searchMode: 'requests' | 'offers' = 'requests';
-
-  // Mobile search overlay state
   mobileSearchVisible = false;
   mobileQuery = '';
   mobileQueryMode: QueryMode = 'keywords';
 
+  constructor(private router: Router, private composerCoordinator: ComposerCoordinatorService) {}
+
   toggleSearchMode(): void {
     this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';
   }
-  submitMobileSearch(): void {
-    // Optionally route to feed with query via a shared service or router state
-    this.mobileSearchVisible = false;
-  }
 
-  // Optional hook if you want to open post from profile
-  openPostPopup?(): void;
+  openPostPopup(): void {
+    // Navigate to Home, then request composer open
+    this.router.navigate(['/']).then(() => {
+      this.composerCoordinator.requestOpen();
+    });
+  }
 }
