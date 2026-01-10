@@ -4,12 +4,10 @@
     left: 0;
     right: 0;
     z-index: 1030;
-    /* above content, below modals */
     background: #fff;
     border-top: 1px solid var(--sq-border);
     box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
     padding-bottom: env(safe-area-inset-bottom);
-    /* iOS notch */
 }
 
 .sq-bottom-nav-inner {
@@ -34,8 +32,9 @@
     font-size: 12px;
 }
 
-.nav-btn .icon {
-    font-size: 18px;
+.nav-btn i {
+    font-size: 20px;
+    /* consistent icon size */
     line-height: 1;
 }
 
@@ -52,15 +51,8 @@
     padding: 6px 0;
 }
 
-.make-post .icon {
-    font-size: 20px;
+.make-post i {
+    font-size: 22px;
 }
 
-/* Prevent content from being hidden under the bar */
-@media (max-width: 991.98px) {
-    body {
-        padding-bottom: 64px;
-    }
-
-    /* reserve space roughly equal to nav height */
-}
+/* slight emphasis on Post */
