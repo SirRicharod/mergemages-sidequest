@@ -1,4 +1,67 @@
-<!-- Phone mode navbar -->
-<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
-    (openSearch)="mobileSearchVisible = true">
+<div class="profile-container">
+
+  <div class="profile-header">
+    <div class="banner"></div>
+
+    <div class="profile-content">
+      
+      <div class="avatar-container-rel">
+        <div class="avatar-wrapper" (click)="toggleAvatarMenu()">
+          <img [src]="user.avatarUrl" alt="Profile Avatar" class="avatar">
+          
+          <div class="avatar-overlay">
+            <span>📷</span>
+          </div>
+        </div>
+
+        @if (showAvatarMenu) {
+          <div class="avatar-menu">
+            <button class="menu-item" (click)="triggerUpload()">
+              <i class="bi bi-upload"></i> Foto uploaden
+            </button>
+
+            @if (user.avatarUrl !== defaultAvatar) {
+              <button class="menu-item delete" (click)="removePhoto()">
+                <i class="bi bi-trash"></i> Verwijderen
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <input type="file" id="fileInput" (change)="onProfileImageChange($event)" style="display: none" accept="image/*">
+
+      <h1 class="username">{{ user.firstName }} {{ user.lastName }}</h1>
+      <p class="email">{{ user.email }}</p>
+
+      @if (user.bio) {
+        <p class="bio-text">{{ user.bio }}</p>
+      }
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value">⭐ {{ user.points }}</span>
+          <span class="stat-label">Punten</span>
+        </div>
+      </div>
+
+      @if (user.badges.length > 0) {
+        <div class="badges-list">
+          @for (badge of user.badges; track badge) {
+            <span class="custom-badge">{{ badge }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="reviews-section">
+    <h3 class="section-title">Reviews & Feedback</h3>
+    <app-reviews></app-reviews>
+  </div>
+
+</div>
+
+<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()"
+  (openSearch)="mobileSearchVisible = true">
 </app-bottom-nav>
