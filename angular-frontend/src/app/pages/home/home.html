@@ -23,8 +23,8 @@
             <app-post-composer #composerRef (submitPost)="onSubmitPost(feedRef, $event)">
             </app-post-composer>
 
-            <!-- Feed -->
-            <app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery"
+            <!-- Feed (desktop/tablet) -->
+            <app-feed class="d-none d-lg-block" #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery"
                 [queryMode]="queryMode">
             </app-feed>
         </div>
@@ -40,7 +40,8 @@
 </div>
 
 <!-- Bottom nav (phone mode only) -->
-<app-feed #feedRef [urgentOnly]="urgentOnly" [searchMode]="mode" [searchQuery]="searchQuery" [queryMode]="queryMode">
+<!-- Mobile feed (phone view) -->
+<app-feed class="d-lg-none" [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery" [queryMode]="queryMode">
 </app-feed>
 
 <app-bottom-nav class="d-lg-none" [mode]="mode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
