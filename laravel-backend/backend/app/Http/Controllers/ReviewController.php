@@ -8,25 +8,24 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    // Functie om een review op te slaan
+    // Opslaan van een review
     public function store(Request $request)
     {
-        // 1. Validatie: Is de data goed?
+        // 1. Validatie
         $validated = $request->validate([
-            'target_user_id' => 'required|exists:users,user_id', // Bestaat de ontvanger?
+            'target_user_id' => 'required|exists:users,user_id', // UUID check
             'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
+            'comment' => 'required|string|max:1000',
         ]);
 
         // 2. Review aanmaken
         $review = Review::create([
-            'reviewer_id' => Auth::id(), // Pakt automatisch de ID van de ingelogde gebruiker
+            'reviewer_id' => Auth::id(), // Pakt automatisch jouw UUID
             'target_user_id' => $validated['target_user_id'],
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
         ]);
 
-        // 3. Succes bericht terugsturen
         return response()->json([
             'message' => 'Review succesvol geplaatst!',
             'review' => $review

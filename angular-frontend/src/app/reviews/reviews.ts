@@ -26,9 +26,9 @@ export class Reviews {
     this.successMessage = '';
     this.errorMessage = '';
 
-    // --- HIER MOET JE STRAKS DE UUID PLAKKEN ---
-    // Dit is nodig omdat je een review altijd AAN iemand geeft.
-    const targetUserId = 'PLAK-HIER-STRAKS-DE-UUID'; 
+  
+   // We sturen de review nu naar jouw eigen account om te testen
+    const targetUserId = 'a0ce6cd7-da41-4b1f-83ea-4e089b5114e5'; 
 
     const data = {
       target_user_id: targetUserId,
