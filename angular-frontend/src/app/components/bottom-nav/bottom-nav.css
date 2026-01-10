@@ -34,7 +34,6 @@
 
 .nav-btn i {
     font-size: 20px;
-    /* consistent icon size */
     line-height: 1;
 }
 
@@ -54,5 +53,3 @@
 .make-post i {
     font-size: 22px;
 }
-
-/* slight emphasis on Post */
