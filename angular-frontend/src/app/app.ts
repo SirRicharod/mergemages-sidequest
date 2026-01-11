@@ -13,9 +13,5 @@ import { MobileSearchService } from './services/mobile-search.service';
 })
 export class AppComponent {
   private mobileSearchService = inject(MobileSearchService);
-
-  // Provide a callback function for Navbar Input
-  openMobileSearch = () => {
-    this.mobileSearchService.requestOpen();
-  };
+  openMobileSearch = () => this.mobileSearchService.requestOpen();
 }

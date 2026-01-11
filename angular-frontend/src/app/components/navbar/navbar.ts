@@ -13,9 +13,11 @@ export class NavbarComponent {
   @Input() isAuthenticated = false;
   @Input() username: string | null = null;
 
+  // Provide from parent (AppComponent or page) to open mobile search popup
   @Input() openMobileSearch: (() => void) | null = null;
 
   onLogout(): void {
+    // Replace with real logout (call /api/logout, clear token, navigate)
     alert('Logged out (stub). Replace with your AuthService logout.');
   }
 }
