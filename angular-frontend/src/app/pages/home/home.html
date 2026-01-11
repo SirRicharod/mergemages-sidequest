@@ -1,3 +1,4 @@
+<!-- src/app/pages/home/home.html -->
 <div class="container my-4">
     <div class="row g-4">
         <!-- Profile: hide on phone -->
@@ -24,8 +25,8 @@
             </app-post-composer>
 
             <!-- Feed (desktop/tablet) -->
-            <app-feed class="d-none d-lg-block" #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery"
-                [queryMode]="queryMode">
+            <app-feed class="d-none d-lg-block" #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode"
+                [searchQuery]="searchQuery" [queryMode]="queryMode">
             </app-feed>
         </div>
 
@@ -39,11 +40,17 @@
     </div>
 </div>
 
-<!-- Bottom nav (phone mode only) -->
-<!-- Mobile feed (phone view) -->
-<app-feed class="d-lg-none" [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery" [queryMode]="queryMode">
-</app-feed>
+<!-- Mobile feed (phone view) with fixed width -->
+<div class="feed-fixed-width d-lg-none">
+    <app-feed [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery" [queryMode]="queryMode">
+    </app-feed>
+</div>
 
-<app-bottom-nav class="d-lg-none" [mode]="mode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
-    (openSearch)="mobileSearchVisible = true">
+<!-- Mobile Search Popup -->
+<app-mobile-search #mobileSearchRef (searchChange)="onSearchChange($event)">
+</app-mobile-search>
+
+<!-- Bottom nav (phone mode only) -->
+<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
+    (openSearch)="mobileSearchRef.open()">
 </app-bottom-nav>
