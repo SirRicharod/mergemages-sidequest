@@ -1,0 +1,20 @@
+<div class="review-form-container">
+    <h4>Schrijf een Review</h4>
+
+    @if (successMessage) { <div class="alert alert-success">{{ successMessage }}</div> }
+    @if (errorMessage) { <div class="alert alert-danger">{{ errorMessage }}</div> }
+
+    <div class="mb-3">
+        <label>Aantal sterren:</label>
+        <input type="number" [(ngModel)]="rating" min="1" max="5" class="form-control" style="width: 80px;">
+    </div>
+
+    <div class="mb-3">
+        <label>Je bericht:</label>
+        <textarea [(ngModel)]="comment" class="form-control" rows="3" placeholder="Typ hier..."></textarea>
+    </div>
+
+    <button (click)="submitReview()" [disabled]="isSubmitting" class="btn btn-primary">
+        {{ isSubmitting ? 'Bezig...' : 'Verstuur Review' }}
+    </button>
+</div>

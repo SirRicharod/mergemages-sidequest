@@ -7,53 +7,35 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids; // <--- 1. Deze importeren
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids; // <--- 2. HasUuids aanzetten
 
-    /**
-     * The primary key for the model.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'id';
-
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    // --- 3. HIER FIXEN WE DE FOUTMELDING ---
+    protected $primaryKey = 'user_id'; // De naam van je ID kolom
+    public $incrementing = false;      // Het is geen optellend nummer
+    protected $keyType = 'string';     // Het is tekst (UUID)
+    // ---------------------------------------
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
-        'id',
         'name',
         'email',
-        'password_hash',
+        'password_hash', // Let op: In jouw database heet dit password_hash, niet password
         'bio',
         'avatar_url',
-        'birth_date',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password_hash',
@@ -61,37 +43,18 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'birth_date' => 'date',
-        ];
-    }
-
-    /**
-     * Get the password for authentication.
-     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        // 'password' => 'hashed', // Deze mag weg omdat we password_hash gebruiken
+    ];
+    
+    // Omdat Laravel standaard 'password' verwacht voor inloggen, moeten we dit ook even zeggen:
     public function getAuthPassword()
     {
         return $this->password_hash;
-    }
-
-    /**
-     * Boot function to generate UUID on creation
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
-        });
     }
 }
