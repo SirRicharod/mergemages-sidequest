@@ -1,0 +1,46 @@
+.popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(95, 80, 107, 0.45);
+    z-index: 1040;
+}
+
+.popup {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 1050;
+    padding: 12px;
+}
+
+.popup-card {
+    width: min(640px, 92vw);
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+    border: 1px solid var(--sq-border);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-body {
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.btn-close {
+    border: none;
+    background: transparent;
+    width: 1.5rem;
+    height: 1.5rem;
+}
