@@ -15,3 +15,14 @@
 .navbar .nav-link:hover {
     color: #f2f2f2;
 }
+
+@media (max-width: 991.98px) {
+    .navbar {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+
+    .btn.btn-outline-light.btn-sm {
+        padding: 0.25rem 0.5rem;
+    }
+}

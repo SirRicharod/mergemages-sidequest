@@ -10,13 +10,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent {
-  // Pass this from your root (or wire to AuthService later)
   @Input() isAuthenticated = false;
   @Input() username: string | null = null;
 
-  // Stub logout hook — replace with real service call
+  @Input() openMobileSearch: (() => void) | null = null;
+
   onLogout(): void {
-    // TODO: integrate with your auth service (e.g., call /api/logout, clear token)
     alert('Logged out (stub). Replace with your AuthService logout.');
   }
 }

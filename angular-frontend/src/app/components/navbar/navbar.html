@@ -1,50 +1,46 @@
+<!-- src/app/components/navbar/navbar.html -->
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
         <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" routerLink="/">
-            <!-- <span class="me-2">🧭</span> -->
+            <i class="bi bi-compass me-2 d-none d-lg-inline"></i>
             SideQuest
         </a>
 
-        <!-- Toggler for mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sqNavbar"
+        <!-- Mobile search icon (phone only) -->
+        <button class="btn btn-outline-light btn-sm ms-auto d-lg-none" type="button" aria-label="Search"
+            (click)="openMobileSearch?.()">
+            <i class="bi bi-search"></i>
+        </button>
+
+        <!-- Toggler for mobile (kept) -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sqNavbar"
             aria-controls="sqNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Nav links -->
+        <!-- Desktop nav -->
         <div class="collapse navbar-collapse" id="sqNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- Feed -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/" routerLinkActive="active"
                         [routerLinkActiveOptions]="{ exact: true }">Feed</a>
                 </li>
-
-                <!-- Messaging -->
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messaging</a>
                 </li>
-
-                <!-- Ongoing Quests -->
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/quests" routerLinkActive="active">Ongoing Quests</a>
                 </li>
-
-                <!-- Profile -->
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/profile" routerLinkActive="active">Profile</a>
                 </li>
             </ul>
 
-            <!-- Right side: auth-aware controls -->
-            <div class="d-flex align-items-center gap-2">
-                <!-- Show Log out only when authenticated -->
-                <button *ngIf="isAuthenticated" class="btn btn-outline-light btn-sm" (click)="onLogout()">
-                    Log out
-                </button>
-
-                <!-- Optional: show username/avatar stub -->
+            <!-- Right side (desktop): auth-aware controls -->
+            <div class="d-none d-lg-flex align-items-center gap-2 ms-auto">
+                <button *ngIf="isAuthenticated" class="btn btn-outline-light btn-sm" (click)="onLogout()">Log
+                    out</button>
                 <span *ngIf="isAuthenticated" class="navbar-text small text-white-50">
                     {{ username || 'You' }}
                 </span>
