@@ -1,0 +1,40 @@
+<div class="popup-backdrop" *ngIf="visible"></div>
+
+<div class="popup" *ngIf="visible" role="dialog" aria-modal="true">
+    <div class="popup-card">
+        <div class="popup-header">
+            <strong>Search</strong>
+            <button class="btn-close" aria-label="Close" (click)="close()"></button>
+        </div>
+
+        <div class="popup-body">
+            <form (submit)="$event.preventDefault(); submit()">
+                <div class="mb-3">
+                    <label for="mobileQuery" class="form-label">Query</label>
+                    <div class="input-group">
+                        <input id="mobileQuery" [(ngModel)]="query" name="mobileQuery" class="form-control" type="text"
+                            placeholder="Search sidequests..." />
+                        <button class="btn btn-outline-secondary" type="button" (click)="clear()" [disabled]="!query">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="mobileMode" class="form-label">Mode</label>
+                    <select id="mobileMode" [(ngModel)]="mode" name="mobileMode" class="form-select">
+                        <option value="keywords">Keywords</option>
+                        <option value="profile">Profile</option>
+                        <option value="skills">Skills</option>
+                        <option value="tags">Tags</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-secondary me-2" type="button" (click)="close()">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
