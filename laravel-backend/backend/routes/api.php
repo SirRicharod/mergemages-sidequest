@@ -90,6 +90,18 @@ Route::post('/login', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
 
     /**
+     * GET /api/reviews
+     * Haal alle reviews op (voor de Feed)
+     */
+    Route::get('/reviews', [ReviewController::class, 'index']); 
+
+    /**
+     * GET /api/user/reviews
+     * Haal reviews voor de ingelogde gebruiker op (voor Profiel)
+     */
+    Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
+
+    /**
      * POST /api/reviews
      * Plaats een nieuwe review
      */
@@ -116,8 +128,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', function (Request $request) {
         $user = $request->user();
         
-        // <--- DEZE UPDATE ZORGT DAT DE FOTO BLIJFT NA REFRESHEN! ✅
-        // Als er een avatar is opgeslagen, maken we er een volledige URL van
+        // Maak volledige URL van avatar
         $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
         
         return response()->json(['user' => $user]);
