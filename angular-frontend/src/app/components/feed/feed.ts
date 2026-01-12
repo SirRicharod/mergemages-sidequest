@@ -52,7 +52,6 @@ export class FeedComponent {
           case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
           case 'profile': return x.author.toLowerCase().includes(q);
           case 'skills': return x.tags.some(t => t.toLowerCase().includes(q));
-          case 'tags': return x.tags.some(t => t.toLowerCase().includes(q));
           default: return true;
         }
       });
