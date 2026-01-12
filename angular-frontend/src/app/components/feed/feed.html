@@ -86,17 +86,6 @@
         <span class="ms-2">{{ p.points }}</span>
       </div>
 
-      <!-- Tags (full list here, calm style) -->
-      <div class="mb-3">
-        <strong class="me-2">Tags:</strong>
-        <ng-container *ngIf="p.tags.length > 0; else noTags">
-          <span *ngFor="let t of p.tags" class="chip chip-muted me-1">{{ t }}</span>
-        </ng-container>
-        <ng-template #noTags>
-          <span class="text-muted small">None</span>
-        </ng-template>
-      </div>
-
       <div class="text-muted small"><i class="bi bi-person me-1"></i> by {{ p.author }} • {{ p.createdAt }}</div>
     </div>
   </div>
