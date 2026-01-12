@@ -99,15 +99,5 @@
 
       <div class="text-muted small"><i class="bi bi-person me-1"></i> by {{ p.author }} • {{ p.createdAt }}</div>
     </div>
-
-    <div class="popup-footer">
-      <button class="btn btn-secondary" (click)="closeDetails()">Close</button>
-      <button class="btn btn-primary">
-        <i class="bi" [ngClass]="detailsPost?.type === 'offer' ? 'bi-person-plus' : 'bi-check2-circle'"></i>
-        <span class="ms-1">
-          {{ detailsPost?.type === 'offer' ? 'Request help' : 'Accept quest' }}
-        </span>
-      </button>
-    </div>
   </div>
 </div>
