@@ -1,7 +1,8 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, Input } from '@angular/core'; // <--- Input en OnInit toegevoegd
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReviewService } from '../services/review'; 
+import { HttpClient } from '@angular/common/http'; // <--- HttpClient toegevoegd voor het ophalen
 
 @Component({
   selector: 'app-reviews',
@@ -10,7 +11,7 @@ import { ReviewService } from '../services/review';
   templateUrl: './reviews.html',
   styleUrls: ['./reviews.css']
 })
-export class Reviews {
+export class Reviews implements OnInit { // <--- implements OnInit toegevoegd
   rating: number = 5;
   comment: string = '';
   
@@ -18,14 +19,39 @@ export class Reviews {
   successMessage = '';
   errorMessage = '';
 
-  // Hier injecteren we de tools die we nodig hebben
+  // 1. De lijst waarin we de reviews opslaan
+  reviews: any[] = [];
+
+  // 2. De schakelaar: false = alles zien, true = alleen mijn reviews
+  @Input() personalMode: boolean = false; 
+
   constructor(
     private reviewService: ReviewService, 
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient // <--- HttpClient injecteren
   ) {}
 
+  // 3. Zodra het component laadt, halen we de reviews op
+  ngOnInit() {
+    this.fetchReviews();
+  }
+
+  fetchReviews() {
+    // We kiezen de juiste URL op basis van de schakelaar
+    const url = this.personalMode 
+      ? 'http://127.0.0.1:8000/api/user/reviews' 
+      : 'http://127.0.0.1:8000/api/reviews';
+
+    this.http.get<any[]>(url).subscribe({
+      next: (data) => {
+        this.reviews = data; // Stop de data in onze lijst
+        this.cdr.detectChanges(); // Update het scherm
+      },
+      error: (err) => console.error('Kon reviews niet laden:', err)
+    });
+  }
+
   submitReview() {
-    // 1. Start het verzenden
     this.isSubmitting = true;
     this.successMessage = '';
     this.errorMessage = '';
@@ -44,20 +70,19 @@ export class Reviews {
       next: (res) => {
         console.log('Gelukt!', res);
         
-        // 2. Update de status
         this.successMessage = 'Review geplaatst! 🎉';
         this.comment = ''; 
         this.isSubmitting = false;
 
-        // 3. Vertel Angular dat het scherm ververst moet worden
+        // NIEUW: Ververs de lijst direct zodat je je eigen review ziet
+        this.fetchReviews(); 
+
         this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Foutje:', err);
         this.errorMessage = 'Er ging iets mis. Ben je wel ingelogd?';
         this.isSubmitting = false;
-
-        // Ook bij een fout het scherm updaten om de foutmelding te tonen
         this.cdr.detectChanges();
       }
     });

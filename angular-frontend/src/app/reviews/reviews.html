@@ -18,3 +18,30 @@
         {{ isSubmitting ? 'Bezig...' : 'Verstuur Review' }}
     </button>
 </div>
+
+<div class="reviews-list mt-4">
+    <hr> <h3>Reviews & Feedback</h3>
+
+    @for (review of reviews; track review) {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ '⭐'.repeat(review.rating) }} 
+                    <small class="text-muted" style="font-size: 0.8em;">
+                        ({{ review.rating }}/5)
+                    </small>
+                </h5>
+                
+                <p class="card-text">{{ review.comment }}</p>
+                
+                <p class="card-text">
+                    <small class="text-muted">Geplaatst op {{ review.created_at | date:'dd-MM-yyyy HH:mm' }}</small>
+                </p>
+            </div>
+        </div>
+    } @empty {
+        <div class="alert alert-info">
+            Nog geen reviews gevonden. Wees de eerste!
+        </div>
+    }
+</div>
