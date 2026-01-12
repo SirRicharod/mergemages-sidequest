@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Http\Controllers\ReviewController; // <--- Import is aanwezig ✅
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -90,9 +91,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /**
      * POST /api/reviews
-     * Plaats een nieuwe review (moet ingelogd zijn!)
+     * Plaats een nieuwe review
      */
-    Route::post('/reviews', [ReviewController::class, 'store']); // <--- STAP 3: HIER TOEGEVOEGD ✅
+    Route::post('/reviews', [ReviewController::class, 'store']); 
+
+    /**
+     * POST /api/user/avatar
+     * Upload een profielfoto
+     */
+    Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
 
     /**
      * POST /api/logout
@@ -104,8 +111,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /**
      * GET /api/profile
+     * Haalt de ingelogde gebruiker op EN maakt de avatar link compleet
      */
     Route::get('/profile', function (Request $request) {
-        return response()->json(['user' => $request->user()]);
+        $user = $request->user();
+        
+        // <--- DEZE UPDATE ZORGT DAT DE FOTO BLIJFT NA REFRESHEN! ✅
+        // Als er een avatar is opgeslagen, maken we er een volledige URL van
+        $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
+        
+        return response()->json(['user' => $user]);
     });
 });
