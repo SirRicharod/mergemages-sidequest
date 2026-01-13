@@ -20,6 +20,17 @@ export class PostComposerComponent {
   popupVisible = false;
   validationError = '';
 
+  // Check if user has insufficient XP
+  get hasInsufficientXp(): boolean {
+    const currentXp = this.auth.currentUser()?.xp_balance || 0;
+    return this.xpReward > currentXp;
+  }
+
+  get xpShortfall(): number {
+    const currentXp = this.auth.currentUser()?.xp_balance || 0;
+    return Math.max(0, this.xpReward - currentXp);
+  }
+
   // Form model
   title = '';
   description = '';
@@ -69,6 +80,10 @@ export class PostComposerComponent {
     }
     if (this.xpReward < 100 || this.xpReward > 500) {
       this.validationError = 'XP Reward must be between 100 and 500';
+      return;
+    }
+    if (this.hasInsufficientXp) {
+      this.validationError = `Insufficient XP. You need ${this.xpShortfall} more XP to create this post.`;
       return;
     }
 

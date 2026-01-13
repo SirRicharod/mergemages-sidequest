@@ -137,4 +137,17 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
   }
+
+  /**
+   * Update user's XP balance
+   */
+  updateXpBalance(newBalance: number): void {
+    const user = this.currentUser();
+    if (user) {
+      this.currentUser.set({
+        ...user,
+        xp_balance: newBalance
+      });
+    }
+  }
 }

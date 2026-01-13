@@ -3,7 +3,11 @@
     <div class="row g-4">
         <!-- Profile: hide on phone -->
         <div class="col-12 col-lg-3 d-none d-lg-block">
-            <app-profile-card [avatarUrl]="avatarUrl" [username]="username" [email]="email" [points]="points"
+            <app-profile-card 
+                [avatarUrl]="null" 
+                [username]="auth.currentUser()?.name || 'Guest'" 
+                [email]="auth.currentUser()?.email || ''"
+                [points]="auth.currentUser()?.xp_balance || 0"
                 [badges]="badges">
             </app-profile-card>
         </div>

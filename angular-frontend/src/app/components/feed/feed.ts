@@ -2,6 +2,7 @@
 import { Component, Input, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostsService, Post, PostStatus } from '../../services/posts.service';
+import { AuthService } from '../../services/auth.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
@@ -16,6 +17,8 @@ export interface Sidequest {
   deadline?: string | null;
   points: number;
   author: string;
+  authorAvatar?: string | null;
+  authorUserId: string;
   createdAt: string;
   status: PostStatus;
 }
@@ -29,6 +32,7 @@ export interface Sidequest {
 })
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
+  auth = inject(AuthService);
   
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
   @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
@@ -85,6 +89,8 @@ export class FeedComponent implements OnInit {
             deadline: null,
             points: post.bounty_points,
             author: post.author?.name || 'Unknown',
+            authorAvatar: post.author?.avatar_url || null,
+            authorUserId: post.author_user_id,
             createdAt: new Date(post.created_at).toISOString().slice(0, 10),
             status: post.status
           }));
@@ -105,7 +111,9 @@ export class FeedComponent implements OnInit {
       type,
       bounty_points: points
     }).subscribe({
-      next: () => {
+      next: (response) => {
+        // Update the user's XP balance immediately
+        this.auth.updateXpBalance(response.xp_balance);
         this.loadPosts(); // Reload to show the new post
       },
       error: (err) => {

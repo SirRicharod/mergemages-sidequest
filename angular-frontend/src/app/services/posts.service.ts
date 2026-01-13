@@ -31,6 +31,7 @@ export interface CreatePostRequest {
 export interface CreatePostResponse {
   message: string;
   post: Post;
+  xp_balance: number;
 }
 
 @Injectable({

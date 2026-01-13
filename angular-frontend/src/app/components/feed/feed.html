@@ -47,13 +47,26 @@
 
         <!-- Author, date, and actions on same line -->
         <div class="d-flex align-items-center justify-content-between">
-          <div class="text-muted small">
-            <i class="bi bi-person me-1"></i> by <strong>{{ item.author }}</strong> • {{ item.createdAt }}
+          <div class="d-flex align-items-center gap-2 text-muted small">
+            @if (item.authorAvatar) {
+              <img [src]="item.authorAvatar" class="rounded-circle" width="24" height="24" [alt]="item.author">
+            } @else {
+              <i class="bi bi-person-circle" style="font-size: 24px;"></i>
+            }
+            <span>
+              by <strong>{{ item.author }}</strong>
+              @if (auth.currentUser()?.id?.toString() === item.authorUserId) {
+                <span class="badge bg-info text-dark ms-1">You</span>
+              }
+              • {{ item.createdAt }}
+            </span>
           </div>
-          <button class="btn btn-sm btn-accept">
-            <i class="bi bi-check2-circle"></i>
-            <span class="ms-1">Accept quest</span>
-          </button>
+          @if (auth.currentUser()?.id?.toString() !== item.authorUserId) {
+            <button class="btn btn-sm btn-accept">
+              <i class="bi bi-check2-circle"></i>
+              <span class="ms-1">Accept quest</span>
+            </button>
+          }
         </div>
       </div>
     </div>
