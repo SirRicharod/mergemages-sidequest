@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    // 1. NIEUW: Haal alle reviews op (Lost de 'undefined method index' fout op)
+    // 1. Alle reviews ophalen (voor de algemene Feed)
     public function index()
     {
         $reviews = Review::orderBy('created_at', 'desc')->get();
         return response()->json($reviews);
     }
 
-    // 2. HERSTELD: Reviews voor de ingelogde gebruiker (Voor het profiel)
+    // 2. Reviews voor de ingelogde gebruiker (Mijn Profiel)
     public function userReviews(Request $request)
     {
         $reviews = Review::where('target_user_id', Auth::id())
@@ -25,20 +25,31 @@ class ReviewController extends Controller
         return response()->json($reviews);
     }
 
-    // 3. BESTAAND: Opslaan van een review
+    // 3. 👇 NIEUW: Reviews ophalen van een SPECIFIEKE gebruiker (Ander Profiel)
+    public function show($id)
+    {
+        // Zoek reviews waar 'target_user_id' gelijk is aan het ID uit de URL
+        $reviews = Review::where('target_user_id', $id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return response()->json($reviews);
+    }
+
+    // 4. Een nieuwe review opslaan
     public function store(Request $request)
     {
         // Validatie
         $validated = $request->validate([
-            'target_user_id' => 'required|exists:users,user_id', // UUID check
+            'target_user_id' => 'required|exists:users,user_id', // Check of gebruiker bestaat
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string|max:1000',
         ]);
 
         // Review aanmaken
         $review = Review::create([
-            'reviewer_id' => Auth::id(), // Pakt automatisch jouw UUID
-            'target_user_id' => $validated['target_user_id'],
+            'reviewer_id' => Auth::id(), // Jij bent de schrijver
+            'target_user_id' => $validated['target_user_id'], // De ander is de ontvanger
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
         ]);

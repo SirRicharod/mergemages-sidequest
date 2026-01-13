@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Ontdek andere avonturiers 🌍</h2>
+  
+  <div class="row">
+    @for (user of users; track user.id) {
+      <div class="col-md-4 mb-4">
+        
+        <div class="card h-100 shadow-sm user-card" 
+             [routerLink]="['/profile', user.id]" 
+             style="cursor: pointer; transition: transform 0.2s;">
+          
+          <div class="card-body text-center">
+            <img [src]="user.avatar_url || 'assets/default-avatar.png'" 
+                 class="rounded-circle mb-3" 
+                 style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #eee;">
+            
+            <h5 class="card-title font-weight-bold">{{ user.name }}</h5>
+            <p class="text-muted small">{{ user.email }}</p>
+            
+            <button class="btn btn-primary btn-sm mt-2">
+              Bekijk Profiel
+            </button>
+          </div>
+
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12">
+        <div class="alert alert-info">Er zijn nog geen andere gebruikers gevonden.</div>
+      </div>
+    }
+  </div>
+</div>

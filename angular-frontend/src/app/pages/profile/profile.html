@@ -6,15 +6,20 @@
     <div class="profile-content">
       
       <div class="avatar-container-rel">
-        <div class="avatar-wrapper" (click)="toggleAvatarMenu()">
+        <div class="avatar-wrapper" 
+             (click)="toggleAvatarMenu()" 
+             [style.cursor]="isOwnProfile ? 'pointer' : 'default'">
+             
           <img [src]="user.avatarUrl" alt="Profile Avatar" class="avatar">
           
-          <div class="avatar-overlay">
-            <span>📷</span>
-          </div>
+          @if (isOwnProfile) {
+            <div class="avatar-overlay">
+              <span>📷</span>
+            </div>
+          }
         </div>
 
-        @if (showAvatarMenu) {
+        @if (showAvatarMenu && isOwnProfile) {
           <div class="avatar-menu">
             <button class="menu-item" (click)="triggerUpload()">
               <i class="bi bi-upload"></i> Foto uploaden
@@ -56,8 +61,10 @@
   </div>
 
   <div class="reviews-section">
-    <h3 class="section-title">Reviews & Feedback</h3>
-    <app-reviews></app-reviews>
+    <app-reviews 
+        [isOwnProfile]="isOwnProfile" 
+        [targetUserId]="currentUserId">
+    </app-reviews>
   </div>
 
 </div>
