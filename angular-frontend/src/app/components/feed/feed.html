@@ -1,92 +1,67 @@
 <div class="feed-fixed-width d-flex flex-column gap-3">
-  <div *ngFor="let item of visible" class="card shadow-sm">
-    <!-- Header: title left, compact status right -->
-    <div class="card-header bg-transparent border-0 pb-0">
-      <div class="d-flex align-items-start justify-content-between">
-        <h5 class="card-title mb-2">{{ item.title }}</h5>
-
-        <div class="d-flex align-items-center gap-2">
-          <span *ngIf="item.urgent" class="status-urgent-pill">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-          </span>
-        </div>
+  @for (item of visible; track item.id) {
+  <div class="card shadow-sm">
+    <!-- Header: title and type badge -->
+    <div class="card-header bg-transparent border-0 pb-2">
+      <div class="d-flex align-items-start justify-content-between mb-2">
+        <h5 class="card-title mb-0">{{ item.title }}</h5>
+      </div>
+      <!-- Type badge with urgent icon -->
+      <div class="d-flex align-items-center gap-2">
+        <span class="status-pill" [class.offer]="item.type==='offer'" [class.request]="item.type==='request'">
+          {{ item.type === 'offer' ? 'Offer' : 'Request' }}
+        </span>
+        @if (item.urgent) {
+        <span class="status-urgent-pill">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+        </span>
+        }
       </div>
     </div>
 
-    <div class="card-body">
-      <!-- Description (primary focus; consistent truncation) -->
-      <p class="card-text text-truncate-3 mb-3">{{ item.description }}</p>
+    <div class="card-body pt-2">
+      <!-- Description -->
+      <p class="card-text mb-3">{{ item.description }}</p>
 
-      <!-- Minimal points line -->
-      <div class="feed-meta small text-muted mb-3">
-        <i class="bi bi-star-fill me-1"></i>
-        Points: <span class="fw-semibold">{{ item.points }}</span>
+      <!-- Tags -->
+      @if (item.tags && item.tags.length > 0) {
+      <div class="mb-3">
+        @for (tag of item.tags; track tag) {
+        <span class="badge bg-secondary me-1">
+          {{ tag }}
+        </span>
+        }
+      </div>
+      }
 
-        <!-- Dates faded out -->
-        <!-- <span *ngIf="item.deadline" class="ms-3">
+      <!-- Meta info: Points and deadline -->
+      <div class="d-flex align-items-center justify-content-between mb-3 small text-muted">
+        <div>
+          <i class="bi bi-star-fill me-1"></i>
+          <span class="fw-semibold">{{ item.points }}</span> points
+        </div>
+        @if (item.deadline) {
+        <div>
           <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
-        </span> -->
+        </div>
+        }
       </div>
 
-      <!-- Author/date right -->
+      <!-- Author, date, and actions on same line -->
       <div class="d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-sm btn-accept">
-            <i class="bi bi-check2-circle"></i>
-            <span class="ms-1">Accept quest</span>
-          </button>
-          <button class="btn btn-sm btn-outline-secondary" (click)="openDetails(item)">
-            <i class="bi bi-info-circle"></i>
-            <!-- <span class="ms-1">Details</span> -->
-          </button>
+        <div class="text-muted small">
+          <i class="bi bi-person me-1"></i> by <strong>{{ item.author }}</strong> • {{ item.createdAt }}
         </div>
-
-        <!-- Get author of post -->
-        <!-- <div class="text-muted small d-flex align-items-center">
-          <i class="bi bi-person me-1"></i> by {{ item.author }} • {{ item.createdAt }}
-        </div> -->
-
-        <span *ngIf="item.deadline" class="ms-3">
-          <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
-        </span>
+        <button class="btn btn-sm btn-accept">
+          <i class="bi bi-check2-circle"></i>
+          <span class="ms-1">Accept quest</span>
+        </button>
       </div>
     </div>
   </div>
+  }
 
-  <div *ngIf="visible.length === 0" class="text-muted">No posts match the current filters.</div>
-</div>
-
-<!-- Details popup -->
-<div class="popup-backdrop" *ngIf="detailsPost"></div>
-<div class="popup" *ngIf="detailsPost" role="dialog" aria-modal="true">
-  <div class="popup-card">
-    <div class="popup-header">
-      <strong>Post details</strong>
-      <button class="btn-close" aria-label="Close" (click)="closeDetails()"></button>
-    </div>
-
-    <div class="popup-body" *ngIf="detailsPost as p">
-      <h5 class="mb-2">{{ p.title }}</h5>
-
-      <!-- Integrated status -->
-      <div class="text-muted mb-3 d-flex align-items-center flex-wrap gap-2">
-        <span class="status-pill inline" [class.offer]="p.type==='offer'" [class.request]="p.type==='request'">
-          {{ p.type === 'offer' ? 'Offer' : 'Request' }}
-        </span>
-        <span *ngIf="p.urgent" class="status-urgent-pill"><i class="bi bi-exclamation-triangle-fill"></i> Urgent</span>
-        <span *ngIf="p.deadline"><i class="bi bi-calendar-event me-1"></i> Deadline: {{ p.deadline }}</span>
-      </div>
-
-      <p class="mb-3">{{ p.description }}</p>
-
-      <!-- Points -->
-      <div class="mb-2 d-flex align-items-center">
-        <i class="bi bi-star-fill me-2"></i>
-        <strong>Points:</strong>
-        <span class="ms-2">{{ p.points }}</span>
-      </div>
-
-      <div class="text-muted small"><i class="bi bi-person me-1"></i> by {{ p.author }} • {{ p.createdAt }}</div>
-    </div>
-  </div>
+  @if (visible.length === 0) {
+  <div class="text-muted">No posts match the current filters.</div>
+  }
 </div>

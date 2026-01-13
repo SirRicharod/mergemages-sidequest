@@ -39,9 +39,6 @@ export class FeedComponent {
     { id: 4, title: 'I build REST APIs (Laravel, Node)', description: 'Happy to help with backend tasks and auth.', type: 'offer', urgent: false, deadline: null, points: 25, tags: ['backend', 'programming'], author: 'Sage', createdAt: '2026-01-01' }
   ];
 
-  // Details popup state
-  detailsPost: Sidequest | null = null;
-
   get visible(): Sidequest[] {
     let base = this.items.filter(x => this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer');
     if (this.urgentOnly) base = base.filter(x => x.urgent);
@@ -59,7 +56,7 @@ export class FeedComponent {
     return base;
   }
 
-  addPost(text: string, urgent: boolean, type: PostType = 'request', points = 10) {
+  addPost(text: string, urgent: boolean, type: PostType = 'request') {
     const [firstLine, ...rest] = text.split('\n');
     this.items.unshift({
       id: Date.now(),
@@ -68,20 +65,10 @@ export class FeedComponent {
       type,
       urgent,
       deadline: null,
-      points,
+      points: 10,
       tags: [],
       author: 'You',
       createdAt: new Date().toISOString().slice(0, 10)
     });
-  }
-
-  openDetails(item: Sidequest): void {
-    this.detailsPost = item;
-    document.body.style.overflow = 'hidden';
-  }
-
-  closeDetails(): void {
-    this.detailsPost = null;
-    document.body.style.overflow = '';
   }
 }
