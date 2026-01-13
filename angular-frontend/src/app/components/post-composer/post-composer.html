@@ -39,7 +39,16 @@
         <div class="row g-3">
           <div class="col-12 col-md-6">
             <label class="form-label" for="postDeadline">Deadline</label>
-            <input id="postDeadline" type="date" class="form-control" [(ngModel)]="deadline" name="deadline">
+            <input
+              id="postDeadline"
+              type="date"
+              class="form-control" [class.is-invalid]="deadlineError"
+              [(ngModel)]="deadline"
+              name="deadline"
+              [min]="minDate"
+              (change)="deadlineError = null"
+            >
+            <div class="invalid-feedback" *ngIf="deadlineError">{{ deadlineError }}</div>
           </div>
           <div class="col-12 col-md-6 d-flex align-items-end">
             <div class="form-check">
