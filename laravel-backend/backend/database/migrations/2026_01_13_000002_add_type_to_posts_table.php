@@ -15,6 +15,9 @@ return new class extends Migration
         Schema::table('posts', function (Blueprint $table) {
             $table->enum('type', ['request', 'offer'])->default('request')->after('body');
         });
+        
+        // Set existing posts to 'request' type
+        DB::table('posts')->whereNull('type')->update(['type' => 'request']);
     }
 
     /**
