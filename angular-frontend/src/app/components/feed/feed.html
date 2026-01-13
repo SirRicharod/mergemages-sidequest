@@ -1,5 +1,14 @@
 <div class="feed-fixed-width d-flex flex-column gap-3">
-  @for (item of visible; track item.id) {
+  @if (loading()) {
+    <div class="text-center text-muted py-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading posts...</p>
+    </div>
+  }
+  
+  @for (item of visible(); track item.id) {
     <div class="card shadow-sm">
       <!-- Header: title and type badge -->
       <div class="card-header bg-transparent border-0 pb-2">
@@ -22,17 +31,6 @@
       <div class="card-body pt-2">
         <!-- Description -->
         <p class="card-text mb-3">{{ item.description }}</p>
-
-        <!-- Tags -->
-        @if (item.tags && item.tags.length > 0) {
-          <div class="mb-3">
-            @for (tag of item.tags; track tag) {
-              <span class="badge bg-secondary me-1">
-                {{ tag }}
-              </span>
-            }
-          </div>
-        }
 
         <!-- Meta info: Points and deadline -->
         <div class="d-flex align-items-center justify-content-between mb-3 small text-muted">

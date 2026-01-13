@@ -1,10 +1,11 @@
 // src/app/components/feed/feed.ts
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PostsService, Post, PostStatus } from '../../services/posts.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
-type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
+type QueryMode = 'keywords' | 'profile' | 'skills';
 
 export interface Sidequest {
   id: number;
@@ -14,9 +15,9 @@ export interface Sidequest {
   urgent: boolean;
   deadline?: string | null;
   points: number;
-  tags: string[];
   author: string;
   createdAt: string;
+  status: PostStatus;
 }
 
 @Component({
@@ -26,49 +27,90 @@ export interface Sidequest {
   templateUrl: './feed.html',
   styleUrls: ['./feed.css']
 })
-export class FeedComponent {
-  @Input() urgentOnly: boolean = false;
-  @Input() searchMode: SearchMode = 'requests';
-  @Input() searchQuery: string = '';
-  @Input() queryMode: QueryMode = 'keywords';
+export class FeedComponent implements OnInit {
+  private postsService = inject(PostsService);
+  
+  @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
+  @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
+  @Input() set searchQuery(value: string) { this._searchQuery.set(value); }
+  @Input() set queryMode(value: QueryMode) { this._queryMode.set(value); }
 
-  items: Sidequest[] = [
-    { id: 1, title: 'Turn my 2D logo into a 3D model', description: 'Looking for Blender help. I have SVG and references.', type: 'request', urgent: true, deadline: '2026-01-12', points: 50, tags: ['art', '3d', 'design'], author: 'Ember', createdAt: '2026-01-05' },
-    { id: 2, title: 'I can design logos and brand kits', description: 'Offering graphic design help. Quick turnaround.', type: 'offer', urgent: false, deadline: null, points: 30, tags: ['art', 'design'], author: 'Moeke', createdAt: '2026-01-03' },
-    { id: 3, title: 'Create animated landing page with GSAP', description: 'Need smooth scroll and section reveals.', type: 'request', urgent: false, deadline: '2026-01-20', points: 40, tags: ['frontend', 'uiux'], author: 'Courtney', createdAt: '2026-01-02' },
-    { id: 4, title: 'I build REST APIs (Laravel, Node)', description: 'Happy to help with backend tasks and auth.', type: 'offer', urgent: false, deadline: null, points: 25, tags: ['backend', 'programming'], author: 'Sage', createdAt: '2026-01-01' }
-  ];
+  private _urgentOnly = signal(false);
+  private _searchMode = signal<SearchMode>('requests');
+  private _searchQuery = signal('');
+  private _queryMode = signal<QueryMode>('keywords');
 
-  get visible(): Sidequest[] {
-    let base = this.items.filter(x => this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer');
-    if (this.urgentOnly) base = base.filter(x => x.urgent);
-    const q = this.searchQuery.trim().toLowerCase();
+  items = signal<Sidequest[]>([]);
+  loading = signal(true);
+
+  visible = computed(() => {
+    const allItems = this.items();
+    const mode = this._searchMode();
+    const urgent = this._urgentOnly();
+    const query = this._searchQuery();
+    const qMode = this._queryMode();
+
+    let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
+    if (urgent) base = base.filter(x => x.urgent);
+    const q = query.trim().toLowerCase();
     if (q) {
       base = base.filter(x => {
-        switch (this.queryMode) {
+        switch (qMode) {
           case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
           case 'profile': return x.author.toLowerCase().includes(q);
-          case 'skills': return x.tags.some(t => t.toLowerCase().includes(q));
           default: return true;
         }
       });
     }
     return base;
+  });
+
+  ngOnInit(): void {
+    this.loadPosts();
   }
 
-  addPost(text: string, urgent: boolean, type: PostType = 'request') {
-    const [firstLine, ...rest] = text.split('\n');
-    this.items.unshift({
-      id: Date.now(),
-      title: firstLine || 'Untitled',
-      description: rest.join('\n') || '',
+  loadPosts(): void {
+    this.loading.set(true);
+    this.postsService.getPosts().subscribe({
+      next: (response) => {
+        // Map backend Post to frontend Sidequest and filter out deleted
+        const posts = response.posts
+          .filter(post => post.status !== 'deleted')
+          .map(post => ({
+            id: parseInt(post.post_id),
+            title: post.title,
+            description: post.body,
+            type: post.type as PostType,
+            urgent: false, // Default for now
+            deadline: null,
+            points: post.bounty_points,
+            author: post.author?.name || 'Unknown',
+            createdAt: new Date(post.created_at).toISOString().slice(0, 10),
+            status: post.status
+          }));
+        this.items.set(posts);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load posts:', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  addPost(title: string, description: string, type: PostType, points: number): void {
+    this.postsService.createPost({
+      title,
+      body: description,
       type,
-      urgent,
-      deadline: null,
-      points: 10,
-      tags: [],
-      author: 'You',
-      createdAt: new Date().toISOString().slice(0, 10)
+      bounty_points: points
+    }).subscribe({
+      next: () => {
+        this.loadPosts(); // Reload to show the new post
+      },
+      error: (err) => {
+        console.error('Failed to create post:', err);
+      }
     });
   }
 }

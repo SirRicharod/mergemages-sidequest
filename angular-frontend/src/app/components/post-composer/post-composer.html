@@ -1,12 +1,19 @@
-<div class="popup-backdrop" *ngIf="popupVisible"></div>
-<div class="popup" *ngIf="popupVisible" role="dialog" aria-modal="true">
+@if (popupVisible) {
+<div class="popup-backdrop"></div>
+<div class="popup" role="dialog" aria-modal="true">
   <div class="popup-card">
     <div class="popup-header">
       <strong>Create a post</strong>
-      <button class="btn-close" aria-label="Close" (click)="closePopup()"></button>
+      <button class="btn-close" aria-label="Close" (click)="togglePopup()"></button>
     </div>
 
     <div class="popup-body">
+      @if (validationError) {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ validationError }}
+          <button type="button" class="btn-close" aria-label="Close" (click)="validationError = ''"></button>
+        </div>
+      }
       <form (submit)="$event.preventDefault(); onSubmit()">
         <!-- Title -->
         <div class="mb-3">
@@ -35,22 +42,19 @@
           </div>
         </div>
 
-        <!-- Deadline + Boost -->
-        <div class="row g-3">
-          <div class="col-12 col-md-6">
+        <!-- Deadline + Boost + XP Reward -->
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-4">
             <label class="form-label" for="postDeadline">Deadline</label>
-            <input
-              id="postDeadline"
-              type="date"
-              class="form-control" [class.is-invalid]="deadlineError"
-              [(ngModel)]="deadline"
-              name="deadline"
-              [min]="minDate"
-              (change)="deadlineError = null"
-            >
-            <div class="invalid-feedback" *ngIf="deadlineError">{{ deadlineError }}</div>
+            <input id="postDeadline" type="date" class="form-control" [(ngModel)]="deadline" name="deadline" 
+              [min]="minDate" required>
           </div>
-          <div class="col-12 col-md-6 d-flex align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="xpReward">XP Reward (100-500)</label>
+            <input id="xpReward" type="number" class="form-control" [(ngModel)]="xpReward" name="xpReward"
+              min="100" max="500" step="10" required>
+          </div>
+          <div class="col-12 col-md-4 d-flex align-items-end">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="boostPost" [(ngModel)]="boost" name="boost">
               <label class="form-check-label" for="boostPost">Boost post</label>
@@ -59,10 +63,11 @@
         </div>
 
         <div class="mt-3 d-flex justify-content-end">
-          <button class="btn btn-secondary me-2" type="button" (click)="closePopup()">Cancel</button>
+          <button class="btn btn-secondary me-2" type="button" (click)="togglePopup()">Cancel</button>
           <button class="btn btn-primary" type="submit">Post</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+}

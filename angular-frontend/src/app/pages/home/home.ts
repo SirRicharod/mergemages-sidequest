@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openPostPopup(): void {
-    this.composerRef?.openPopup();
+    this.composerRef?.togglePopup();
   }
 
   openMobileSearch(): void {
@@ -66,17 +66,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSubmitPost(feed: FeedComponent, evt: {
     title: string; description: string; type: 'request' | 'offer';
-    tags: string[]; deadline: string | null; boost: boolean;
+    deadline: string | null; boost: boolean; xpReward: number;
   }) {
-    const textLines = [
-      evt.title,
-      evt.description,
-      evt.deadline ? `Deadline: ${evt.deadline}` : '',
-      evt.tags.length ? `Tags: ${evt.tags.join(', ')}` : '',
-      evt.boost ? 'Boosted' : ''
-    ].filter(Boolean);
-    const text = textLines.join('\n');
-    feed.addPost(text, false, evt.type);
+    feed.addPost(evt.title, evt.description, evt.type, evt.xpReward);
   }
 
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
