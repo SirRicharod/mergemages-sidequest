@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openPostPopup(): void {
-    this.composerRef?.openPopup();
+    this.composerRef?.togglePopup();
   }
 
   openMobileSearch(): void {

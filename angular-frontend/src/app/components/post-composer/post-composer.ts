@@ -47,13 +47,9 @@ export class PostComposerComponent {
     boost: boolean;
   }>();
 
-  openPopup(): void {
-    this.popupVisible = true;
-    document.body.style.overflow = 'hidden';
-  }
-  closePopup(): void {
-    this.popupVisible = false;
-    document.body.style.overflow = '';
+  togglePopup(open?: boolean): void {
+    this.popupVisible = open ?? !this.popupVisible;
+    document.body.style.overflow = this.popupVisible ? 'hidden' : '';
   }
 
   toggleTag(tag: string, checked: boolean): void {
@@ -85,6 +81,6 @@ export class PostComposerComponent {
     this.selectedTags = [];
     this.deadline = '';
     this.boost = false;
-    this.closePopup();
+    this.togglePopup(false);
   }
 }

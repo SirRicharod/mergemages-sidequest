@@ -4,7 +4,7 @@
   <div class="popup-card">
     <div class="popup-header">
       <strong>Create a post</strong>
-      <button class="btn-close" aria-label="Close" (click)="closePopup()"></button>
+      <button class="btn-close" aria-label="Close" (click)="togglePopup()"></button>
     </div>
 
     <div class="popup-body">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="mt-3 d-flex justify-content-end">
-          <button class="btn btn-secondary me-2" type="button" (click)="closePopup()">Cancel</button>
+          <button class="btn btn-secondary me-2" type="button" (click)="togglePopup()">Cancel</button>
           <button class="btn btn-primary" type="submit">Post</button>
         </div>
       </form>
