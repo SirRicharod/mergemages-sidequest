@@ -17,25 +17,10 @@ export class PostComposerComponent {
   popupVisible = false;
   validationError = '';
 
-  // // Preset school tags (extend as needed)
-  // readonly presetTags = [
-  //   'art',
-  //   'programming',
-  //   'maths',
-  //   'architecture',
-  //   'design',
-  //   'backend',
-  //   'frontend',
-  //   '3d',
-  //   'illustration',
-  //   'uiux'
-  // ];
-
   // Form model
   title = '';
   description = '';
   type: PostType = 'request';       // "I'm looking for" vs "I can do"
-  // selectedTags: string[] = [];      // MULTI-SELECT PRESET TAGS
   deadline: string = '';            // yyyy-MM-dd
   boost = false;
   xpReward = 100;                   // XP points to reward (100-500)
@@ -44,7 +29,6 @@ export class PostComposerComponent {
     title: string;
     description: string;
     type: PostType;
-    // tags: string[];           // ← will carry selectedTags
     deadline: string | null;
     boost: boolean;
     xpReward: number;
@@ -54,14 +38,6 @@ export class PostComposerComponent {
     this.popupVisible = open ?? !this.popupVisible;
     document.body.style.overflow = this.popupVisible ? 'hidden' : '';
   }
-
-  // toggleTag(tag: string, checked: boolean): void {
-  //   if (checked) {
-  //     if (!this.selectedTags.includes(tag)) this.selectedTags = [...this.selectedTags, tag];
-  //   } else {
-  //     this.selectedTags = this.selectedTags.filter(t => t !== tag);
-  //   }
-  // }
 
   onSubmit(): void {
     const title = this.title.trim();
@@ -99,7 +75,6 @@ export class PostComposerComponent {
       title,
       description,
       type: this.type,
-      // tags: this.selectedTags,
       deadline: this.deadline || null,
       boost: this.boost,
       xpReward: this.xpReward
@@ -109,7 +84,6 @@ export class PostComposerComponent {
     this.title = '';
     this.description = '';
     this.type = 'request';
-    // this.selectedTags = [];
     this.deadline = '';
     this.boost = false;
     this.xpReward = 100;
