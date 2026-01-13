@@ -1,8 +1,8 @@
-import { Component, ChangeDetectorRef, OnInit, Input } from '@angular/core'; // <--- Input en OnInit toegevoegd
+import { Component, OnInit, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReviewService } from '../services/review'; 
-import { HttpClient } from '@angular/common/http'; // <--- HttpClient toegevoegd voor het ophalen
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-reviews',
@@ -11,44 +11,62 @@ import { HttpClient } from '@angular/common/http'; // <--- HttpClient toegevoegd
   templateUrl: './reviews.html',
   styleUrls: ['./reviews.css']
 })
-export class Reviews implements OnInit { // <--- implements OnInit toegevoegd
+export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
   rating: number = 5;
   comment: string = '';
   
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
-
-  // 1. De lijst waarin we de reviews opslaan
   reviews: any[] = [];
 
-  // 2. De schakelaar: false = alles zien, true = alleen mijn reviews
-  @Input() personalMode: boolean = false; 
+  // 👇 DEZE TWEE INPUTS MISTE JE! 👇
+  @Input() isOwnProfile: boolean = false; 
+  @Input() targetUserId: string | null = null;
 
   constructor(
     private reviewService: ReviewService, 
     private cdr: ChangeDetectorRef,
-    private http: HttpClient // <--- HttpClient injecteren
+    private http: HttpClient
   ) {}
 
-  // 3. Zodra het component laadt, halen we de reviews op
   ngOnInit() {
     this.fetchReviews();
   }
 
-  fetchReviews() {
-    // We kiezen de juiste URL op basis van de schakelaar
-    const url = this.personalMode 
-      ? 'http://127.0.0.1:8000/api/user/reviews' 
-      : 'http://127.0.0.1:8000/api/reviews';
+  // Als de targetUserId verandert (omdat je op een ander profiel klikt), halen we nieuwe reviews op
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['targetUserId'] && !changes['targetUserId'].firstChange) {
+      this.fetchReviews();
+    }
+  }
 
-    this.http.get<any[]>(url).subscribe({
-      next: (data) => {
-        this.reviews = data; // Stop de data in onze lijst
-        this.cdr.detectChanges(); // Update het scherm
-      },
-      error: (err) => console.error('Kon reviews niet laden:', err)
-    });
+  fetchReviews() {
+    let url = '';
+
+    if (this.isOwnProfile) {
+        // 1. Mijn eigen profiel: Haal reviews op die over MIJ gaan
+        url = 'http://127.0.0.1:8000/api/user/reviews';
+    } else if (this.targetUserId) {
+        // 2. Iemand anders: We moeten reviews ophalen voor DIT specifieke ID
+        // LET OP: We moeten deze route zo nog even maken in de backend!
+        // Voor nu gebruiken we even de algemene feed als fallback zodat het niet crasht
+        url = `http://127.0.0.1:8000/api/reviews/${this.targetUserId}`; 
+    } else {
+        // 3. Fallback (algemene feed)
+        url = 'http://127.0.0.1:8000/api/reviews';
+    }
+
+    // Alleen ophalen als we een URL hebben
+    if (url) {
+      this.http.get<any[]>(url).subscribe({
+        next: (data) => {
+          this.reviews = data; 
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Kon reviews niet laden:', err)
+      });
+    }
   }
 
   submitReview() {
@@ -56,32 +74,30 @@ export class Reviews implements OnInit { // <--- implements OnInit toegevoegd
     this.successMessage = '';
     this.errorMessage = '';
 
-    const targetUserId = 'a0ce6cd7-da41-4b1f-83ea-4e089b5114e5'; 
+    // We gebruiken nu het ID dat we van de profielpagina hebben gekregen
+    if (!this.targetUserId) {
+      this.errorMessage = 'Geen gebruiker geselecteerd om te reviewen.';
+      this.isSubmitting = false;
+      return;
+    }
 
     const data = {
-      target_user_id: targetUserId,
+      target_user_id: this.targetUserId, // <--- DYNAMISCH ID GEBRUIKEN
       rating: this.rating,
       comment: this.comment
     };
 
-    console.log('Versturen...', data);
-
     this.reviewService.postReview(data).subscribe({
       next: (res) => {
-        console.log('Gelukt!', res);
-        
         this.successMessage = 'Review geplaatst! 🎉';
         this.comment = ''; 
         this.isSubmitting = false;
-
-        // NIEUW: Ververs de lijst direct zodat je je eigen review ziet
-        this.fetchReviews(); 
-
+        this.fetchReviews(); // Lijst verversen
         this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Foutje:', err);
-        this.errorMessage = 'Er ging iets mis. Ben je wel ingelogd?';
+        this.errorMessage = 'Er ging iets mis.';
         this.isSubmitting = false;
         this.cdr.detectChanges();
       }

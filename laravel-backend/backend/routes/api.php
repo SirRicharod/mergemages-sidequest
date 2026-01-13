@@ -18,29 +18,13 @@ use App\Http\Controllers\PostController;
 // PUBLIC ROUTES (anyone can access these)
 // ==========================================
 
-/**
- * GET /api/posts
- * Get all posts (excluding deleted)
- */
 Route::get('/posts', [PostController::class, 'index']);
 
-/**
- * GET /api/users
- * Get all users (public endpoint)
- */
 Route::get('/users', function () {
-    // Let op: Dit is de lijst met ALLE users
     $users = User::select('user_id as id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
-
-    return response()->json([
-        'users' => $users,
-    ]);
+    return response()->json(['users' => $users]);
 });
 
-/**
- * POST /api/register
- * Create a new user account
- */
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:120',
@@ -69,10 +53,6 @@ Route::post('/register', function (Request $request) {
     ], 201); 
 });
 
-/**
- * POST /api/login
- * Authenticate and get a token
- */
 Route::post('/login', function (Request $request) {
     $validated = $request->validate([
         'email' => 'required|email',
@@ -83,9 +63,7 @@ Route::post('/login', function (Request $request) {
     $user = User::where('email', $sanitizedEmail)->first();
 
     if (!$user || !Hash::check($validated['password'], $user->password_hash)) {
-        return response()->json([
-            'message' => 'Invalid credentials',
-        ], 401); 
+        return response()->json(['message' => 'Invalid credentials'], 401); 
     }
 
     $token = $user->createToken('auth_token')->plainTextToken;
@@ -109,61 +87,34 @@ Route::post('/login', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    /**
-     * GET /api/reviews
-     * Haal alle reviews op (voor de Feed)
-     */
+    // --- REVIEWS ---
+    // 1. Alle reviews (Feed)
     Route::get('/reviews', [ReviewController::class, 'index']); 
-
-    /**
-     * GET /api/user/reviews
-     * Haal reviews voor de ingelogde gebruiker op (voor Profiel)
-     */
+    
+    // 2. Reviews voor MIJ (Profiel)
     Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
 
-    /**
-     * POST /api/posts
-     * Create a new post
-     */
-    Route::post('/posts', [PostController::class, 'store']);
+    // 3. 👇 NIEUW: Reviews van IEMAND ANDERS (Public Profiel) 👇
+    Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
-    /**
-     * PATCH /api/posts/{postId}/status
-     * Update post status
-     */
-    Route::patch('/posts/{postId}/status', [PostController::class, 'updateStatus']);
-
-    /**
-     * POST /api/reviews
-     * Plaats een nieuwe review
-     */
+    // 4. Nieuwe review plaatsen
     Route::post('/reviews', [ReviewController::class, 'store']); 
 
-    /**
-     * POST /api/user/avatar
-     * Upload een profielfoto
-     */
-    Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
+    // --- POSTS ---
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::patch('/posts/{postId}/status', [PostController::class, 'updateStatus']);
 
-    // 👇 NIEUW: Route om een specifiek profiel op te halen via ID 👇
+    // --- USERS & PROFIEL ---
+    Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
     Route::get('/users/{id}', [UserController::class, 'show']);
 
-    /**
-     * POST /api/logout
-     */
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     });
 
-    /**
-     * GET /api/profile
-     * Haalt de ingelogde gebruiker op EN maakt de avatar link compleet
-     */
     Route::get('/profile', function (Request $request) {
         $user = $request->user();
-        
-        // Maak volledige URL van avatar
         $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
         
         return response()->json([
