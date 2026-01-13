@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\UserController; 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,12 @@ use App\Http\Controllers\UserController;
 // ==========================================
 // PUBLIC ROUTES (anyone can access these)
 // ==========================================
+
+/**
+ * GET /api/posts
+ * Get all posts (excluding deleted)
+ */
+Route::get('/posts', [PostController::class, 'index']);
 
 /**
  * GET /api/users
@@ -100,6 +107,18 @@ Route::middleware('auth:sanctum')->group(function () {
      * Haal reviews voor de ingelogde gebruiker op (voor Profiel)
      */
     Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
+
+    /**
+     * POST /api/posts
+     * Create a new post
+     */
+    Route::post('/posts', [PostController::class, 'store']);
+
+    /**
+     * PATCH /api/posts/{postId}/status
+     * Update post status
+     */
+    Route::patch('/posts/{postId}/status', [PostController::class, 'updateStatus']);
 
     /**
      * POST /api/reviews

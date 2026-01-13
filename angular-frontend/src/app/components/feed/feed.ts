@@ -1,6 +1,7 @@
 // src/app/components/feed/feed.ts
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PostsService, Post, PostStatus } from '../../services/posts.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
@@ -16,6 +17,7 @@ export interface Sidequest {
   points: number;
   author: string;
   createdAt: string;
+  status: PostStatus;
 }
 
 @Component({
@@ -25,18 +27,48 @@ export interface Sidequest {
   templateUrl: './feed.html',
   styleUrls: ['./feed.css']
 })
-export class FeedComponent {
+export class FeedComponent implements OnInit {
+  private postsService = inject(PostsService);
+  
   @Input() urgentOnly: boolean = false;
   @Input() searchMode: SearchMode = 'requests';
   @Input() searchQuery: string = '';
   @Input() queryMode: QueryMode = 'keywords';
 
-  items: Sidequest[] = [
-    { id: 1, title: 'Turn my 2D logo into a 3D model', description: 'Looking for Blender help. I have SVG and references.', type: 'request', urgent: true, deadline: '2026-01-12', points: 50, author: 'Ember', createdAt: '2026-01-05' },
-    { id: 2, title: 'I can design logos and brand kits', description: 'Offering graphic design help. Quick turnaround.', type: 'offer', urgent: false, deadline: null, points: 30, author: 'Moeke', createdAt: '2026-01-03' },
-    { id: 3, title: 'Create animated landing page with GSAP', description: 'Need smooth scroll and section reveals.', type: 'request', urgent: false, deadline: '2026-01-20', points: 40, author: 'Courtney', createdAt: '2026-01-02' },
-    { id: 4, title: 'I build REST APIs (Laravel, Node)', description: 'Happy to help with backend tasks and auth.', type: 'offer', urgent: false, deadline: null, points: 25, author: 'Sage', createdAt: '2026-01-01' }
-  ];
+  items: Sidequest[] = [];
+  loading = false;
+
+  ngOnInit(): void {
+    this.loadPosts();
+  }
+
+  loadPosts(): void {
+    this.loading = true;
+    this.postsService.getPosts().subscribe({
+      next: (response) => {
+        // Map backend Post to frontend Sidequest and filter out deleted
+        this.items = response.posts
+          .filter(post => post.status !== 'deleted')
+          .map(post => ({
+            id: parseInt(post.post_id),
+            title: post.title,
+            description: post.body,
+            type: 'request' as PostType, // Default for now
+            urgent: false, // Default for now
+            deadline: null,
+            points: post.bounty_points,
+            author: post.author?.name || 'Unknown',
+            createdAt: new Date(post.created_at).toISOString().slice(0, 10),
+            status: post.status
+          }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load posts:', err);
+        this.loading = false;
+      }
+    });
+  }
 
   get visible(): Sidequest[] {
     let base = this.items.filter(x => this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer');
@@ -54,18 +86,18 @@ export class FeedComponent {
     return base;
   }
 
-  addPost(text: string, urgent: boolean, type: PostType = 'request') {
-    const [firstLine, ...rest] = text.split('\n');
-    this.items.unshift({
-      id: Date.now(),
-      title: firstLine || 'Untitled',
-      description: rest.join('\n') || '',
-      type,
-      urgent,
-      deadline: null,
-      points: 10,
-      author: 'You',
-      createdAt: new Date().toISOString().slice(0, 10)
+  addPost(title: string, description: string, points: number): void {
+    this.postsService.createPost({
+      title,
+      body: description,
+      bounty_points: points
+    }).subscribe({
+      next: () => {
+        this.loadPosts(); // Reload to show the new post
+      },
+      error: (err) => {
+        console.error('Failed to create post:', err);
+      }
     });
   }
 }
