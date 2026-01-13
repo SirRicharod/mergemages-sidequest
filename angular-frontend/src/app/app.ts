@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { MobileSearchService } from './services/mobile-search.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +13,6 @@ import { MobileSearchService } from './services/mobile-search.service';
 })
 export class AppComponent {
   private mobileSearchService = inject(MobileSearchService);
+  auth = inject(AuthService);
   openMobileSearch = () => this.mobileSearchService.requestOpen();
 }

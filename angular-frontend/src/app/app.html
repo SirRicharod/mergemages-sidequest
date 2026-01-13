@@ -1,4 +1,7 @@
-<app-navbar [isAuthenticated]="true" [username]="'Sage'" [openMobileSearch]="openMobileSearch">
+<app-navbar
+    [isAuthenticated]="auth.isAuthenticated()"
+    [username]="auth.currentUser()?.name || null"
+    [openMobileSearch]="openMobileSearch">
 </app-navbar>
 
 <main class="container py-4">
