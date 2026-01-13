@@ -9,22 +9,15 @@
   }
   
   @for (item of visible(); track item.id) {
-    <div class="card shadow-sm">
-      <!-- Header: title and type badge -->
+    <div class="card shadow-sm" 
+         [class.card-border-offer]="item.type==='offer' && !item.urgent"
+         [class.card-border-request]="item.type==='request' && !item.urgent"
+         [class.card-border-offer-urgent]="item.type==='offer' && item.urgent"
+         [class.card-border-request-urgent]="item.type==='request' && item.urgent">
+      <!-- Header: title -->
       <div class="card-header bg-transparent border-0 pb-2">
         <div class="d-flex align-items-start justify-content-between mb-2">
           <h5 class="card-title mb-0 text-wrap text-break">{{ item.title }}</h5>
-        </div>
-        <!-- Type badge with urgent icon -->
-        <div class="d-flex align-items-center gap-2">
-          <span class="status-pill" [class.offer]="item.type==='offer'" [class.request]="item.type==='request'">
-            {{ item.type === 'offer' ? 'Offer' : 'Request' }}
-          </span>
-          @if (item.urgent) {
-            <span class="status-urgent-pill">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-            </span>
-          }
         </div>
       </div>
 

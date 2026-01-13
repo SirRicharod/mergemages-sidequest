@@ -1,3 +1,34 @@
+/* Card border styles for type and urgency */
+.card-border-offer {
+  border-top: 8px solid var(--sq-86BBBD) !important;
+}
+
+.card-border-request {
+  border-top: 8px solid var(--sq-76949F) !important;
+}
+
+.card-border-offer-urgent {
+  border-top: 8px solid;
+  border-image: repeating-linear-gradient(
+    90deg,
+    var(--sq-86BBBD) 0px,
+    var(--sq-86BBBD) 12px,
+    var(--sq-533747) 12px,
+    var(--sq-533747) 24px
+  ) 1;
+}
+
+.card-border-request-urgent {
+  border-top: 8px solid;
+  border-image: repeating-linear-gradient(
+    90deg,
+    var(--sq-76949F) 0px,
+    var(--sq-76949F) 12px,
+    var(--sq-533747) 12px,
+    var(--sq-533747) 24px
+  ) 1;
+}
+
 /* Normalize icon sizes and spacing */
 .card-title {
   margin-bottom: 0.25rem;
