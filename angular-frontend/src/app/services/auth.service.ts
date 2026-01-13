@@ -8,6 +8,8 @@ export interface AuthUser {
   id: number;
   name: string;
   email: string;
+  xp_balance: number;
+  weekly_xp_allowance: number;
 }
 
 export interface LoginResponse {

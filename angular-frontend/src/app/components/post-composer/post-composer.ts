@@ -1,7 +1,8 @@
 // src/app/components/post-composer/post-composer.ts
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 type PostType = 'request' | 'offer';
 
@@ -13,6 +14,8 @@ type PostType = 'request' | 'offer';
   styleUrls: ['./post-composer.css']
 })
 export class PostComposerComponent {
+  auth = inject(AuthService);
+  
   // Popup visibility (kept from previous step)
   popupVisible = false;
   validationError = '';

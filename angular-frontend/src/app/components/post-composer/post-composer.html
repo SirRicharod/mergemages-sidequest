@@ -2,9 +2,14 @@
 <div class="popup-backdrop"></div>
 <div class="popup" role="dialog" aria-modal="true">
   <div class="popup-card">
-    <div class="popup-header">
+    <div class="popup-header d-flex justify-content-between align-items-center">
       <strong>Create a post</strong>
-      <button class="btn-close" aria-label="Close" (click)="togglePopup()"></button>
+      <div class="d-flex align-items-center gap-3">
+        @if (auth.currentUser()) {
+          <span class="badge bg-primary">XP: {{ auth.currentUser()?.xp_balance }}</span>
+        }
+        <button class="btn-close" aria-label="Close" (click)="togglePopup()"></button>
+      </div>
     </div>
 
     <div class="popup-body">

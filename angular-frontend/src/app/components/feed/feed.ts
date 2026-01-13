@@ -110,6 +110,11 @@ export class FeedComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to create post:', err);
+        if (err.status === 400 && err.error?.message === 'Insufficient XP balance') {
+          alert(`Insufficient XP! You have ${err.error.current_balance} XP but need ${err.error.required} XP.`);
+        } else {
+          alert('Failed to create post. Please try again.');
+        }
       }
     });
   }

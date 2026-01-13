@@ -58,7 +58,13 @@ Route::post('/register', function (Request $request) {
 
     return response()->json([
         'message' => 'User registered successfully',
-        'user' => $user,
+        'user' => [
+            'user_id' => $user->user_id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'xp_balance' => $user->xp_balance,
+            'weekly_xp_allowance' => $user->weekly_xp_allowance,
+        ],
     ], 201); 
 });
 
@@ -86,7 +92,13 @@ Route::post('/login', function (Request $request) {
     return response()->json([
         'message' => 'Login successful',
         'token' => $token, 
-        'user' => $user,
+        'user' => [
+            'user_id' => $user->user_id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'xp_balance' => $user->xp_balance,
+            'weekly_xp_allowance' => $user->weekly_xp_allowance,
+        ],
     ]);
 });
 
@@ -150,6 +162,15 @@ Route::middleware('auth:sanctum')->group(function () {
         // Maak volledige URL van avatar
         $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
         
-        return response()->json(['user' => $user]);
+        return response()->json([
+            'user' => [
+                'user_id' => $user->user_id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'xp_balance' => $user->xp_balance,
+                'weekly_xp_allowance' => $user->weekly_xp_allowance,
+                'avatar_url' => $user->avatar_url,
+            ]
+        ]);
     });
 });

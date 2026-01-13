@@ -66,6 +66,25 @@ class PostController extends Controller
             'bounty_points' => 'required|integer|min:0',
         ]);
 
+        // Check if user has enough XP
+        $user = DB::table('users')
+            ->where('user_id', $request->user()->user_id)
+            ->select('xp_balance')
+            ->first();
+
+        if ($user->xp_balance < $validated['bounty_points']) {
+            return response()->json([
+                'message' => 'Insufficient XP balance',
+                'current_balance' => $user->xp_balance,
+                'required' => $validated['bounty_points']
+            ], 400);
+        }
+
+        // Deduct XP from user's balance
+        DB::table('users')
+            ->where('user_id', $request->user()->user_id)
+            ->decrement('xp_balance', $validated['bounty_points']);
+
         $postId = (string) Str::uuid();
 
         DB::table('posts')->insert([
@@ -98,6 +117,12 @@ class PostController extends Controller
             ->where('posts.post_id', $postId)
             ->first();
 
+        // Get updated XP balance
+        $updatedUser = DB::table('users')
+            ->where('user_id', $request->user()->user_id)
+            ->select('xp_balance')
+            ->first();
+
         return response()->json([
             'message' => 'Post created successfully',
             'post' => [
@@ -115,6 +140,7 @@ class PostController extends Controller
                     'avatar_url' => $post->author_avatar,
                 ],
             ],
+            'xp_balance' => $updatedUser->xp_balance
         ], 201);
     }
 
