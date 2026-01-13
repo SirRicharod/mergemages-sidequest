@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './reviews.html',
   styleUrls: ['./reviews.css']
 })
-export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
+export class Reviews implements OnInit, OnChanges { 
   rating: number = 5;
   comment: string = '';
   
@@ -20,7 +20,6 @@ export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
   errorMessage = '';
   reviews: any[] = [];
 
-  // 👇 DEZE TWEE INPUTS MISTE JE! 👇
   @Input() isOwnProfile: boolean = false; 
   @Input() targetUserId: string | null = null;
 
@@ -36,7 +35,8 @@ export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
 
   // Als de targetUserId verandert (omdat je op een ander profiel klikt), halen we nieuwe reviews op
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['targetUserId'] && !changes['targetUserId'].firstChange) {
+    // Check of targetUserId is veranderd OF isOwnProfile is veranderd
+    if (changes['targetUserId'] || changes['isOwnProfile']) {
       this.fetchReviews();
     }
   }
@@ -48,16 +48,17 @@ export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
         // 1. Mijn eigen profiel: Haal reviews op die over MIJ gaan
         url = 'http://127.0.0.1:8000/api/user/reviews';
     } else if (this.targetUserId) {
-        // 2. Iemand anders: We moeten reviews ophalen voor DIT specifieke ID
-        // LET OP: We moeten deze route zo nog even maken in de backend!
-        // Voor nu gebruiken we even de algemene feed als fallback zodat het niet crasht
+        // 2. Iemand anders: Haal reviews op voor DIT ID
         url = `http://127.0.0.1:8000/api/reviews/${this.targetUserId}`; 
     } else {
-        // 3. Fallback (algemene feed)
-        url = 'http://127.0.0.1:8000/api/reviews';
+        // 3. GEEN ID? STOP! 🛑
+        // Hier zat de fout. Vroeger laadde hij de algemene feed. 
+        // Nu doen we niks totdat het ID geladen is.
+        this.reviews = []; // Maak de lijst leeg voor de zekerheid
+        return; 
     }
 
-    // Alleen ophalen als we een URL hebben
+    // Alleen ophalen als we een geldige URL hebben
     if (url) {
       this.http.get<any[]>(url).subscribe({
         next: (data) => {
@@ -74,7 +75,6 @@ export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
     this.successMessage = '';
     this.errorMessage = '';
 
-    // We gebruiken nu het ID dat we van de profielpagina hebben gekregen
     if (!this.targetUserId) {
       this.errorMessage = 'Geen gebruiker geselecteerd om te reviewen.';
       this.isSubmitting = false;
@@ -82,7 +82,7 @@ export class Reviews implements OnInit, OnChanges { // <--- OnChanges toegevoegd
     }
 
     const data = {
-      target_user_id: this.targetUserId, // <--- DYNAMISCH ID GEBRUIKEN
+      target_user_id: this.targetUserId,
       rating: this.rating,
       comment: this.comment
     };
