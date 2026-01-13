@@ -1,5 +1,6 @@
-<div class="popup-backdrop" *ngIf="popupVisible"></div>
-<div class="popup" *ngIf="popupVisible" role="dialog" aria-modal="true">
+@if (popupVisible) {
+<div class="popup-backdrop"></div>
+<div class="popup" role="dialog" aria-modal="true">
   <div class="popup-card">
     <div class="popup-header">
       <strong>Create a post</strong>
@@ -57,3 +58,4 @@
     </div>
   </div>
 </div>
+}
