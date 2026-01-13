@@ -42,6 +42,10 @@ export class PostComposerComponent {
   onSubmit(): void {
     const title = this.title.trim();
     const description = this.description.trim();
+    const selectedDate = new Date(this.deadline);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
 
     // Validation checks
     if (!title) {
@@ -56,8 +60,8 @@ export class PostComposerComponent {
       this.validationError = 'Please select a deadline';
       return;
     }
-    if (this.isPastDate(this.deadline)) {
-      this.validationError = 'Deadline cannot be in the past';
+    if (selectedDate.getTime() < today.getTime()) {
+      this.validationError = 'The deadline cannot be in the past.';
       return;
     }
     if (this.xpReward < 100 || this.xpReward > 500) {
@@ -68,15 +72,6 @@ export class PostComposerComponent {
     // Clear any previous errors
     this.validationError = '';
 
-    // Validate deadline is not in the past (if provided)
-    if (this.deadline) {
-      if (this.isPastDate(this.deadline)) {
-        this.deadlineError = 'Deadline cannot be in the past.';
-        return;
-      }
-    }
-
-    this.deadlineError = null;
 
     this.submitPost.emit({
       title,
@@ -95,42 +90,5 @@ export class PostComposerComponent {
     this.boost = false;
     this.xpReward = 100;
     this.togglePopup(false);
-  }
-
-  // Min date for the date input (today)
-  get minDate(): string {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-
-  // Utility: check if yyyy-MM-dd is before today (local time)
-  private isPastDate(dateStr: string): boolean {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const selected = new Date(y, (m ?? 1) - 1, d ?? 1, 0, 0, 0, 0);
-    const today = new Date();
-    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-    return selected < todayMidnight;
-  }
-
-  // Min date for the date input (today)
-  get minDate(): string {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-
-  // Utility: check if yyyy-MM-dd is before today (local time)
-  private isPastDate(dateStr: string): boolean {
-    // Build Date objects at local midnight for accurate comparison
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const selected = new Date(y, (m ?? 1) - 1, d ?? 1, 0, 0, 0, 0);
-    const today = new Date();
-    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-    return selected < todayMidnight;
   }
 }

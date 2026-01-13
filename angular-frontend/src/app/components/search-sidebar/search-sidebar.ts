@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 export type PostTypeMode = 'requests' | 'offers';
-export type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
+export type QueryMode = 'keywords' | 'profile' | 'skills';
 
 @Component({
   selector: 'app-right-sidebar',

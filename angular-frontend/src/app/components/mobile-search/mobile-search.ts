@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-export type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
+export type QueryMode = 'keywords' | 'profile' | 'skills';
 
 @Component({
   selector: 'app-mobile-search',

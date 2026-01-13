@@ -12,7 +12,7 @@ import { ComposerCoordinatorService } from '../../services/composer-coordinator.
 import { MobileSearchService } from '../../services/mobile-search.service';
 import { Subscription } from 'rxjs';
 
-type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
+type QueryMode = 'keywords' | 'profile' | 'skills';
 
 @Component({
   selector: 'app-home',
