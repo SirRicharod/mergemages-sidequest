@@ -59,7 +59,7 @@ export class FeedComponent {
     return base;
   }
 
-  addPost(text: string, urgent: boolean, type: PostType = 'request') {
+  addPost(text: string, urgent: boolean, type: PostType = 'request', points = 10) {
     const [firstLine, ...rest] = text.split('\n');
     this.items.unshift({
       id: Date.now(),
@@ -68,7 +68,7 @@ export class FeedComponent {
       type,
       urgent,
       deadline: null,
-      points: 10,
+      points,
       tags: [],
       author: 'You',
       createdAt: new Date().toISOString().slice(0, 10)

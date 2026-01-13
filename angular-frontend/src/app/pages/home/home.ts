@@ -66,17 +66,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSubmitPost(feed: FeedComponent, evt: {
     title: string; description: string; type: 'request' | 'offer';
-    tags: string[]; deadline: string | null; boost: boolean;
+    tags: string[]; deadline: string | null; boost: boolean; xpReward: number;
   }) {
     const textLines = [
       evt.title,
       evt.description,
+      `XP Reward: ${evt.xpReward}`,
       evt.deadline ? `Deadline: ${evt.deadline}` : '',
-      evt.tags.length ? `Tags: ${evt.tags.join(', ')}` : '',
       evt.boost ? 'Boosted' : ''
     ].filter(Boolean);
     const text = textLines.join('\n');
-    feed.addPost(text, false, evt.type);
+    feed.addPost(text, false, evt.type, evt.xpReward);
   }
 
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
