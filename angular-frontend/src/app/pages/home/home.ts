@@ -1,5 +1,5 @@
 // src/app/pages/home/home.ts
-import { Component, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, ViewChild, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfileCardComponent } from '../../components/profile-card/profile-card';
@@ -10,6 +10,7 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { MobileSearchComponent } from '../../components/mobile-search/mobile-search';
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { MobileSearchService } from '../../services/mobile-search.service';
+import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 
 type QueryMode = 'keywords' | 'profile' | 'skills';
@@ -22,6 +23,8 @@ type QueryMode = 'keywords' | 'profile' | 'skills';
   styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  auth = inject(AuthService);
+  
   @ViewChild('composerRef') composerRef?: PostComposerComponent;
   @ViewChild('feedRef') feedRef?: FeedComponent;
   @ViewChild('mobileSearchRef') mobileSearchRef?: MobileSearchComponent;
@@ -35,10 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchQuery = '';
   queryMode: QueryMode = 'keywords';
 
-  avatarUrl: string | null = null;
-  username = 'Sage Stockmans';
-  email = 'sage.stockmans@proton.me';
-  points = 120;
   badges = ['Helper', 'Designer', 'Top Contributor'];
 
   constructor(
