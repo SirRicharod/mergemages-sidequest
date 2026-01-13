@@ -10,6 +10,7 @@ export interface Post {
   author_user_id: string;
   title: string;
   body: string;
+  type: PostType;
   status: PostStatus;
   bounty_points: number;
   created_at: string;
@@ -23,6 +24,7 @@ export interface Post {
 export interface CreatePostRequest {
   title: string;
   body: string;
+  type: PostType;
   bounty_points: number;
 }
 

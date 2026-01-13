@@ -38,6 +38,7 @@ class PostController extends Controller
                 'author_user_id' => $post->author_user_id,
                 'title' => $post->title,
                 'body' => $post->body,
+                'type' => $post->type,
                 'status' => $post->status,
                 'bounty_points' => $post->bounty_points,
                 'created_at' => $post->created_at,
@@ -62,6 +63,7 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:200',
             'body' => 'required|string',
+            'type' => 'required|in:request,offer',
             'bounty_points' => 'required|integer|min:0',
         ]);
 
@@ -72,6 +74,7 @@ class PostController extends Controller
             'author_user_id' => $request->user()->user_id,
             'title' => trim(strip_tags($validated['title'])),
             'body' => trim(strip_tags($validated['body'])),
+            'type' => $validated['type'],
             'status' => 'created',
             'bounty_points' => $validated['bounty_points'],
             'created_at' => now(),
@@ -85,6 +88,7 @@ class PostController extends Controller
                 'posts.author_user_id',
                 'posts.title',
                 'posts.body',
+                'posts.type',
                 'posts.status',
                 'posts.bounty_points',
                 'posts.created_at',
@@ -102,6 +106,7 @@ class PostController extends Controller
                 'author_user_id' => $post->author_user_id,
                 'title' => $post->title,
                 'body' => $post->body,
+                'type' => $post->type,
                 'status' => $post->status,
                 'bounty_points' => $post->bounty_points,
                 'created_at' => $post->created_at,

@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     title: string; description: string; type: 'request' | 'offer';
     deadline: string | null; boost: boolean; xpReward: number;
   }) {
-    feed.addPost(evt.title, evt.description, evt.xpReward);
+    feed.addPost(evt.title, evt.description, evt.type, evt.xpReward);
   }
 
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }

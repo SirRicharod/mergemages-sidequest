@@ -53,7 +53,7 @@ export class FeedComponent implements OnInit {
             id: parseInt(post.post_id),
             title: post.title,
             description: post.body,
-            type: 'request' as PostType, // Default for now
+            type: post.type as PostType,
             urgent: false, // Default for now
             deadline: null,
             points: post.bounty_points,
@@ -71,6 +71,10 @@ export class FeedComponent implements OnInit {
   }
 
   get visible(): Sidequest[] {
+    if (this.loading) {
+      return [];
+    }
+    
     let base = this.items.filter(x => this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer');
     if (this.urgentOnly) base = base.filter(x => x.urgent);
     const q = this.searchQuery.trim().toLowerCase();
@@ -86,10 +90,11 @@ export class FeedComponent implements OnInit {
     return base;
   }
 
-  addPost(title: string, description: string, points: number): void {
+  addPost(title: string, description: string, type: PostType, points: number): void {
     this.postsService.createPost({
       title,
       body: description,
+      type,
       bounty_points: points
     }).subscribe({
       next: () => {
