@@ -1,5 +1,5 @@
 // src/app/components/feed/feed.ts
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostsService, Post, PostStatus } from '../../services/posts.service';
 
@@ -30,24 +30,51 @@ export interface Sidequest {
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
   
-  @Input() urgentOnly: boolean = false;
-  @Input() searchMode: SearchMode = 'requests';
-  @Input() searchQuery: string = '';
-  @Input() queryMode: QueryMode = 'keywords';
+  @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
+  @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
+  @Input() set searchQuery(value: string) { this._searchQuery.set(value); }
+  @Input() set queryMode(value: QueryMode) { this._queryMode.set(value); }
 
-  items: Sidequest[] = [];
-  loading = false;
+  private _urgentOnly = signal(false);
+  private _searchMode = signal<SearchMode>('requests');
+  private _searchQuery = signal('');
+  private _queryMode = signal<QueryMode>('keywords');
+
+  items = signal<Sidequest[]>([]);
+  loading = signal(true);
+
+  visible = computed(() => {
+    const allItems = this.items();
+    const mode = this._searchMode();
+    const urgent = this._urgentOnly();
+    const query = this._searchQuery();
+    const qMode = this._queryMode();
+
+    let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
+    if (urgent) base = base.filter(x => x.urgent);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      base = base.filter(x => {
+        switch (qMode) {
+          case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
+          case 'profile': return x.author.toLowerCase().includes(q);
+          default: return true;
+        }
+      });
+    }
+    return base;
+  });
 
   ngOnInit(): void {
     this.loadPosts();
   }
 
   loadPosts(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.postsService.getPosts().subscribe({
       next: (response) => {
         // Map backend Post to frontend Sidequest and filter out deleted
-        this.items = response.posts
+        const posts = response.posts
           .filter(post => post.status !== 'deleted')
           .map(post => ({
             id: parseInt(post.post_id),
@@ -61,33 +88,14 @@ export class FeedComponent implements OnInit {
             createdAt: new Date(post.created_at).toISOString().slice(0, 10),
             status: post.status
           }));
-        this.loading = false;
+        this.items.set(posts);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Failed to load posts:', err);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
-  }
-
-  get visible(): Sidequest[] {
-    if (this.loading) {
-      return [];
-    }
-    
-    let base = this.items.filter(x => this.searchMode === 'requests' ? x.type === 'request' : x.type === 'offer');
-    if (this.urgentOnly) base = base.filter(x => x.urgent);
-    const q = this.searchQuery.trim().toLowerCase();
-    if (q) {
-      base = base.filter(x => {
-        switch (this.queryMode) {
-          case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
-          case 'profile': return x.author.toLowerCase().includes(q);
-          default: return true;
-        }
-      });
-    }
-    return base;
   }
 
   addPost(title: string, description: string, type: PostType, points: number): void {

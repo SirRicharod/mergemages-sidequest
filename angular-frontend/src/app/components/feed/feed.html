@@ -1,5 +1,5 @@
 <div class="feed-fixed-width d-flex flex-column gap-3">
-  @if (loading) {
+  @if (loading()) {
     <div class="text-center text-muted py-5">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -8,7 +8,7 @@
     </div>
   }
   
-  @for (item of visible; track item.id) {
+  @for (item of visible(); track item.id) {
     <div class="card shadow-sm">
       <!-- Header: title and type badge -->
       <div class="card-header bg-transparent border-0 pb-2">
