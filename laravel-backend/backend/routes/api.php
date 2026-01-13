@@ -29,6 +29,7 @@ Route::get('/posts', [PostController::class, 'index']);
  * Get all users (public endpoint)
  */
 Route::get('/users', function () {
+    // Let op: Dit is de lijst met ALLE users
     $users = User::select('user_id as id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
 
     return response()->json([
@@ -143,6 +144,9 @@ Route::middleware('auth:sanctum')->group(function () {
      * Upload een profielfoto
      */
     Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
+
+    // 👇 NIEUW: Route om een specifiek profiel op te halen via ID 👇
+    Route::get('/users/{id}', [UserController::class, 'show']);
 
     /**
      * POST /api/logout
