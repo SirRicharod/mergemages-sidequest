@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostsService, PostStatus } from '../../services/posts.service';
+import { QuestsService } from '../../services/quests.service';
 import { AuthService } from '../../services/auth.service';
 
 type PostType = 'request' | 'offer';
@@ -124,6 +125,28 @@ export class FeedComponent implements OnInit {
           alert('Failed to create post. Please try again.');
         }
       }
+    });
+  }
+
+  private quests = inject(QuestsService);
+
+  canAccept(): boolean { return this.quests.canAccept(); }
+
+  acceptQuest(item: Sidequest): void {
+    // Prevent self-accept
+    if (this.auth.currentUser()?.id?.toString() === item.authorUserId) {
+      alert('You cannot accept your own quest.');
+      return;
+    }
+    if (!this.quests.add(item)) {
+      const remaining = this.quests.maxActive() - this.quests.count();
+      alert(`Max ${this.quests.maxActive()} active quests reached. Please complete or remove a quest before accepting a new one.`);
+      return;
+    }
+    // Optional: Update backend status
+    this.postsService.updatePostStatus(String(item.id), 'in_progress').subscribe({
+      next: () => { },
+      error: (err) => console.error('Failed to update status:', err)
     });
   }
 }
