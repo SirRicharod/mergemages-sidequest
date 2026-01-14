@@ -1,71 +1,70 @@
 <div class="feed-fixed-width d-flex flex-column gap-3">
   @if (loading()) {
-    <div class="text-center text-muted py-5">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-2">Loading posts...</p>
+  <div class="text-center text-muted py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+    <p class="mt-2">Loading posts...</p>
+  </div>
   }
-  
-  @for (item of visible(); track item.id) {
-    <div class="card shadow-sm" 
-         [class.card-border-offer]="item.type==='offer' && !item.urgent"
-         [class.card-border-request]="item.type==='request' && !item.urgent"
-         [class.card-border-offer-urgent]="item.type==='offer' && item.urgent"
-         [class.card-border-request-urgent]="item.type==='request' && item.urgent">
-      <!-- Header: title -->
-      <div class="card-header bg-transparent border-0 pb-2">
-        <div class="d-flex align-items-start justify-content-between mb-2">
-          <h5 class="card-title mb-0 text-wrap text-break">{{ item.title }}</h5>
-        </div>
-      </div>
 
-      <div class="card-body pt-2">
-        <!-- Description -->
-        <p class="card-text mb-3">{{ item.description }}</p>
-
-        <!-- Meta info: Points and deadline -->
-        <div class="d-flex align-items-center justify-content-between mb-3 small text-muted">
-          <div>
-            <i class="bi bi-star-fill me-1"></i>
-            <span class="fw-semibold">{{ item.points }}</span> points
-          </div>
-          @if (item.deadline) {
-            <div>
-              <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
-            </div>
-          }
-        </div>
-
-        <!-- Author, date, and actions on same line -->
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-2 text-muted small">
-            @if (item.authorAvatar) {
-              <img [src]="item.authorAvatar" class="rounded-circle" width="24" height="24" [alt]="item.author">
-            } @else {
-              <i class="bi bi-person-circle" style="font-size: 24px;"></i>
-            }
-            <span>
-              by <strong>{{ item.author }}</strong>
-              @if (auth.currentUser()?.id?.toString() === item.authorUserId) {
-                <span class="badge bg-info text-dark ms-1">You</span>
-              }
-              • {{ item.createdAt }}
-            </span>
-          </div>
-          @if (auth.currentUser()?.id?.toString() !== item.authorUserId) {
-            <button class="btn btn-sm btn-accept">
-              <i class="bi bi-check2-circle"></i>
-              <span class="ms-1">Accept quest</span>
-            </button>
-          }
-        </div>
+  @for (item of visible(); track item.id ?? $index) {
+  <div class="card shadow-sm" [class.card-border-offer]="item.type==='offer' && !item.urgent"
+    [class.card-border-request]="item.type==='request' && !item.urgent"
+    [class.card-border-offer-urgent]="item.type==='offer' && item.urgent"
+    [class.card-border-request-urgent]="item.type==='request' && item.urgent">
+    <!-- Header: title -->
+    <div class="card-header bg-transparent border-0 pb-2">
+      <div class="d-flex align-items-start justify-content-between mb-2">
+        <h5 class="card-title mb-0 text-wrap text-break">{{ item.title }}</h5>
       </div>
     </div>
+
+    <div class="card-body pt-2">
+      <!-- Description -->
+      <p class="card-text mb-3">{{ item.description }}</p>
+
+      <!-- Meta info: Points and deadline -->
+      <div class="d-flex align-items-center justify-content-between mb-3 small text-muted">
+        <div>
+          <i class="bi bi-star-fill me-1"></i>
+          <span class="fw-semibold">{{ item.points }}</span> points
+        </div>
+        @if (item.deadline) {
+        <div>
+          <i class="bi bi-calendar-event me-1"></i> {{ item.deadline }}
+        </div>
+        }
+      </div>
+
+      <!-- Author, date, and actions on same line -->
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2 text-muted small">
+          @if (item.authorAvatar) {
+          <img [src]="item.authorAvatar" class="rounded-circle" width="24" height="24" [alt]="item.author">
+          } @else {
+          <i class="bi bi-person-circle" style="font-size: 24px;"></i>
+          }
+          <span>
+            by <strong>{{ item.author }}</strong>
+            @if (auth.currentUser()?.id?.toString() === item.authorUserId) {
+            <span class="badge bg-info text-dark ms-1">You</span>
+            }
+            • {{ item.createdAt }}
+          </span>
+        </div>
+        @if (auth.currentUser()?.id?.toString() !== item.authorUserId) {
+        <button class="btn btn-sm btn-accept">
+          <i class="bi bi-check2-circle"></i>
+          <span class="ms-1">Accept quest</span>
+        </button>
+        }
+      </div>
+    </div>
+  </div>
   }
 
   @if (visible.length === 0) {
-    <div class="text-muted">No posts match the current filters.</div>
+  <div class="text-muted">No posts match the current filters.</div>
   }
 </div>

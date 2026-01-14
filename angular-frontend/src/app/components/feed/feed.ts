@@ -1,7 +1,6 @@
-// src/app/components/feed/feed.ts
-import { Component, Input, OnInit, inject, signal, computed, effect } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PostsService, Post, PostStatus } from '../../services/posts.service';
+import { PostsService, PostStatus } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
 
 type PostType = 'request' | 'offer';
@@ -33,7 +32,7 @@ export interface Sidequest {
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
   auth = inject(AuthService);
-  
+
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
   @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
   @Input() set searchQuery(value: string) { this._searchQuery.set(value); }
@@ -77,23 +76,25 @@ export class FeedComponent implements OnInit {
     this.loading.set(true);
     this.postsService.getPosts().subscribe({
       next: (response) => {
-        // Map backend Post to frontend Sidequest and filter out deleted
         const posts = response.posts
           .filter(post => post.status !== 'deleted')
-          .map(post => ({
-            id: parseInt(post.post_id),
-            title: post.title,
-            description: post.body,
-            type: post.type as PostType,
-            urgent: false, // Default for now
-            deadline: null,
-            points: post.bounty_points,
-            author: post.author?.name || 'Unknown',
-            authorAvatar: post.author?.avatar_url || null,
-            authorUserId: post.author_user_id,
-            createdAt: new Date(post.created_at).toISOString().slice(0, 10),
-            status: post.status
-          }));
+          .map((post, idx) => {
+            const idNum = parseInt(post.post_id);
+            return {
+              id: Number.isFinite(idNum) ? idNum : Date.now() + idx, // guard against NaN to fix track keys
+              title: post.title,
+              description: post.body,
+              type: post.type as PostType,
+              urgent: false,
+              deadline: null,
+              points: post.bounty_points,
+              author: post.author?.name || 'Unknown',
+              authorAvatar: post.author?.avatar_url || null,
+              authorUserId: post.author_user_id,
+              createdAt: new Date(post.created_at).toISOString().slice(0, 10),
+              status: post.status
+            } as Sidequest;
+          });
         this.items.set(posts);
         this.loading.set(false);
       },
@@ -112,9 +113,8 @@ export class FeedComponent implements OnInit {
       bounty_points: points
     }).subscribe({
       next: (response) => {
-        // Update the user's XP balance immediately
         this.auth.updateXpBalance(response.xp_balance);
-        this.loadPosts(); // Reload to show the new post
+        this.loadPosts();
       },
       error: (err) => {
         console.error('Failed to create post:', err);
