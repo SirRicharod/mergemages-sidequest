@@ -1,4 +1,33 @@
-<!-- Phone-Mode -->
+<div class="container my-4">
+    <h4 class="mb-3">Your active quests ({{ active.length }}/{{ max }})</h4>
+
+    <div *ngIf="active.length === 0" class="text-muted mb-3">
+        You have no active quests yet. Accept quests from the feed to see them here.
+    </div>
+
+    <div class="d-flex flex-column gap-3">
+        <div *ngFor="let q of active" class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between">
+                    <h5 class="card-title mb-2">{{ q.title }}</h5>
+                    <span class="badge bg-secondary">{{ q.type === 'offer' ? 'Offer' : 'Request' }}</span>
+                </div>
+                <p class="card-text mb-2">{{ q.description }}</p>
+                <div class="small text-muted d-flex justify-content-between">
+                    <span><i class="bi bi-star-fill me-1"></i> {{ q.points }} points</span>
+                    <span *ngIf="q.deadline"><i class="bi bi-calendar-event me-1"></i> {{ q.deadline }}</span>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-sm btn-outline-danger" (click)="remove(q.id)">
+                        <i class="bi bi-x-circle me-1"></i> Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Phone-Mode bottom nav -->
 <app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
     (openSearch)="mobileSearchVisible = true">
 </app-bottom-nav>
