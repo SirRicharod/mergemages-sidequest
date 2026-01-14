@@ -54,10 +54,12 @@
           </span>
         </div>
         @if (auth.currentUser()?.id?.toString() !== item.authorUserId) {
-        <button class="btn btn-sm btn-accept">
+        <button class="btn btn-sm btn-accept" (click)="acceptQuest(item)"
+          [disabled]="!canAccept() || auth.currentUser()?.id?.toString() === item.authorUserId">
           <i class="bi bi-check2-circle"></i>
           <span class="ms-1">Accept quest</span>
         </button>
+
         }
       </div>
     </div>
