@@ -4,12 +4,12 @@
         <!-- Profile: hide on phone -->
         <div class="col-12 col-lg-3 d-none d-lg-block">
             <app-profile-card 
-                [avatarUrl]="null" 
-                [username]="auth.currentUser()?.name || 'Guest'" 
-                [email]="auth.currentUser()?.email || ''"
-                [points]="auth.currentUser()?.xp_balance || 0"
-                [badges]="badges">
-            </app-profile-card>
+    [avatarUrl]="auth.currentUser()?.avatar_url ?? null" 
+    [username]="auth.currentUser()?.name || 'Guest'" 
+    [email]="auth.currentUser()?.email || ''"
+    [points]="auth.currentUser()?.xp_balance || 0"
+    [badges]="badges">
+</app-profile-card>
         </div>
 
         <div class="col-12 col-lg-6">

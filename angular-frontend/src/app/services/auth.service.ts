@@ -10,6 +10,7 @@ export interface AuthUser {
   email: string;
   xp_balance: number;
   weekly_xp_allowance: number;
+  avatar_url: string | null;
 }
 
 export interface LoginResponse {
