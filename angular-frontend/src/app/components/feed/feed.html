@@ -13,7 +13,7 @@
     [class.card-border-request]="item.type==='request' && !item.urgent"
     [class.card-border-offer-urgent]="item.type==='offer' && item.urgent"
     [class.card-border-request-urgent]="item.type==='request' && item.urgent">
-    <!-- Header: title -->
+    
     <div class="card-header bg-transparent border-0 pb-2">
       <div class="d-flex align-items-start justify-content-between mb-2">
         <h5 class="card-title mb-0 text-wrap text-break">{{ item.title }}</h5>
@@ -21,10 +21,8 @@
     </div>
 
     <div class="card-body pt-2">
-      <!-- Description -->
       <p class="card-text mb-3">{{ item.description }}</p>
 
-      <!-- Meta info: Points and deadline -->
       <div class="d-flex align-items-center justify-content-between mb-3 small text-muted">
         <div>
           <i class="bi bi-star-fill me-1"></i>
@@ -37,7 +35,6 @@
         }
       </div>
 
-      <!-- Author, date, and actions on same line -->
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2 text-muted small">
           @if (item.authorAvatar) {
@@ -60,6 +57,72 @@
         </button>
         }
       </div>
+
+      <hr class="my-3 text-muted" style="opacity: 0.2;">
+      
+      <div class="d-flex align-items-center px-1">
+          <button class="btn btn-sm text-muted p-0 d-flex align-items-center gap-2" 
+                  (click)="toggleComments(item)" 
+                  style="border: none; background: transparent;">
+              <i class="bi bi-chat-left-text"></i>
+              <span class="fw-semibold">Comments</span>
+              
+              @if (item.commentsCount && item.commentsCount > 0) {
+                <span class="badge bg-secondary rounded-pill">{{ item.commentsCount }}</span>
+              }
+          </button>
+      </div>
+
+      @if (item.showComments) {
+      <div class="bg-light p-3 rounded mt-3 border-top">
+          
+          @if (item.isLoadingComments) {
+            <div class="text-center text-muted small py-2">
+                <div class="spinner-border spinner-border-sm me-1" role="status"></div>
+                Laden...
+            </div>
+          } 
+          
+          @else if (!item.comments || item.comments.length === 0) {
+            <div class="text-center text-muted small mb-3">
+                Nog geen reacties. Wees de eerste! 👇
+            </div>
+          } 
+          
+          @else {
+            @for (comment of item.comments; track comment.id) {
+            <div class="d-flex mb-3">
+              <img [src]="comment.user?.avatar_url || 'https://ui-avatars.com/api/?name=' + (comment.user?.name || 'User')" 
+                    class="rounded-circle me-2 border bg-white" 
+                    style="width: 32px; height: 32px; object-fit: cover;">
+              
+              <div class="bg-white p-2 px-3 rounded-4 shadow-sm w-100">
+                  <div class="d-flex justify-content-between align-items-center">
+                      <strong class="small text-dark">{{ comment.user?.name || 'Unknown' }}</strong>
+                      <small class="text-muted" style="font-size: 0.7rem;">{{ comment.created_at | date:'dd MMM HH:mm' }} </small>
+                  </div>
+                  <p class="mb-0 small text-secondary mt-1 text-wrap text-break">{{ comment.content }}</p>
+              </div>
+            </div>
+            }
+          }
+
+          <div class="d-flex align-items-center mt-2 gap-2">
+              <input #commentInput 
+                      type="text" 
+                      class="form-control form-control-sm rounded-pill" 
+                      placeholder="Schrijf een reactie..."
+                      (keyup.enter)="submitComment(item, commentInput)">
+              
+              <button class="btn btn-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" 
+                      style="width: 32px; height: 32px;"
+                      (click)="submitComment(item, commentInput)">
+                  <i class="bi bi-send-fill" style="font-size: 0.8rem;"></i>
+              </button>
+          </div>
+      </div>
+      }
+
     </div>
   </div>
   }

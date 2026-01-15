@@ -1,5 +1,7 @@
-import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { PostsService, PostStatus } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -9,6 +11,7 @@ type QueryMode = 'keywords' | 'profile' | 'skills';
 
 export interface Sidequest {
   id: number;
+  realId: string; 
   title: string;
   description: string;
   type: PostType;
@@ -20,17 +23,27 @@ export interface Sidequest {
   authorUserId: string;
   createdAt: string;
   status: PostStatus;
+  
+  // Dit veld slaat het aantal op
+  commentsCount?: number;
+
+  // Velden voor comments logica
+  comments?: any[];
+  showComments?: boolean;
+  isLoadingComments?: boolean;
 }
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './feed.html',
   styleUrls: ['./feed.css']
 })
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
+  private http = inject(HttpClient);
+  private cdRef = inject(ChangeDetectorRef);
   auth = inject(AuthService);
 
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
@@ -115,7 +128,8 @@ export class FeedComponent implements OnInit {
               : null;
             
             return {
-              id: Number.isFinite(idNum) ? idNum : Date.now() + idx, // guard against NaN to fix track keys
+              id: Number.isFinite(idNum) ? idNum : Date.now() + idx,
+              realId: post.post_id,
               title: post.title,
               description: post.body,
               type: post.type as PostType,
@@ -126,9 +140,17 @@ export class FeedComponent implements OnInit {
               authorAvatar: fullAvatarUrl,
               authorUserId: post.author_user_id,
               createdAt: new Date(post.created_at).toISOString().slice(0, 10),
-              status: post.status
+              status: post.status,
+              
+              // 👇 HIER IS DE FIX: (post as any) toegevoegd om de error te voorkomen
+              commentsCount: (post as any).comments_count || 0,
+              
+              comments: [],
+              showComments: false,
+              isLoadingComments: false
             } as Sidequest;
           });
+          
         this.items.set(posts);
         this.loading.set(false);
       },
@@ -159,5 +181,53 @@ export class FeedComponent implements OnInit {
         }
       }
     });
+  }
+
+  
+  toggleComments(post: Sidequest) {
+    if (post.showComments) {
+      post.showComments = false;
+      return;
+    }
+
+    post.showComments = true;
+    post.isLoadingComments = true;
+
+    this.http.get<any[]>(`http://127.0.0.1:8000/api/posts/${post.realId}/comments`)
+      .subscribe({
+        next: (data) => {
+          post.comments = data;
+          post.isLoadingComments = false;
+          this.items.update(items => [...items]); 
+          this.cdRef.detectChanges();
+        },
+        error: (err) => {
+          console.error('Fout bij laden comments:', err);
+          post.isLoadingComments = false;
+          this.items.update(items => [...items]);
+          this.cdRef.detectChanges();
+        }
+      });
+  }
+
+  submitComment(post: Sidequest, inputField: HTMLInputElement) {
+    const content = inputField.value;
+    if (!content) return;
+
+    this.http.post(`http://127.0.0.1:8000/api/posts/${post.realId}/comments`, { content })
+      .subscribe({
+        next: (newComment: any) => {
+          if (!post.comments) post.comments = [];
+          post.comments.push(newComment);
+          
+          // Teller ophogen bij plaatsen
+          post.commentsCount = (post.commentsCount || 0) + 1;
+
+          inputField.value = '';
+          this.items.update(items => [...items]); // comments direct weergeven
+          this.cdRef.detectChanges();
+        },
+        error: (err) => console.error('Fout bij plaatsen:', err)
+      });
   }
 }
