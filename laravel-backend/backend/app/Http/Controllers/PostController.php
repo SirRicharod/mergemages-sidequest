@@ -19,12 +19,16 @@ class PostController extends Controller
                 'posts.post_id',
                 'posts.author_user_id',
                 'posts.title',
-                'posts.body',                'posts.type',                'posts.status',
+                'posts.body',
+                'posts.type',
+                'posts.status',
                 'posts.bounty_points',
                 'posts.created_at',
                 'posts.updated_at',
                 'users.name as author_name',
-                'users.avatar as author_avatar'
+                'users.avatar as author_avatar',
+                // 👇 NIEUW: Telt de comments via een subquery
+                DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.post_id) as comments_count')
             )
             ->whereIn('posts.status', ['created', 'in_progress', 'completed'])
             ->orderBy('posts.created_at', 'desc')
@@ -42,6 +46,8 @@ class PostController extends Controller
                 'bounty_points' => $post->bounty_points,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
+                // 👇 NIEUW: Geef de teller mee aan de frontend
+                'comments_count' => $post->comments_count, 
                 'author' => [
                     'name' => $post->author_name,
                     'avatar_url' => $post->author_avatar,
@@ -135,6 +141,8 @@ class PostController extends Controller
                 'bounty_points' => $post->bounty_points,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
+                // Bij een nieuwe post zijn er 0 comments
+                'comments_count' => 0, 
                 'author' => [
                     'name' => $post->author_name,
                     'avatar_url' => $post->author_avatar,

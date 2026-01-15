@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Concerns\HasUuids; // <--- 1. Deze importeren
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids; // <--- 2. HasUuids aanzetten
+    use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
-    // --- 3. HIER FIXEN WE DE FOUTMELDING ---
-    protected $primaryKey = 'user_id'; // De naam van je ID kolom
+    // ⚙️ BELANGRIJKE CONFIGURATIE VOOR UUIDs & USER_ID
+    protected $primaryKey = 'user_id'; // Wij gebruiken user_id, niet id
     public $incrementing = false;      // Het is geen optellend nummer
     protected $keyType = 'string';     // Het is tekst (UUID)
-    // ---------------------------------------
 
     /**
      * The attributes that are mass assignable.
@@ -25,11 +23,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',        // Belangrijk! Anders kan Laravel de ID niet opslaan
         'name',
         'email',
-        'password_hash', // Let op: In jouw database heet dit password_hash, niet password
+        'password_hash',  // Komt overeen met je database kolom
         'bio',
-        'avatar_url',
+        'avatar',         // Dit is de bestandsnaam in de database
     ];
 
     /**
@@ -49,10 +48,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        // 'password' => 'hashed', // Deze mag weg omdat we password_hash gebruiken
     ];
     
-    // Omdat Laravel standaard 'password' verwacht voor inloggen, moeten we dit ook even zeggen:
+    // Omdat Laravel standaard zoekt naar 'password', verwijzen we hier naar 'password_hash'
     public function getAuthPassword()
     {
         return $this->password_hash;

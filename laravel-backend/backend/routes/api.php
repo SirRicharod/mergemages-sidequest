@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
@@ -84,20 +84,16 @@ Route::post('/login', function (Request $request) {
 // ==========================================
 // PROTECTED ROUTES (token required! 🔒)
 // ==========================================
+// ==========================================
+// PROTECTED ROUTES (token required! 🔒)
+// ==========================================
 
 Route::middleware('auth:sanctum')->group(function () {
 
     // --- REVIEWS ---
-    // 1. Alle reviews (Feed)
     Route::get('/reviews', [ReviewController::class, 'index']); 
-    
-    // 2. Reviews voor MIJ (Profiel)
     Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
-
-    // 3. 👇 NIEUW: Reviews van IEMAND ANDERS (Public Profiel) 👇
     Route::get('/reviews/{id}', [ReviewController::class, 'show']);
-
-    // 4. Nieuwe review plaatsen
     Route::post('/reviews', [ReviewController::class, 'store']); 
 
     // --- POSTS ---
@@ -108,11 +104,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
     Route::get('/users/{id}', [UserController::class, 'show']);
 
+    // --- LOGOUT ---
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
-    });
+    }); // <--- DEZE HAAKJES SLUITEN DE LOGOUT FUNCTIE AF
 
+    // --- COMMENTS ROUTES (Nu staan ze op de juiste plek!) ---
+    Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
+
+    // --- PROFILE ---
     Route::get('/profile', function (Request $request) {
         $user = $request->user();
         $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
