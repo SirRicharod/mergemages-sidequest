@@ -72,13 +72,13 @@ export class AuthService {
   /**
    * Login user
    */
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(email: string, password: string, rememberMe: boolean = false): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
       email,
       password
     }).pipe(
       tap(response => {
-        this.setToken(response.token);
+        this.setToken(response.token, rememberMe);
         this.currentUser.set(response.user);
         this.isAuthenticated.set(true);
       })
@@ -117,15 +117,19 @@ export class AuthService {
    */
   getToken(): string | null {
     if (!this.isBrowser) return null;
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem(this.tokenKey) || sessionStorage.getItem(this.tokenKey);
   }
 
   /**
-   * Save token to localStorage
+   * Save token to localStorage or sessionStorage
    */
-  private setToken(token: string): void {
+  private setToken(token: string, rememberMe: boolean = false): void {
     if (!this.isBrowser) return;
-    localStorage.setItem(this.tokenKey, token);
+    if (rememberMe) {
+      localStorage.setItem(this.tokenKey, token);
+    } else {
+      sessionStorage.setItem(this.tokenKey, token);
+    }
   }
 
   /**
@@ -134,6 +138,7 @@ export class AuthService {
   private clearAuth(): void {
     if (this.isBrowser) {
       localStorage.removeItem(this.tokenKey);
+      sessionStorage.removeItem(this.tokenKey);
     }
     this.currentUser.set(null);
     this.isAuthenticated.set(false);

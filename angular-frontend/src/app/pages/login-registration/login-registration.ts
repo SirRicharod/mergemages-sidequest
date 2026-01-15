@@ -17,7 +17,8 @@ export class LoginRegistration {
   // Form data
   loginData = {
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   };
   
   registerData = {
@@ -76,7 +77,7 @@ export class LoginRegistration {
     this.clearMessages();
     this.loading.set(true);
 
-    this.authService.login(this.loginData.email, this.loginData.password).subscribe({
+    this.authService.login(this.loginData.email, this.loginData.password, this.loginData.rememberMe).subscribe({
       next: (response) => {
         this.loading.set(false);
         this.successMessage.set('Login successful!');
