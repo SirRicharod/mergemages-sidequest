@@ -24,7 +24,7 @@ class PostController extends Controller
                 'posts.created_at',
                 'posts.updated_at',
                 'users.name as author_name',
-                'users.avatar_url as author_avatar'
+                'users.avatar as author_avatar'
             )
             ->whereIn('posts.status', ['created', 'in_progress', 'completed'])
             ->orderBy('posts.created_at', 'desc')

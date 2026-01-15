@@ -45,6 +45,7 @@ export class FeedComponent implements OnInit {
 
   items = signal<Sidequest[]>([]);
   loading = signal(true);
+  visibleCount = signal(20);
 
   visible = computed(() => {
     const allItems = this.items();
@@ -65,11 +66,39 @@ export class FeedComponent implements OnInit {
         }
       });
     }
-    return base;
+    return base.slice(0, this.visibleCount());
   });
+
+  filteredTotal = computed(() => {
+    const allItems = this.items();
+    const mode = this._searchMode();
+    const urgent = this._urgentOnly();
+    const query = this._searchQuery();
+    const qMode = this._queryMode();
+
+    let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
+    if (urgent) base = base.filter(x => x.urgent);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      base = base.filter(x => {
+        switch (qMode) {
+          case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
+          case 'profile': return x.author.toLowerCase().includes(q);
+          default: return true;
+        }
+      });
+    }
+    return base.length;
+  });
+
+  hasMore = computed(() => this.visible().length < this.filteredTotal());
 
   ngOnInit(): void {
     this.loadPosts();
+  }
+
+  loadMore(): void {
+    this.visibleCount.update(count => count + 20);
   }
 
   loadPosts(): void {
@@ -80,6 +109,11 @@ export class FeedComponent implements OnInit {
           .filter(post => post.status !== 'deleted')
           .map((post, idx) => {
             const idNum = parseInt(post.post_id);
+            const avatarUrl = post.author?.avatar_url;
+            const fullAvatarUrl = avatarUrl && avatarUrl.trim() 
+              ? `http://127.0.0.1:8000/storage/${avatarUrl}`
+              : null;
+            
             return {
               id: Number.isFinite(idNum) ? idNum : Date.now() + idx, // guard against NaN to fix track keys
               title: post.title,
@@ -89,7 +123,7 @@ export class FeedComponent implements OnInit {
               deadline: null,
               points: post.bounty_points,
               author: post.author?.name || 'Unknown',
-              authorAvatar: post.author?.avatar_url || null,
+              authorAvatar: fullAvatarUrl,
               authorUserId: post.author_user_id,
               createdAt: new Date(post.created_at).toISOString().slice(0, 10),
               status: post.status
