@@ -31,6 +31,11 @@ export class LoginRegistration {
   loading = signal(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+  
+  // Password visibility toggles
+  showLoginPassword = signal(false);
+  showRegisterPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   constructor(
     private authService: AuthService,
@@ -43,6 +48,21 @@ export class LoginRegistration {
   toggleMode(): void {
     this.isLoginMode.update(mode => !mode);
     this.clearMessages();
+  }
+
+  /**
+   * Toggle password visibility
+   */
+  toggleLoginPasswordVisibility(): void {
+    this.showLoginPassword.update(show => !show);
+  }
+
+  toggleRegisterPasswordVisibility(): void {
+    this.showRegisterPassword.update(show => !show);
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword.update(show => !show);
   }
 
   /**
