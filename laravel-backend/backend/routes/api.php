@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
@@ -111,6 +111,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
+    // --- COMMENTS ROUTES ---
+    Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
     });
 
     Route::get('/profile', function (Request $request) {
