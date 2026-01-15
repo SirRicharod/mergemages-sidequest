@@ -1,4 +1,3 @@
-// src/app/pages/home/home.ts
 import { Component, ViewChild, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

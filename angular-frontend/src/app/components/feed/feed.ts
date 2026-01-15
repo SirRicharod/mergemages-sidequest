@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostsService, PostStatus } from '../../services/posts.service';
-import { QuestsService } from '../../services/quests.service';
 import { AuthService } from '../../services/auth.service';
+import { QuestsService } from '../../services/quests.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
@@ -33,6 +33,7 @@ export interface Sidequest {
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
   auth = inject(AuthService);
+  private quests = inject(QuestsService);
 
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
   @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
@@ -82,7 +83,7 @@ export class FeedComponent implements OnInit {
           .map((post, idx) => {
             const idNum = parseInt(post.post_id);
             return {
-              id: Number.isFinite(idNum) ? idNum : Date.now() + idx, // guard against NaN to fix track keys
+              id: Number.isFinite(idNum) ? idNum : Date.now() + idx,
               title: post.title,
               description: post.body,
               type: post.type as PostType,
@@ -128,25 +129,18 @@ export class FeedComponent implements OnInit {
     });
   }
 
-  private quests = inject(QuestsService);
-
   canAccept(): boolean { return this.quests.canAccept(); }
 
   acceptQuest(item: Sidequest): void {
-    // Prevent self-accept
-    if (this.auth.currentUser()?.id?.toString() === item.authorUserId) {
-      alert('You cannot accept your own quest.');
+    const ok = this.quests.add(item); // boolean
+    if (!ok) {
+      alert(`You cannot accept this quest. Either it's yours or you reached the max (${this.quests.maxActive()}).`);
       return;
     }
-    if (!this.quests.add(item)) {
-      const remaining = this.quests.maxActive() - this.quests.count();
-      alert(`Max ${this.quests.maxActive()} active quests reached. Please complete or remove a quest before accepting a new one.`);
-      return;
-    }
-    // Optional: Update backend status
+    // Optional backend status update (non-blocking)
     this.postsService.updatePostStatus(String(item.id), 'in_progress').subscribe({
       next: () => { },
-      error: (err) => console.error('Failed to update status:', err)
+      error: (err) => console.warn('Status update failed (local quest kept):', err)
     });
   }
 }
