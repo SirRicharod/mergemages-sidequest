@@ -44,16 +44,29 @@
 
                 <div class="mb-3">
                   <label for="loginPassword" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    class="form-control custom-input"
-                    id="loginPassword"
-                    name="password"
-                    [(ngModel)]="loginData.password"
-                    required
-                    placeholder="Enter your password"
-                    [disabled]="loading()"
-                  />
+                  <div class="position-relative">
+                    <input
+                      [type]="showLoginPassword() ? 'text' : 'password'"
+                      class="form-control custom-input"
+                      id="loginPassword"
+                      name="password"
+                      [(ngModel)]="loginData.password"
+                      required
+                      placeholder="Enter your password"
+                      [disabled]="loading()"
+                      style="padding-right: 2.5rem;"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                      (click)="toggleLoginPasswordVisibility()"
+                      [disabled]="loading()"
+                      style="border: none; background: none; padding: 0.375rem 0.75rem; color: #6c757d;"
+                      tabindex="-1"
+                    >
+                      <i [class]="showLoginPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <button
@@ -104,32 +117,58 @@
 
                 <div class="mb-3">
                   <label for="registerPassword" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    class="form-control custom-input"
-                    id="registerPassword"
-                    name="password"
-                    [(ngModel)]="registerData.password"
-                    required
-                    minlength="8"
-                    placeholder="At least 8 characters"
-                    [disabled]="loading()"
-                  />
+                  <div class="position-relative">
+                    <input
+                      [type]="showRegisterPassword() ? 'text' : 'password'"
+                      class="form-control custom-input"
+                      id="registerPassword"
+                      name="password"
+                      [(ngModel)]="registerData.password"
+                      required
+                      minlength="8"
+                      placeholder="At least 8 characters"
+                      [disabled]="loading()"
+                      style="padding-right: 2.5rem;"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                      (click)="toggleRegisterPasswordVisibility()"
+                      [disabled]="loading()"
+                      style="border: none; background: none; padding: 0.375rem 0.75rem; color: #6c757d;"
+                      tabindex="-1"
+                    >
+                      <i [class]="showRegisterPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div class="mb-3">
                   <label for="registerPasswordConfirmation" class="form-label">Confirm Password</label>
-                  <input
-                    type="password"
-                    class="form-control custom-input"
-                    id="registerPasswordConfirmation"
-                    name="passwordConfirmation"
-                    [(ngModel)]="registerData.passwordConfirmation"
-                    required
-                    minlength="8"
-                    placeholder="Re-enter your password"
-                    [disabled]="loading()"
-                  />
+                  <div class="position-relative">
+                    <input
+                      [type]="showConfirmPassword() ? 'text' : 'password'"
+                      class="form-control custom-input"
+                      id="registerPasswordConfirmation"
+                      name="passwordConfirmation"
+                      [(ngModel)]="registerData.passwordConfirmation"
+                      required
+                      minlength="8"
+                      placeholder="Re-enter your password"
+                      [disabled]="loading()"
+                      style="padding-right: 2.5rem;"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                      (click)="toggleConfirmPasswordVisibility()"
+                      [disabled]="loading()"
+                      style="border: none; background: none; padding: 0.375rem 0.75rem; color: #6c757d;"
+                      tabindex="-1"
+                    >
+                      <i [class]="showConfirmPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <button

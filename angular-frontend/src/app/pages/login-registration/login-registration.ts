@@ -31,6 +31,11 @@ export class LoginRegistration {
   loading = signal(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+  
+  // Password visibility toggles
+  showLoginPassword = signal(false);
+  showRegisterPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   constructor(
     private authService: AuthService,
@@ -43,6 +48,25 @@ export class LoginRegistration {
   toggleMode(): void {
     this.isLoginMode.update(mode => !mode);
     this.clearMessages();
+    // Clear registration data when switching to login mode
+    if (this.isLoginMode()) {
+      this.clearRegisterData();
+    }
+  }
+
+  /**
+   * Toggle password visibility
+   */
+  toggleLoginPasswordVisibility(): void {
+    this.showLoginPassword.update(show => !show);
+  }
+
+  toggleRegisterPasswordVisibility(): void {
+    this.showRegisterPassword.update(show => !show);
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword.update(show => !show);
   }
 
   /**
@@ -94,10 +118,12 @@ export class LoginRegistration {
       next: (response) => {
         this.loading.set(false);
         this.successMessage.set('Registration successful! Please login.');
+        const registeredEmail = this.registerData.email;
+        this.clearRegisterData();
         // Switch to login mode after 1.5 seconds
         setTimeout(() => {
           this.isLoginMode.set(true);
-          this.loginData.email = this.registerData.email;
+          this.loginData.email = registeredEmail;
           this.clearMessages();
         }, 1500);
       },
@@ -115,5 +141,17 @@ export class LoginRegistration {
   private clearMessages(): void {
     this.errorMessage.set(null);
     this.successMessage.set(null);
+  }
+
+  /**
+   * Clear registration form data
+   */
+  private clearRegisterData(): void {
+    this.registerData = {
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirmation: ''
+    };
   }
 }
