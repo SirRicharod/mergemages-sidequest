@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\PostController; 
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +50,7 @@ Route::post('/register', function (Request $request) {
             'xp_balance' => $user->xp_balance,
             'weekly_xp_allowance' => $user->weekly_xp_allowance,
         ],
-    ], 201); 
+    ], 201);
 });
 
 Route::post('/login', function (Request $request) {
@@ -63,14 +63,14 @@ Route::post('/login', function (Request $request) {
     $user = User::where('email', $sanitizedEmail)->first();
 
     if (!$user || !Hash::check($validated['password'], $user->password_hash)) {
-        return response()->json(['message' => 'Invalid credentials'], 401); 
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     $token = $user->createToken('auth_token')->plainTextToken;
 
     return response()->json([
         'message' => 'Login successful',
-        'token' => $token, 
+        'token' => $token,
         'user' => [
             'user_id' => $user->user_id,
             'name' => $user->name,
@@ -89,8 +89,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- REVIEWS ---
     // 1. Alle reviews (Feed)
-    Route::get('/reviews', [ReviewController::class, 'index']); 
-    
+    Route::get('/reviews', [ReviewController::class, 'index']);
+
     // 2. Reviews voor MIJ (Profiel)
     Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
 
@@ -98,7 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
     // 4. Nieuwe review plaatsen
-    Route::post('/reviews', [ReviewController::class, 'store']); 
+    Route::post('/reviews', [ReviewController::class, 'store']);
 
     // --- POSTS ---
     Route::post('/posts', [PostController::class, 'store']);
@@ -116,7 +116,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', function (Request $request) {
         $user = $request->user();
         $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
-        
+
         return response()->json([
             'user' => [
                 'user_id' => $user->user_id,
@@ -128,4 +128,9 @@ Route::middleware('auth:sanctum')->group(function () {
             ]
         ]);
     });
+
+    // quests
+    Route::post('/quests/{postId}/accept', [PostController::class, 'accept']);
+    Route::delete('/quests/{postId}/remove', [PostController::class, 'remove']);
+    Route::get('/quests', [PostController::class, 'myQuests']);
 });

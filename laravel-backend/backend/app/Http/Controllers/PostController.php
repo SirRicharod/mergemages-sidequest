@@ -19,7 +19,9 @@ class PostController extends Controller
                 'posts.post_id',
                 'posts.author_user_id',
                 'posts.title',
-                'posts.body',                'posts.type',                'posts.status',
+                'posts.body',
+                'posts.type',
+                'posts.status',
                 'posts.bounty_points',
                 'posts.created_at',
                 'posts.updated_at',
@@ -143,6 +145,91 @@ class PostController extends Controller
             'xp_balance' => $updatedUser->xp_balance
         ], 201);
     }
+
+
+    public function accept(Request $request, $postId)
+    {
+        $user = $request->user();
+
+        $activeCount = DB::table('quest_assignments')->where('user_id', $user->user_id)->count();
+        if ($activeCount >= 5) {
+            return response()->json(['message' => 'Max active quests reached'], 422);
+        }
+
+        $exists = DB::table('quest_assignments')
+            ->where('user_id', $user->user_id)
+            ->where('post_id', $postId)
+            ->exists();
+        if ($exists) {
+            return response()->json(['ok' => true]); // idempotent
+        }
+
+        DB::table('quest_assignments')->insert([
+            'user_id' => $user->user_id,
+            'post_id' => $postId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('posts')->where('post_id', $postId)->update(['status' => 'in_progress']);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function remove(Request $request, $postId)
+    {
+        $user = $request->user();
+        DB::table('quest_assignments')
+            ->where('user_id', $user->user_id)
+            ->where('post_id', $postId)
+            ->delete();
+        return response()->json(['ok' => true]);
+    }
+
+    public function myQuests(Request $request)
+    {
+        $user = $request->user();
+
+        $rows = DB::table('quest_assignments')
+            ->join('posts', 'quest_assignments.post_id', '=', 'posts.post_id')
+            ->leftJoin('users', 'posts.author_user_id', '=', 'users.user_id')
+            ->where('quest_assignments.user_id', $user->user_id)
+            ->select(
+                'posts.post_id',
+                'posts.author_user_id',
+                'posts.title',
+                'posts.body',
+                'posts.type',
+                'posts.status',
+                'posts.bounty_points',
+                'posts.created_at',
+                'posts.updated_at',
+                'users.name as author_name',
+                'users.avatar_url as author_avatar'
+            )
+            ->get();
+
+        $formatted = $rows->map(function ($post) {
+            return [
+                'post_id' => $post->post_id,
+                'author_user_id' => $post->author_user_id,
+                'title' => $post->title,
+                'body' => $post->body,
+                'type' => $post->type,
+                'status' => $post->status,
+                'bounty_points' => $post->bounty_points,
+                'created_at' => $post->created_at,
+                'updated_at' => $post->updated_at,
+                'author' => [
+                    'name' => $post->author_name,
+                    'avatar_url' => $post->author_avatar,
+                ],
+            ];
+        });
+
+        return response()->json(['quests' => $formatted]);
+    }
+
 
     /**
      * Update post status
