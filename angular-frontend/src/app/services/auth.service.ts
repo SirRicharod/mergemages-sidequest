@@ -36,6 +36,7 @@ export class AuthService {
   // Using signals for reactive state
   currentUser = signal<AuthUser | null>(null);
   isAuthenticated = signal<boolean>(false);
+  authCheckComplete = signal<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -49,11 +50,16 @@ export class AuthService {
    * Check if user is logged in on app startup
    */
   private checkAuthState(): void {
-    if (!this.isBrowser) return; // Skip on server
+    if (!this.isBrowser) {
+      this.authCheckComplete.set(true);
+      return; // Skip on server
+    }
     
     const token = this.getToken();
     if (token) {
       this.loadUserProfile();
+    } else {
+      this.authCheckComplete.set(true);
     }
   }
 
@@ -72,13 +78,13 @@ export class AuthService {
   /**
    * Login user
    */
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(email: string, password: string, rememberMe: boolean = false): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
       email,
       password
     }).pipe(
       tap(response => {
-        this.setToken(response.token);
+        this.setToken(response.token, rememberMe);
         this.currentUser.set(response.user);
         this.isAuthenticated.set(true);
       })
@@ -105,9 +111,11 @@ export class AuthService {
       next: (response) => {
         this.currentUser.set(response.user);
         this.isAuthenticated.set(true);
+        this.authCheckComplete.set(true);
       },
       error: () => {
         this.clearAuth();
+        this.authCheckComplete.set(true);
       }
     });
   }
@@ -117,15 +125,19 @@ export class AuthService {
    */
   getToken(): string | null {
     if (!this.isBrowser) return null;
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem(this.tokenKey) || sessionStorage.getItem(this.tokenKey);
   }
 
   /**
-   * Save token to localStorage
+   * Save token to localStorage or sessionStorage
    */
-  private setToken(token: string): void {
+  private setToken(token: string, rememberMe: boolean = false): void {
     if (!this.isBrowser) return;
-    localStorage.setItem(this.tokenKey, token);
+    if (rememberMe) {
+      localStorage.setItem(this.tokenKey, token);
+    } else {
+      sessionStorage.setItem(this.tokenKey, token);
+    }
   }
 
   /**
@@ -134,6 +146,7 @@ export class AuthService {
   private clearAuth(): void {
     if (this.isBrowser) {
       localStorage.removeItem(this.tokenKey);
+      sessionStorage.removeItem(this.tokenKey);
     }
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
