@@ -36,6 +36,7 @@ export class AuthService {
   // Using signals for reactive state
   currentUser = signal<AuthUser | null>(null);
   isAuthenticated = signal<boolean>(false);
+  authCheckComplete = signal<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -49,11 +50,16 @@ export class AuthService {
    * Check if user is logged in on app startup
    */
   private checkAuthState(): void {
-    if (!this.isBrowser) return; // Skip on server
+    if (!this.isBrowser) {
+      this.authCheckComplete.set(true);
+      return; // Skip on server
+    }
     
     const token = this.getToken();
     if (token) {
       this.loadUserProfile();
+    } else {
+      this.authCheckComplete.set(true);
     }
   }
 
@@ -105,9 +111,11 @@ export class AuthService {
       next: (response) => {
         this.currentUser.set(response.user);
         this.isAuthenticated.set(true);
+        this.authCheckComplete.set(true);
       },
       error: () => {
         this.clearAuth();
+        this.authCheckComplete.set(true);
       }
     });
   }
