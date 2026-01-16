@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     use HasFactory;
-    protected $fillable = ['post_id', 'user_id', 'content'];
+    protected $fillable = ['post_id', 'user_id', 'body'];
 
     // Relatie met de user
     public function user()

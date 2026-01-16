@@ -40,7 +40,7 @@ class CommentController extends Controller
         $comment = Comment::create([
             'post_id' => $postId,
             'user_id' => $request->user()->user_id,
-            'content' => $request->content,
+            'body' => $request->content,
         ]);
 
         // Haal de user-info erbij om terug te sturen naar de frontend

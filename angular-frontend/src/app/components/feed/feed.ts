@@ -211,8 +211,24 @@ export class FeedComponent implements OnInit {
   }
 
   submitComment(post: Sidequest, inputField: HTMLInputElement) {
-    const content = inputField.value;
+    const content = inputField.value?.trim();
     if (!content) return;
+
+    // Check if user is logged in
+    if (!this.auth.currentUser()) {
+      alert('You must be logged in to comment.');
+      return;
+    }
+
+    // Debug logging
+    console.log('=== Submitting Comment ===');
+    console.log('User:', this.auth.currentUser());
+    console.log('Post ID (realId):', post.realId);
+    console.log('Content:', content);
+    console.log('Token in localStorage:', localStorage.getItem('auth_token'));
+
+    // Disable input while submitting
+    inputField.disabled = true;
 
     this.http.post(`http://127.0.0.1:8000/api/posts/${post.realId}/comments`, { content })
       .subscribe({
@@ -224,10 +240,26 @@ export class FeedComponent implements OnInit {
           post.commentsCount = (post.commentsCount || 0) + 1;
 
           inputField.value = '';
+          inputField.disabled = false;
           this.items.update(items => [...items]); // comments direct weergeven
           this.cdRef.detectChanges();
         },
-        error: (err) => console.error('Fout bij plaatsen:', err)
+        error: (err) => {
+          console.error('Failed to submit comment:', err);
+          console.error('Error status:', err.status);
+          console.error('Error message:', err.error);
+          console.error('Post ID:', post.realId);
+          console.error('Content:', content);
+          inputField.disabled = false;
+          
+          if (err.status === 401) {
+            alert('Your session has expired. Please log in again.');
+          } else if (err.status === 422) {
+            alert('Comment is too long. Maximum 500 characters.');
+          } else {
+            alert(`Failed to submit comment. Error: ${err.status} - ${err.error?.message || err.message || 'Unknown error'}`);
+          }
+        }
       });
   }
 }
