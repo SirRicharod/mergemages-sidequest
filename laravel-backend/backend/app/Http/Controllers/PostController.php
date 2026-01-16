@@ -23,6 +23,7 @@ class PostController extends Controller
                 'posts.type',
                 'posts.status',
                 'posts.bounty_points',
+                'posts.urgent',
                 'posts.created_at',
                 'posts.updated_at',
                 'users.name as author_name',
@@ -44,6 +45,7 @@ class PostController extends Controller
                 'type' => $post->type,
                 'status' => $post->status,
                 'bounty_points' => $post->bounty_points,
+                'urgent' => $post->urgent,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
                 // 👇 NIEUW: Geef de teller mee aan de frontend
@@ -70,7 +72,13 @@ class PostController extends Controller
             'body' => 'required|string',
             'type' => 'required|in:request,offer',
             'bounty_points' => 'required|integer|min:0',
+            'boost' => 'boolean',
         ]);
+
+        // Define boost cost
+        $boostCost = 50;
+        $isUrgent = $validated['boost'] ?? false;
+        $totalCost = $validated['bounty_points'] + ($isUrgent ? $boostCost : 0);
 
         // Check if user has enough XP
         $user = DB::table('users')
@@ -78,18 +86,18 @@ class PostController extends Controller
             ->select('xp_balance')
             ->first();
 
-        if ($user->xp_balance < $validated['bounty_points']) {
+        if ($user->xp_balance < $totalCost) {
             return response()->json([
                 'message' => 'Insufficient XP balance',
                 'current_balance' => $user->xp_balance,
-                'required' => $validated['bounty_points']
+                'required' => $totalCost
             ], 400);
         }
 
         // Deduct XP from user's balance
         DB::table('users')
             ->where('user_id', $request->user()->user_id)
-            ->decrement('xp_balance', $validated['bounty_points']);
+            ->decrement('xp_balance', $totalCost);
 
         $postId = (string) Str::uuid();
 
@@ -101,6 +109,7 @@ class PostController extends Controller
             'type' => $validated['type'],
             'status' => 'created',
             'bounty_points' => $validated['bounty_points'],
+            'urgent' => $isUrgent,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -115,6 +124,7 @@ class PostController extends Controller
                 'posts.type',
                 'posts.status',
                 'posts.bounty_points',
+                'posts.urgent',
                 'posts.created_at',
                 'posts.updated_at',
                 'users.name as author_name',
@@ -139,6 +149,7 @@ class PostController extends Controller
                 'type' => $post->type,
                 'status' => $post->status,
                 'bounty_points' => $post->bounty_points,
+                'urgent' => $post->urgent,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
                 // Bij een nieuwe post zijn er 0 comments
