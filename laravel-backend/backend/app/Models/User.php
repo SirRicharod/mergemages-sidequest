@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->password_hash;
     }
+    public function reviews()
+{
+    // Een gebruiker heeft veel reviews die naar hem/haar zijn geschreven
+    return $this->hasMany(Review::class, 'target_user_id', 'user_id');
+}
 }

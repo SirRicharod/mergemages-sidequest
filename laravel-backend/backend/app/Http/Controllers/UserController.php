@@ -63,15 +63,18 @@ class UserController extends Controller
      * Haal een specifiek profiel op via user_id.
      */
     public function show(string $id)
-    {
-        // We zoeken specifiek op 'user_id' omdat jouw database UUIDs gebruikt
-        $user = User::where('user_id', $id)->firstOrFail();
+{
+    // We gebruiken 'with' om de reviews én de gegevens van de schrijver (reviewer) op te halen
+    $user = User::with(['reviews.reviewer']) 
+        ->where('user_id', $id)
+        ->firstOrFail();
 
-        // Maak de avatar URL compleet
-        $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
+    // Maak de avatar URL compleet
+    $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
 
-        return response()->json($user);
-    }
+    // We sturen de gebruiker terug, Laravel plakt de reviews er automatisch bij in het JSON-object
+    return response()->json($user);
+}
 
     public function index() {}
     public function store(Request $request) {}

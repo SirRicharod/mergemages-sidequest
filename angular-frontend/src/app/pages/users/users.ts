@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core'; // ChangeDetectorRef toegevoegd
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule, ActivatedRoute } from '@angular/router'; 
@@ -16,10 +16,11 @@ export class UsersComponent implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
-  private cdr = inject(ChangeDetectorRef); // Injecteer de 'ververser'
+  private cdr = inject(ChangeDetectorRef);
 
   users: any[] = []; 
   selectedUser: any = null; 
+  reviews: any[] = []; // NIEUW: Hier slaan we de reviews van anderen op
   isSingleProfile: boolean = false;
   loading: boolean = false;
 
@@ -34,8 +35,9 @@ export class UsersComponent implements OnInit {
       if (userId) {
         this.isSingleProfile = true; 
         this.selectedUser = null; 
+        this.reviews = []; // Maak de lijst leeg voor de nieuwe gebruiker
         this.loading = true;
-        this.cdr.detectChanges(); // Direct verversen naar loading-scherm
+        this.cdr.detectChanges(); 
         this.loadUserProfile(userId);
       } else {
         this.isSingleProfile = false;
@@ -49,8 +51,10 @@ export class UsersComponent implements OnInit {
     this.userService.getUserProfile(id).subscribe({
       next: (response: any) => {
         this.selectedUser = response.user || response;
+        // Sla de reviews op die we via de 'with' in Laravel hebben meegestuurd
+        this.reviews = response.reviews || []; 
         this.loading = false;
-        this.cdr.detectChanges(); // FORCEER verversing: Nu springt hij direct naar het profiel!
+        this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Fout:', err);
@@ -87,7 +91,8 @@ export class UsersComponent implements OnInit {
         alert('Review geplaatst!');
         this.reviewComment = '';
         this.submitting = false;
-        this.cdr.detectChanges();
+        // Herlaad het profiel zodat je eigen review direct in de lijst verschijnt
+        this.loadUserProfile(this.selectedUser.user_id);
       },
       error: () => {
         this.submitting = false;
