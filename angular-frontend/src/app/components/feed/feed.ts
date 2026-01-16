@@ -133,7 +133,7 @@ export class FeedComponent implements OnInit {
               title: post.title,
               description: post.body,
               type: post.type as PostType,
-              urgent: false,
+              urgent: post.urgent || false,
               deadline: null,
               points: post.bounty_points,
               author: post.author?.name || 'Unknown',

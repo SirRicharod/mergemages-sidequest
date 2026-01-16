@@ -76,7 +76,7 @@ class PostController extends Controller
         ]);
 
         // Define boost cost
-        $boostCost = 50;
+        $boostCost = 200;
         $isUrgent = $validated['boost'] ?? false;
         $totalCost = $validated['bounty_points'] + ($isUrgent ? $boostCost : 0);
 
