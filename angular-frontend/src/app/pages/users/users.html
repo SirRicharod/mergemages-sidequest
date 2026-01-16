@@ -1,33 +1,95 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Ontdek andere avonturiers 🌍</h2>
-  
-  <div class="row">
-    @for (user of users; track user.id) {
-      <div class="col-md-4 mb-4">
-        
-        <div class="card h-100 shadow-sm user-card" 
-             [routerLink]="['/profile', user.id]" 
-             style="cursor: pointer; transition: transform 0.2s;">
+
+  @if (isSingleProfile) {
+    
+    @if (loading) {
+      <div class="text-center mt-5 text-white">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2">Profiel wordt geladen...</p>
+      </div>
+    } @else if (selectedUser) {
+      <div class="profile-container animate-fade-in">
+        <div class="card bg-dark text-white p-4 mb-4 shadow border-0">
+          <div class="d-flex align-items-center gap-4">
+            <img [src]="selectedUser.avatar_url || 'assets/default-avatar.png'" 
+                 class="rounded-circle border border-3 border-primary" 
+                 style="width: 120px; height: 120px; object-fit: cover;">
+            <div>
+              <h1 class="display-5 fw-bold mb-1">{{ selectedUser.name }}</h1>
+              <p class="text-white-50 mb-2">{{ selectedUser.email }}</p>
+              <div class="badge bg-warning text-dark p-2">XP: {{ selectedUser.xp_balance || 0 }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-4 shadow-sm border-0 bg-light text-dark mb-5">
+          <h3 class="mb-3">Schrijf een review voor {{ selectedUser.name }}</h3>
           
-          <div class="card-body text-center">
-            <img [src]="user.avatar_url || 'assets/default-avatar.png'" 
-                 class="rounded-circle mb-3" 
-                 style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #eee;">
-            
-            <h5 class="card-title font-weight-bold">{{ user.name }}</h5>
-            <p class="text-muted small">{{ user.email }}</p>
-            
-            <button class="btn btn-primary btn-sm mt-2">
-              Bekijk Profiel
-            </button>
+          <div class="mb-3 w-25">
+             <label class="form-label fw-bold small text-uppercase">Score</label>
+             <select class="form-select" [(ngModel)]="reviewRating">
+                <option [value]="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                <option [value]="4">⭐⭐⭐⭐ (4/5)</option>
+                <option [value]="3">⭐⭐⭐ (3/5)</option>
+                <option [value]="2">⭐⭐ (2/5)</option>
+                <option [value]="1">⭐ (1/5)</option>
+             </select>
           </div>
 
+          <textarea class="form-control mb-3" rows="4" [(ngModel)]="reviewComment" placeholder="Jouw bericht..."></textarea>
+          <button class="btn btn-primary px-4 fw-bold" (click)="submitReview()" [disabled]="submitting || !reviewComment.trim()">
+            {{ submitting ? 'Versturen...' : 'Review Plaatsen' }}
+          </button>
+        </div>
+
+        <h3 class="text-white mb-4">Reviews van andere avonturiers ⭐</h3>
+        
+        <div class="row g-3">
+          @for (review of reviews; track review.id) {
+            <div class="col-12">
+              <div class="card bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <strong class="text-info">{{ review.reviewer?.name || 'Anonieme Gebruiker' }}</strong>
+                      <span class="text-warning">
+                        {{ '⭐'.repeat(review.rating) }}
+                      </span>
+                    </div>
+                    <small class="text-white-50">{{ review.created_at | date:'dd-MM-yyyy' }}</small>
+                  </div>
+                  <p class="card-text mb-0" style="font-style: italic;">"{{ review.comment }}"</p>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-12">
+              <div class="alert alert-dark border-secondary text-white-50 text-center">
+                Er zijn nog geen reviews geschreven voor {{ selectedUser.name }}.
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="mt-4 pb-5">
+          <a routerLink="/users" class="btn btn-link text-white-50"><i class="bi bi-arrow-left me-1"></i> Terug naar lijst</a>
         </div>
       </div>
-    } @empty {
-      <div class="col-12">
-        <div class="alert alert-info">Er zijn nog geen andere gebruikers gevonden.</div>
-      </div>
     }
-  </div>
+
+  } @else {
+    <h1 class="mb-4 text-white">Ontdek andere accounts 🌍</h1>
+    <div class="row g-4">
+      @for (user of users; track user.user_id) {
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm text-center p-3 bg-white">
+            <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle mx-auto mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+            <h5 class="card-title fw-bold text-dark">{{ user.name }}</h5>
+            <a [routerLink]="['/user', user.user_id]" class="btn btn-outline-primary btn-sm mt-2">Bekijk Profiel</a>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
 </div>

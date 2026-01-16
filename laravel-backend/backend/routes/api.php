@@ -106,6 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- USERS & PROFIEL ---
     Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
+    Route::get('/search/users', [UserController::class, 'search']);
     Route::get('/users/{id}', [UserController::class, 'show']);
 
     // --- LOGOUT ---
