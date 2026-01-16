@@ -9,10 +9,10 @@
 
         <!-- Mobile actions (phone only): Search + Logout -->
         <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
-            <button class="btn btn-outline-light btn-sm" type="button" aria-label="Search"
+            <!-- <button class="btn btn-outline-light btn-sm" type="button" aria-label="Search"
                 (click)="openMobileSearch?.()">
                 <i class="bi bi-search"></i>
-            </button>
+            </button> -->
             <a *ngIf="!isAuthenticated" class="btn btn-outline-light btn-sm" routerLink="/login">
                 <i class="bi bi-box-arrow-in-right me-1"></i> Login
             </a>
@@ -21,21 +21,12 @@
             </button>
         </div>
 
-        <!-- Toggler for mobile -->
-        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sqNavbar"
-            aria-controls="sqNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button> -->
-
         <!-- Desktop nav -->
         <div class="collapse navbar-collapse" id="sqNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/" routerLinkActive="active"
                         [routerLinkActiveOptions]="{ exact: true }">Feed</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messaging</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/quests" routerLinkActive="active">Ongoing Quests</a>
