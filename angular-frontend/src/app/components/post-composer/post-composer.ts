@@ -20,15 +20,24 @@ export class PostComposerComponent {
   popupVisible = false;
   validationError = '';
 
+  // Boost cost constant
+  readonly BOOST_COST = 200;
+
   // Check if user has insufficient XP
   get hasInsufficientXp(): boolean {
     const currentXp = this.auth.currentUser()?.xp_balance || 0;
-    return this.xpReward > currentXp;
+    const totalCost = this.xpReward + (this.boost ? this.BOOST_COST : 0);
+    return totalCost > currentXp;
   }
 
   get xpShortfall(): number {
     const currentXp = this.auth.currentUser()?.xp_balance || 0;
-    return Math.max(0, this.xpReward - currentXp);
+    const totalCost = this.xpReward + (this.boost ? this.BOOST_COST : 0);
+    return Math.max(0, totalCost - currentXp);
+  }
+
+  get totalCost(): number {
+    return this.xpReward + (this.boost ? this.BOOST_COST : 0);
   }
 
   // Form model
@@ -66,8 +75,16 @@ export class PostComposerComponent {
       this.validationError = 'Please enter a title';
       return;
     }
+    if (title.length > 200) {
+      this.validationError = 'Title must be 200 characters or less';
+      return;
+    }
     if (!description) {
       this.validationError = 'Please enter a description';
+      return;
+    }
+    if (description.length > 2000) {
+      this.validationError = 'Description must be 2000 characters or less';
       return;
     }
     if (!this.deadline) {
@@ -83,7 +100,10 @@ export class PostComposerComponent {
       return;
     }
     if (this.hasInsufficientXp) {
-      this.validationError = `Insufficient XP. You need ${this.xpShortfall} more XP to create this post.`;
+      const costBreakdown = this.boost 
+        ? `(${this.xpReward} reward + ${this.BOOST_COST} boost)` 
+        : '';
+      this.validationError = `Insufficient XP. You need ${this.xpShortfall} more XP to create this post ${costBreakdown}.`;
       return;
     }
 

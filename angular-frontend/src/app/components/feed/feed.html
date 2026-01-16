@@ -17,6 +17,9 @@
     <div class="card-header bg-transparent border-0 pb-2">
       <div class="d-flex align-items-start justify-content-between mb-2">
         <h5 class="card-title mb-0 text-wrap text-break">{{ item.title }}</h5>
+        @if (item.urgent) {
+          <span class="badge bg-warning text-dark"><i class="bi bi-lightning-charge-fill"></i> Urgent</span>
+        }
       </div>
     </div>
 

@@ -133,7 +133,7 @@ export class FeedComponent implements OnInit {
               title: post.title,
               description: post.body,
               type: post.type as PostType,
-              urgent: false,
+              urgent: post.urgent || false,
               deadline: null,
               points: post.bounty_points,
               author: post.author?.name || 'Unknown',
@@ -161,12 +161,13 @@ export class FeedComponent implements OnInit {
     });
   }
 
-  addPost(title: string, description: string, type: PostType, points: number): void {
+  addPost(title: string, description: string, type: PostType, points: number, boost?: boolean): void {
     this.postsService.createPost({
       title,
       body: description,
       type,
-      bounty_points: points
+      bounty_points: points,
+      boost: boost ?? false
     }).subscribe({
       next: (response) => {
         this.auth.updateXpBalance(response.xp_balance);

@@ -23,14 +23,17 @@
         <!-- Title -->
         <div class="mb-3">
           <label class="form-label" for="postTitle">Title</label>
-          <input id="postTitle" type="text" class="form-control" [(ngModel)]="title" name="title" required>
+          <input id="postTitle" type="text" class="form-control" [(ngModel)]="title" name="title" 
+            maxlength="200" required>
+          <div class="text-muted small mt-1 text-end">{{ title.length }}/200</div>
         </div>
 
         <!-- Description -->
         <div class="mb-3">
           <label class="form-label" for="postDescription">Description</label>
           <textarea id="postDescription" rows="4" class="form-control" [(ngModel)]="description" name="description"
-            required></textarea>
+            maxlength="2000" required></textarea>
+          <div class="text-muted small mt-1 text-end">{{ description.length }}/2000</div>
         </div>
 
         <!-- Type -->
@@ -67,7 +70,14 @@
           <div class="col-12 col-md-4 d-flex align-items-end">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="boostPost" [(ngModel)]="boost" name="boost">
-              <label class="form-check-label" for="boostPost">Boost post</label>
+              <label class="form-check-label" for="boostPost">
+                Boost post (+{{ BOOST_COST }} XP)
+                @if (boost) {
+                  <div class="text-muted small mt-1">
+                    <i class="bi bi-lightning-charge-fill"></i> Total: {{ totalCost }} XP
+                  </div>
+                }
+              </label>
             </div>
           </div>
         </div>

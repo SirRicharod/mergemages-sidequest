@@ -13,6 +13,7 @@ export interface Post {
   type: PostType;
   status: PostStatus;
   bounty_points: number;
+  urgent?: boolean;
   created_at: string;
   updated_at: string;
   author?: {
@@ -26,6 +27,7 @@ export interface CreatePostRequest {
   body: string;
   type: PostType;
   bounty_points: number;
+  boost?: boolean;
 }
 
 export interface CreatePostResponse {
