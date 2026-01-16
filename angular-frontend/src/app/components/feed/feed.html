@@ -8,8 +8,8 @@
   </div>
   }
 
-  @for (item of visible(); track item.id ?? $index) {
-  <div class="card shadow-sm" [class.card-border-offer]="item.type==='offer' && !item.urgent"
+  @for (item of visible(); track itemKey(item, $index)) { <div class="card shadow-sm"
+    [class.card-border-offer]="item.type==='offer' && !item.urgent"
     [class.card-border-request]="item.type==='request' && !item.urgent"
     [class.card-border-offer-urgent]="item.type==='offer' && item.urgent"
     [class.card-border-request-urgent]="item.type==='request' && item.urgent">

@@ -10,6 +10,7 @@ type QueryMode = 'keywords' | 'profile' | 'skills';
 
 export interface Sidequest {
   id: number;
+  backendId: string; // UUID from backend
   title: string;
   description: string;
   type: PostType;
@@ -54,9 +55,14 @@ export class FeedComponent implements OnInit {
     const urgent = this._urgentOnly();
     const query = this._searchQuery();
     const qMode = this._queryMode();
+    const accepted = this.acceptedIds;
 
-    let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
+    let base = allItems
+      .filter(x => !accepted.has(x.id))
+      .filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
+
     if (urgent) base = base.filter(x => x.urgent);
+
     const q = query.trim().toLowerCase();
     if (q) {
       base = base.filter(x => {
@@ -70,6 +76,7 @@ export class FeedComponent implements OnInit {
     return base;
   });
 
+
   ngOnInit(): void {
     this.loadPosts();
   }
@@ -82,7 +89,9 @@ export class FeedComponent implements OnInit {
           .filter(post => post.status !== 'deleted')
           .map((post, idx) => {
             const idNum = parseInt(post.post_id);
+            const backendId = String(post.post_id); // preserve original UUID
             return {
+              backendId, // add stable key for tracking
               id: Number.isFinite(idNum) ? idNum : Date.now() + idx,
               title: post.title,
               description: post.body,
@@ -95,7 +104,7 @@ export class FeedComponent implements OnInit {
               authorUserId: post.author_user_id,
               createdAt: new Date(post.created_at).toISOString().slice(0, 10),
               status: post.status
-            } as Sidequest;
+            } as Sidequest & { backendId: string };
           });
         this.items.set(posts);
         this.loading.set(false);
@@ -106,6 +115,7 @@ export class FeedComponent implements OnInit {
       }
     });
   }
+
 
   addPost(title: string, description: string, type: PostType, points: number): void {
     this.postsService.createPost({
@@ -129,18 +139,32 @@ export class FeedComponent implements OnInit {
     });
   }
 
+
+  itemKey(item: Sidequest, index: number): string {
+    return `${item.authorUserId}-${item.title}-${item.createdAt}-${index}`;
+  }
   canAccept(): boolean { return this.quests.canAccept(); }
 
   acceptQuest(item: Sidequest): void {
-    const ok = this.quests.add(item); // boolean
-    if (!ok) {
-      alert(`You cannot accept this quest. Either it's yours or you reached the max (${this.quests.maxActive()}).`);
+    if (!this.canAccept()) {
+      alert(`Max ${this.quests.maxActive()} active quests reached.`);
       return;
     }
-    // Optional backend status update (non-blocking)
-    this.postsService.updatePostStatus(String(item.id), 'in_progress').subscribe({
-      next: () => { },
-      error: (err) => console.warn('Status update failed (local quest kept):', err)
+    // Subscribe to the accept call; the service handles DB status update
+    this.quests.add(item).subscribe({
+      next: () => {
+        console.log('Quest accepted:', item.title);
+        // Reload posts to reflect status change in feed
+        this.loadPosts();
+      },
+      error: (err) => {
+        console.error('Failed to accept quest:', err);
+        alert(`Failed to accept quest: ${err.message || 'Please try again.'}`);
+      }
     });
+  }
+
+  get acceptedIds(): Set<number> {
+    return new Set(this.quests.active().map(q => q.id));
   }
 }

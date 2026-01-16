@@ -8,9 +8,6 @@ use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-    /**
-     * Get all posts (excluding deleted)
-     */
     public function index()
     {
         $posts = DB::table('posts')
@@ -32,7 +29,6 @@ class PostController extends Controller
             ->orderBy('posts.created_at', 'desc')
             ->get();
 
-        // Format the response to match frontend expectations
         $formattedPosts = $posts->map(function ($post) {
             return [
                 'post_id' => $post->post_id,
@@ -51,14 +47,9 @@ class PostController extends Controller
             ];
         });
 
-        return response()->json([
-            'posts' => $formattedPosts,
-        ]);
+        return response()->json(['posts' => $formattedPosts]);
     }
 
-    /**
-     * Create a new post
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -68,7 +59,6 @@ class PostController extends Controller
             'bounty_points' => 'required|integer|min:0',
         ]);
 
-        // Check if user has enough XP
         $user = DB::table('users')
             ->where('user_id', $request->user()->user_id)
             ->select('xp_balance')
@@ -82,7 +72,6 @@ class PostController extends Controller
             ], 400);
         }
 
-        // Deduct XP from user's balance
         DB::table('users')
             ->where('user_id', $request->user()->user_id)
             ->decrement('xp_balance', $validated['bounty_points']);
@@ -119,7 +108,6 @@ class PostController extends Controller
             ->where('posts.post_id', $postId)
             ->first();
 
-        // Get updated XP balance
         $updatedUser = DB::table('users')
             ->where('user_id', $request->user()->user_id)
             ->select('xp_balance')
@@ -146,12 +134,14 @@ class PostController extends Controller
         ], 201);
     }
 
-
+    // NEW: accept quest for current user, prevent duplicates, cap at 5, status -> in_progress
     public function accept(Request $request, $postId)
     {
         $user = $request->user();
 
-        $activeCount = DB::table('quest_assignments')->where('user_id', $user->user_id)->count();
+        $activeCount = DB::table('quest_assignments')
+            ->where('user_id', $user->user_id)
+            ->count();
         if ($activeCount >= 5) {
             return response()->json(['message' => 'Max active quests reached'], 422);
         }
@@ -176,6 +166,7 @@ class PostController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    // NEW: remove quest assignment for current user
     public function remove(Request $request, $postId)
     {
         $user = $request->user();
@@ -186,6 +177,7 @@ class PostController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    // NEW: list current user's quests (persisted)
     public function myQuests(Request $request)
     {
         $user = $request->user();
@@ -230,10 +222,6 @@ class PostController extends Controller
         return response()->json(['quests' => $formatted]);
     }
 
-
-    /**
-     * Update post status
-     */
     public function updateStatus(Request $request, $postId)
     {
         $validated = $request->validate([
@@ -242,19 +230,12 @@ class PostController extends Controller
 
         $updated = DB::table('posts')
             ->where('post_id', $postId)
-            ->update([
-                'status' => $validated['status'],
-                'updated_at' => now(),
-            ]);
+            ->update(['status' => $validated['status'], 'updated_at' => now()]);
 
         if (!$updated) {
-            return response()->json([
-                'message' => 'Post not found',
-            ], 404);
+            return response()->json(['message' => 'Post not found'], 404);
         }
 
-        return response()->json([
-            'message' => 'Post status updated successfully',
-        ]);
+        return response()->json(['message' => 'Post status updated successfully']);
     }
 }

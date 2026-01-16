@@ -16,23 +16,26 @@ import { QuestsService } from '../../services/quests.service';
 export class QuestsComponent {
   searchMode: 'requests' | 'offers' = 'requests';
   mobileSearchVisible = false;
-  mobileQuery = '';
-  mobileQueryMode: 'keywords' | 'profile' | 'skills' | 'tags' = 'keywords';
 
   private quests = inject(QuestsService);
 
   constructor(private router: Router, private composerCoordinator: ComposerCoordinatorService) { }
 
+  get active() { return this.quests.active(); }
+  get max() { return this.quests.maxActive(); }
+  
+  remove(id: number): void {
+    if (!confirm('Are you sure you want to remove this quest?')) return;
+    this.quests.remove(id).subscribe({
+      next: () => console.log('Quest removed'),
+      error: (err) => alert(`Failed to remove quest: ${err.message || 'Try again'}`)
+    });
+  }
+
   toggleSearchMode(): void {
     this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';
   }
-
   openPostPopup(): void {
     this.router.navigate(['/']).then(() => this.composerCoordinator.requestOpen());
   }
-
-  // expose signals for template
-  get active() { return this.quests.active(); }
-  get max() { return this.quests.maxActive(); }
-  remove(id: number) { this.quests.remove(id); }
 }
