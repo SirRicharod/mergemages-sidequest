@@ -20,7 +20,6 @@ export class BottomNavComponent {
   constructor(private router: Router) { }
 
   get isOnFeed(): boolean {
-    // Adjust if your feed is not '/'
     return this.router.url === '/' || this.router.url.startsWith('/?');
   }
 
@@ -30,5 +29,9 @@ export class BottomNavComponent {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  onMakePost(): void {
+    this.makePost.emit();
   }
 }

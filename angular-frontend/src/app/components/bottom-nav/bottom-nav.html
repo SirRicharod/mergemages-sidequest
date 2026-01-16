@@ -1,28 +1,30 @@
 <nav class="sq-bottom-nav d-lg-none">
     <div class="sq-bottom-nav-inner">
-        <!-- Feed: toggles mode when already on feed; shows swap icon on feed, home elsewhere -->
+        <!-- Feed: toggle mode when on feed -->
         <button class="nav-btn" type="button" (click)="onFeedPress()" aria-label="Feed">
             <i class="bi" [ngClass]="isOnFeed ? 'bi-arrow-left-right' : 'bi-house-door'"></i>
-            <span class="label">
-                {{ isOnFeed ? (mode === 'requests' ? 'Requests' : 'Offers') : 'Feed' }}
-            </span>
+            <span class="label">{{ isOnFeed ? (mode === 'requests' ? 'Requests' : 'Offers') : 'Feed' }}</span>
         </button>
 
-        <a class="nav-btn" routerLink="/messages" routerLinkActive="active" aria-label="Messages">
-            <i class="bi bi-chat-dots"></i>
-            <span class="label">Messages</span>
-        </a>
+        <!-- Search (replaces Messages) -->
+        <button class="nav-btn" type="button" (click)="openSearch.emit()" aria-label="Search">
+            <i class="bi bi-search"></i>
+            <span class="label">Search</span>
+        </button>
 
-        <button class="nav-btn make-post" type="button" (click)="makePost.emit()" aria-label="Make post">
+        <!-- Make Post -->
+        <button class="nav-btn make-post" type="button" (click)="onMakePost()" aria-label="Make post">
             <i class="bi bi-plus-circle-fill"></i>
             <span class="label">Post</span>
         </button>
 
+        <!-- Quests -->
         <a class="nav-btn" routerLink="/quests" routerLinkActive="active" aria-label="Quests">
             <i class="bi bi-flag"></i>
             <span class="label">Quests</span>
         </a>
 
+        <!-- Profile -->
         <a class="nav-btn" routerLink="/profile" routerLinkActive="active" aria-label="Profile">
             <i class="bi bi-person-circle"></i>
             <span class="label">Profile</span>
