@@ -23,14 +23,17 @@
         <!-- Title -->
         <div class="mb-3">
           <label class="form-label" for="postTitle">Title</label>
-          <input id="postTitle" type="text" class="form-control" [(ngModel)]="title" name="title" required>
+          <input id="postTitle" type="text" class="form-control" [(ngModel)]="title" name="title" 
+            maxlength="200" required>
+          <div class="text-muted small mt-1 text-end">{{ title.length }}/200</div>
         </div>
 
         <!-- Description -->
         <div class="mb-3">
           <label class="form-label" for="postDescription">Description</label>
           <textarea id="postDescription" rows="4" class="form-control" [(ngModel)]="description" name="description"
-            required></textarea>
+            maxlength="2000" required></textarea>
+          <div class="text-muted small mt-1 text-end">{{ description.length }}/2000</div>
         </div>
 
         <!-- Type -->

@@ -75,8 +75,16 @@ export class PostComposerComponent {
       this.validationError = 'Please enter a title';
       return;
     }
+    if (title.length > 200) {
+      this.validationError = 'Title must be 200 characters or less';
+      return;
+    }
     if (!description) {
       this.validationError = 'Please enter a description';
+      return;
+    }
+    if (description.length > 2000) {
+      this.validationError = 'Description must be 2000 characters or less';
       return;
     }
     if (!this.deadline) {
