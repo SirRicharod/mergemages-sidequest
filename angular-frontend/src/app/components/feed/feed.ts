@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { PostsService, PostStatus } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
@@ -47,6 +48,7 @@ export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
   private http = inject(HttpClient);
   private cdRef = inject(ChangeDetectorRef);
+  private toast = inject(ToastService);
   auth = inject(AuthService);
 
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
@@ -179,9 +181,9 @@ export class FeedComponent implements OnInit {
       error: (err) => {
         console.error('Failed to create post:', err);
         if (err.status === 400 && err.error?.message === 'Insufficient XP balance') {
-          alert(`Insufficient XP! You have ${err.error.current_balance} XP but need ${err.error.required} XP.`);
+          this.toast.error(`Insufficient XP! You have ${err.error.current_balance} XP but need ${err.error.required} XP.`);
         } else {
-          alert('Failed to create post. Please try again.');
+          this.toast.error('Failed to create post. Please try again.');
         }
       }
     });
@@ -220,7 +222,7 @@ export class FeedComponent implements OnInit {
 
     // Check if user is logged in
     if (!this.auth.currentUser()) {
-      alert('You must be logged in to comment.');
+      this.toast.warning('You must be logged in to comment.');
       return;
     }
 
@@ -257,11 +259,11 @@ export class FeedComponent implements OnInit {
           inputField.disabled = false;
           
           if (err.status === 401) {
-            alert('Your session has expired. Please log in again.');
+            this.toast.error('Your session has expired. Please log in again.');
           } else if (err.status === 422) {
-            alert('Comment is too long. Maximum 500 characters.');
+            this.toast.error('Comment is too long. Maximum 500 characters.');
           } else {
-            alert(`Failed to submit comment. Error: ${err.status} - ${err.error?.message || err.message || 'Unknown error'}`);
+            this.toast.error(`Failed to submit comment: ${err.error?.message || 'Unknown error'}`);
           }
         }
       });
@@ -269,12 +271,12 @@ export class FeedComponent implements OnInit {
 
   acceptQuest(quest: Sidequest): void {
     if (!this.auth.currentUser()) {
-      alert('You must be logged in to accept a quest.');
+      this.toast.warning('You must be logged in to accept a quest.');
       return;
     }
 
     if (quest.status !== 'created') {
-      alert('This quest is not available for acceptance.');
+      this.toast.warning('This quest is not available for acceptance.');
       return;
     }
 
@@ -287,7 +289,7 @@ export class FeedComponent implements OnInit {
         quest.isAccepting = false;
         this.items.update(items => [...items]);
         this.cdRef.detectChanges();
-        alert(`Quest accepted! You can now work on "${quest.title}".`);
+        this.toast.success(`Quest accepted! You can now work on "${quest.title}".`);
       },
       error: (err) => {
         console.error('Failed to accept quest:', err);
@@ -296,13 +298,13 @@ export class FeedComponent implements OnInit {
         this.cdRef.detectChanges();
         
         if (err.status === 403) {
-          alert(err.error?.message || 'You cannot accept your own quest.');
+          this.toast.error(err.error?.message || 'You cannot accept your own quest.');
         } else if (err.status === 400) {
-          alert(err.error?.message || 'This quest is not available.');
+          this.toast.error(err.error?.message || 'This quest is not available.');
         } else if (err.status === 401) {
-          alert('Your session has expired. Please log in again.');
+          this.toast.error('Your session has expired. Please log in again.');
         } else {
-          alert(`Failed to accept quest. Error: ${err.status} - ${err.error?.message || 'Unknown error'}`);
+          this.toast.error(`Failed to accept quest. Error: ${err.status} - ${err.error?.message || 'Unknown error'}`);
         }
       }
     });

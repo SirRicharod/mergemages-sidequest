@@ -6,12 +6,14 @@ import { Router } from '@angular/router';
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { PostsService, Post } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
 interface QuestWithState extends Post {
   isCompleting?: boolean;
   isDeleting?: boolean;
+  isCanceling?: boolean;
 }
 
 @Component({
@@ -23,6 +25,7 @@ interface QuestWithState extends Post {
 })
 export class QuestsComponent implements OnInit {
   private postsService = inject(PostsService);
+  private toast = inject(ToastService);
   private auth = inject(AuthService);
   
   searchMode: 'requests' | 'offers' = 'requests';
@@ -92,12 +95,12 @@ export class QuestsComponent implements OnInit {
 
   completeQuest(quest: QuestWithState): void {
     if (!this.auth.currentUser()) {
-      alert('You must be logged in to complete a quest.');
+      this.toast.warning('You must be logged in to complete a quest.');
       return;
     }
 
     if (quest.author_user_id !== this.currentUserId) {
-      alert('Only the quest creator can mark it as completed.');
+      this.toast.error('Only the quest creator can mark it as completed.');
       return;
     }
 
@@ -113,7 +116,7 @@ export class QuestsComponent implements OnInit {
         quest.status = 'completed';
         quest.isCompleting = false;
         this.allQuests.update(quests => [...quests]);
-        alert(`Quest completed! ${response.awarded_to?.name} earned ${response.quest.bounty_points} XP!`);
+        this.toast.success(`Quest completed! ${response.awarded_to?.name} earned ${response.quest.bounty_points} XP!`);
       },
       error: (err) => {
         console.error('Failed to complete quest:', err);
@@ -121,31 +124,72 @@ export class QuestsComponent implements OnInit {
         this.allQuests.update(quests => [...quests]);
         
         if (err.status === 403) {
-          alert(err.error?.message || 'Only the quest creator can mark it as completed.');
+          this.toast.error(err.error?.message || 'Only the quest creator can mark it as completed.');
         } else if (err.status === 400) {
-          alert(err.error?.message || 'Quest cannot be completed at this time.');
+          this.toast.error(err.error?.message || 'Quest cannot be completed at this time.');
         } else if (err.status === 401) {
-          alert('Your session has expired. Please log in again.');
+          this.toast.error('Your session has expired. Please log in again.');
         } else {
-          alert('Failed to complete quest. Please try again.');
+          this.toast.error('Failed to complete quest. Please try again.');
         }
       }
     });
   }
 
+  cancelQuest(quest: QuestWithState): void {
+    if (!this.auth.currentUser()) {
+      this.toast.warning('You must be logged in to cancel a quest.');
+      return;
+    }
+
+    if (quest.accepted_user_id !== this.currentUserId) {
+      this.toast.error('Only the accepter can cancel a quest.');
+      return;
+    }
+
+    if (!confirm(`Cancel "${quest.title}"? This will allow others to accept it again.`)) {
+      return;
+    }
+
+    quest.isCanceling = true;
+
+    this.postsService.cancelQuest(quest.post_id).subscribe({
+      next: (response) => {
+        console.log('Quest canceled:', response);
+        // Remove from local ongoing list
+        this.allQuests.update(quests => quests.filter(q => q.post_id !== quest.post_id));
+        this.toast.info('Quest canceled. It is now available for others to accept.');
+      },
+      error: (err) => {
+        console.error('Failed to cancel quest:', err);
+        quest.isCanceling = false;
+        this.allQuests.update(quests => [...quests]);
+        
+        if (err.status === 403) {
+          this.toast.error(err.error?.message || 'Only the accepter can cancel a quest.');
+        } else if (err.status === 400) {
+          this.toast.error(err.error?.message || 'Cannot cancel this quest.');
+        } else if (err.status === 401) {
+          this.toast.error('Your session has expired. Please log in again.');
+        } else {
+          this.toast.error('Failed to cancel quest. Please try again.');
+        }
+      }
+    });
+  }
   deleteQuest(quest: QuestWithState): void {
     if (!this.auth.currentUser()) {
-      alert('You must be logged in to delete a quest.');
+      this.toast.warning('You must be logged in to delete a quest.');
       return;
     }
 
     if (quest.author_user_id !== this.currentUserId) {
-      alert('Only the quest creator can delete it.');
+      this.toast.error('Only the quest creator can delete it.');
       return;
     }
 
     if (quest.status !== 'created') {
-      alert('Cannot delete a quest that has been accepted or completed.');
+      this.toast.error('Cannot delete a quest that has been accepted or completed.');
       return;
     }
 
@@ -160,7 +204,7 @@ export class QuestsComponent implements OnInit {
         console.log('Quest deleted:', response);
         // Remove from local list by filtering it out
         this.allQuests.update(quests => quests.filter(q => q.post_id !== quest.post_id));
-        alert('Quest deleted successfully!');
+        this.toast.success('Quest deleted successfully!');
       },
       error: (err) => {
         console.error('Failed to delete quest:', err);
@@ -168,13 +212,13 @@ export class QuestsComponent implements OnInit {
         this.allQuests.update(quests => [...quests]);
         
         if (err.status === 403) {
-          alert(err.error?.message || 'Only the quest creator can delete it.');
+          this.toast.error(err.error?.message || 'Only the quest creator can delete it.');
         } else if (err.status === 400) {
-          alert(err.error?.message || 'Cannot delete this quest.');
+          this.toast.error(err.error?.message || 'Cannot delete this quest.');
         } else if (err.status === 401) {
-          alert('Your session has expired. Please log in again.');
+          this.toast.error('Your session has expired. Please log in again.');
         } else {
-          alert('Failed to delete quest. Please try again.');
+          this.toast.error('Failed to delete quest. Please try again.');
         }
       }
     });

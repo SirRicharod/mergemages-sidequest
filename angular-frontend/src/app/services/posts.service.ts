@@ -80,6 +80,13 @@ export class PostsService {
   }
 
   /**
+   * Cancel/Un-accept a quest
+   */
+  cancelQuest(postId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/cancel`, {});
+  }
+
+  /**
    * Complete a quest (creator only)
    */
   completeQuest(postId: string): Observable<any> {

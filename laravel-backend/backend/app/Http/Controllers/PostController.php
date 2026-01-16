@@ -268,6 +268,59 @@ class PostController extends Controller
     }
 
     /**
+     * Un-accept/Cancel a quest
+     * - Only the user who accepted the quest can cancel it
+     * - Quest must be in 'in_progress' status
+     * - Changes status back to 'created' and removes accepted_user_id
+     */
+    public function cancelQuest(Request $request, $postId)
+    {
+        $userId = $request->user()->user_id;
+
+        // Get the post
+        $post = DB::table('posts')
+            ->where('post_id', $postId)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Quest not found',
+            ], 404);
+        }
+
+        // Check if user is the one who accepted it
+        if ($post->accepted_user_id !== $userId) {
+            return response()->json([
+                'message' => 'Only the user who accepted this quest can cancel it',
+            ], 403);
+        }
+
+        // Check if quest is in progress
+        if ($post->status !== 'in_progress') {
+            return response()->json([
+                'message' => 'Quest must be in progress to be cancelled',
+            ], 400);
+        }
+
+        // Reset the quest to created status
+        DB::table('posts')
+            ->where('post_id', $postId)
+            ->update([
+                'accepted_user_id' => null,
+                'status' => 'created',
+                'updated_at' => now(),
+            ]);
+
+        return response()->json([
+            'message' => 'Quest cancelled successfully',
+            'quest' => [
+                'post_id' => $post->post_id,
+                'status' => 'created',
+            ],
+        ]);
+    }
+
+    /**
      * Complete a quest (post)
      * - Only the quest creator can mark it as completed
      * - Awards XP to the user who accepted the quest

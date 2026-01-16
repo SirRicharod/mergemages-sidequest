@@ -76,19 +76,33 @@
                     </span>
                   </div>
                   
-                  @if (quest.author_user_id === currentUserId) {
-                    <button class="btn btn-sm btn-success" 
-                            (click)="completeQuest(quest)"
-                            [disabled]="quest.isCompleting">
-                      @if (quest.isCompleting) {
-                        <span class="spinner-border spinner-border-sm me-1"></span>
-                        Completing...
-                      } @else {
-                        <i class="bi bi-check2-circle me-1"></i>
-                        Mark Complete
-                      }
-                    </button>
-                  }
+                  <div class="d-flex gap-2">
+                    @if (quest.author_user_id === currentUserId) {
+                      <button class="btn btn-sm btn-success" 
+                              (click)="completeQuest(quest)"
+                              [disabled]="quest.isCompleting">
+                        @if (quest.isCompleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Completing...
+                        } @else {
+                          <i class="bi bi-check2-circle me-1"></i>
+                          Mark Complete
+                        }
+                      </button>
+                    } @else {
+                      <button class="btn btn-sm btn-warning" 
+                              (click)="cancelQuest(quest)"
+                              [disabled]="quest.isCanceling">
+                        @if (quest.isCanceling) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Canceling...
+                        } @else {
+                          <i class="bi bi-x-circle me-1"></i>
+                          Cancel Quest
+                        }
+                      </button>
+                    }
+                  </div>
                 </div>
               </div>
             </div>
