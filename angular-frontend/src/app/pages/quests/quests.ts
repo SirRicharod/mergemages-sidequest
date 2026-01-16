@@ -1,11 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { Router } from '@angular/router';
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
+import { PostsService, Post } from '../../services/posts.service';
+import { AuthService } from '../../services/auth.service';
 
 type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
+
+interface QuestWithState extends Post {
+  isCompleting?: boolean;
+}
 
 @Component({
   selector: 'app-quests',
@@ -14,13 +20,117 @@ type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
   templateUrl: './quests.html',
   styleUrls: ['./quests.css']
 })
-export class QuestsComponent {
+export class QuestsComponent implements OnInit {
+  private postsService = inject(PostsService);
+  private auth = inject(AuthService);
+  
   searchMode: 'requests' | 'offers' = 'requests';
   mobileSearchVisible = false;
   mobileQuery = '';
   mobileQueryMode: QueryMode = 'keywords';
+  activeTab: 'ongoing' | 'completed' | 'created' = 'ongoing';
+
+  loading = signal(false);
+  allQuests = signal<QuestWithState[]>([]);
+  
+  get currentUserId(): string | undefined {
+    return this.auth.currentUser()?.user_id;
+  }
+
+  // Quests that the current user has accepted (status: in_progress)
+  ongoingQuests = computed(() => {
+    const userId = this.currentUserId;
+    if (!userId) return [];
+    
+    return this.allQuests().filter(quest => 
+      (quest.accepted_user_id === userId || quest.author_user_id === userId) &&
+      quest.status === 'in_progress'
+    );
+  });
+
+  // Quests that are completed and involve the current user
+  completedQuests = computed(() => {
+    const userId = this.currentUserId;
+    if (!userId) return [];
+    
+    return this.allQuests().filter(quest => 
+      (quest.accepted_user_id === userId || quest.author_user_id === userId) &&
+      quest.status === 'completed'
+    );
+  });
+
+  // Quests created by the current user
+  createdQuests = computed(() => {
+    const userId = this.currentUserId;
+    if (!userId) return [];
+    
+    return this.allQuests().filter(quest => 
+      quest.author_user_id === userId
+    );
+  });
 
   constructor(private router: Router, private composerCoordinator: ComposerCoordinatorService) { }
+
+  ngOnInit(): void {
+    this.loadQuests();
+  }
+
+  loadQuests(): void {
+    this.loading.set(true);
+    this.postsService.getPosts().subscribe({
+      next: (response) => {
+        this.allQuests.set(response.posts.filter(p => p.status !== 'deleted'));
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load quests:', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  completeQuest(quest: QuestWithState): void {
+    if (!this.auth.currentUser()) {
+      alert('You must be logged in to complete a quest.');
+      return;
+    }
+
+    if (quest.author_user_id !== this.currentUserId) {
+      alert('Only the quest creator can mark it as completed.');
+      return;
+    }
+
+    if (!confirm(`Mark "${quest.title}" as completed? This will award ${quest.bounty_points} XP to ${quest.accepter?.name || 'the accepter'}.`)) {
+      return;
+    }
+
+    quest.isCompleting = true;
+
+    this.postsService.completeQuest(quest.post_id).subscribe({
+      next: (response) => {
+        console.log('Quest completed:', response);
+        quest.status = 'completed';
+        quest.isCompleting = false;
+        this.allQuests.update(quests => [...quests]);
+        alert(`Quest completed! ${response.awarded_to?.name} earned ${response.quest.bounty_points} XP!`);
+      },
+      error: (err) => {
+        console.error('Failed to complete quest:', err);
+        quest.isCompleting = false;
+        this.allQuests.update(quests => [...quests]);
+        
+        if (err.status === 403) {
+          alert(err.error?.message || 'Only the quest creator can mark it as completed.');
+        } else if (err.status === 400) {
+          alert(err.error?.message || 'Quest cannot be completed at this time.');
+        } else if (err.status === 401) {
+          alert('Your session has expired. Please log in again.');
+        } else {
+          alert('Failed to complete quest. Please try again.');
+        }
+      }
+    });
+  }
 
   toggleSearchMode(): void {
     this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests';

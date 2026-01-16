@@ -31,6 +31,9 @@ export interface Sidequest {
   comments?: any[];
   showComments?: boolean;
   isLoadingComments?: boolean;
+  
+  // Voor quest acceptance
+  isAccepting?: boolean;
 }
 
 @Component({
@@ -142,8 +145,8 @@ export class FeedComponent implements OnInit {
               createdAt: new Date(post.created_at).toISOString().slice(0, 10),
               status: post.status,
               
-              // 👇 HIER IS DE FIX: (post as any) toegevoegd om de error te voorkomen
-              commentsCount: (post as any).comments_count || 0,
+              // Comments count from backend
+              commentsCount: post.comments_count || 0,
               
               comments: [],
               showComments: false,
@@ -151,6 +154,12 @@ export class FeedComponent implements OnInit {
             } as Sidequest;
           });
           
+        console.log('=== Loaded Posts ===');
+        console.log('Total posts:', posts.length);
+        posts.forEach(p => {
+          console.log(`Post: "${p.title}" | Status: ${p.status} | Author: ${p.authorUserId} | Current User: ${this.auth.currentUser()?.user_id}`);
+        });
+        
         this.items.set(posts);
         this.loading.set(false);
       },
@@ -262,5 +271,59 @@ export class FeedComponent implements OnInit {
           }
         }
       });
+  }
+
+  acceptQuest(quest: Sidequest): void {
+    console.log('=== Accept Quest Clicked ===');
+    console.log('Quest:', quest);
+    console.log('Current User:', this.auth.currentUser());
+    console.log('Auth Token:', localStorage.getItem('auth_token'));
+    
+    if (!this.auth.currentUser()) {
+      alert('You must be logged in to accept a quest.');
+      return;
+    }
+
+    if (quest.status !== 'created') {
+      alert('This quest is not available for acceptance.');
+      return;
+    }
+
+    quest.isAccepting = true;
+    this.items.update(items => [...items]);
+
+    console.log('Sending accept request for quest:', quest.realId);
+
+    this.postsService.acceptQuest(quest.realId).subscribe({
+      next: (response) => {
+        console.log('Quest accepted successfully:', response);
+        quest.status = 'in_progress';
+        quest.isAccepting = false;
+        this.items.update(items => [...items]);
+        this.cdRef.detectChanges();
+        alert(`Quest accepted! You can now work on "${quest.title}".`);
+      },
+      error: (err) => {
+        console.error('Failed to accept quest:', err);
+        console.error('Error details:', {
+          status: err.status,
+          message: err.error?.message,
+          error: err.error
+        });
+        quest.isAccepting = false;
+        this.items.update(items => [...items]);
+        this.cdRef.detectChanges();
+        
+        if (err.status === 403) {
+          alert(err.error?.message || 'You cannot accept your own quest.');
+        } else if (err.status === 400) {
+          alert(err.error?.message || 'This quest is not available.');
+        } else if (err.status === 401) {
+          alert('Your session has expired. Please log in again.');
+        } else {
+          alert(`Failed to accept quest. Error: ${err.status} - ${err.error?.message || 'Unknown error'}`);
+        }
+      }
+    });
   }
 }

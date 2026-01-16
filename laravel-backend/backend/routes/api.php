@@ -99,6 +99,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- POSTS ---
     Route::post('/posts', [PostController::class, 'store']);
     Route::patch('/posts/{postId}/status', [PostController::class, 'updateStatus']);
+    Route::post('/posts/{postId}/accept', [PostController::class, 'acceptQuest']);
+    Route::post('/posts/{postId}/complete', [PostController::class, 'completeQuest']);
 
     // --- USERS & PROFIEL ---
     Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
