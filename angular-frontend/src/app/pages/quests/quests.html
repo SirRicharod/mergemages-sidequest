@@ -52,7 +52,7 @@
           @for (quest of ongoingQuests(); track quest.post_id) {
             <div class="card mb-3 shadow-sm">
               <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
                   <h5 class="card-title mb-0">{{ quest.title }}</h5>
                   <span class="badge bg-warning">In Progress</span>
                 </div>
@@ -121,7 +121,7 @@
           @for (quest of completedQuests(); track quest.post_id) {
             <div class="card mb-3 shadow-sm">
               <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
                   <h5 class="card-title mb-0">{{ quest.title }}</h5>
                   <span class="badge bg-success">Completed</span>
                 </div>
@@ -160,7 +160,7 @@
           @for (quest of createdQuests(); track quest.post_id) {
             <div class="card mb-3 shadow-sm">
               <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
                   <h5 class="card-title mb-0">{{ quest.title }}</h5>
                   @if (quest.status === 'created') {
                     <span class="badge bg-secondary">Open</span>
