@@ -55,9 +55,8 @@
         </div>
         @if (auth.currentUser()?.user_id !== item.authorUserId) {
         <button class="btn btn-sm btn-accept" 
-                (click)="acceptQuest(item); $event.stopPropagation();"
-                [disabled]="item.status !== 'created' || item.isAccepting"
-                [title]="'Status: ' + item.status + ' | Can accept: ' + (item.status === 'created' && !item.isAccepting)">
+                (click)="acceptQuest(item)"
+                [disabled]="item.status !== 'created' || item.isAccepting">
           <i class="bi bi-check2-circle"></i>
           <span class="ms-1">
             @if (item.isAccepting) {
@@ -68,7 +67,7 @@
             } @else if (item.status === 'completed') {
               Completed
             } @else {
-              Accept quest ({{ item.status }})
+              Accept quest
             }
           </span>
         </button>

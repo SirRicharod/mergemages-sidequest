@@ -85,4 +85,11 @@ export class PostsService {
   completeQuest(postId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/posts/${postId}/complete`, {});
   }
+
+  /**
+   * Delete a quest (creator only, must be in 'created' status)
+   */
+  deleteQuest(postId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posts/${postId}`);
+  }
 }

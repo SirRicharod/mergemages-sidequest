@@ -173,19 +173,34 @@
                     }
                   </div>
                   
-                  @if (quest.status === 'in_progress') {
-                    <button class="btn btn-sm btn-success" 
-                            (click)="completeQuest(quest)"
-                            [disabled]="quest.isCompleting">
-                      @if (quest.isCompleting) {
-                        <span class="spinner-border spinner-border-sm me-1"></span>
-                        Completing...
-                      } @else {
-                        <i class="bi bi-check2-circle me-1"></i>
-                        Mark Complete
-                      }
-                    </button>
-                  }
+                  <div class="d-flex gap-2">
+                    @if (quest.status === 'in_progress') {
+                      <button class="btn btn-sm btn-success" 
+                              (click)="completeQuest(quest)"
+                              [disabled]="quest.isCompleting">
+                        @if (quest.isCompleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Completing...
+                        } @else {
+                          <i class="bi bi-check2-circle me-1"></i>
+                          Mark Complete
+                        }
+                      </button>
+                    }
+                    @if (quest.status === 'created') {
+                      <button class="btn btn-sm btn-danger" 
+                              (click)="deleteQuest(quest)"
+                              [disabled]="quest.isDeleting">
+                        @if (quest.isDeleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Deleting...
+                        } @else {
+                          <i class="bi bi-trash me-1"></i>
+                          Delete
+                        }
+                      </button>
+                    }
+                  </div>
                 </div>
               </div>
             </div>

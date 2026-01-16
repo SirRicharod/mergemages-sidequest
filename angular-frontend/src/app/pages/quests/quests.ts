@@ -11,6 +11,7 @@ type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
 
 interface QuestWithState extends Post {
   isCompleting?: boolean;
+  isDeleting?: boolean;
 }
 
 @Component({
@@ -127,6 +128,53 @@ export class QuestsComponent implements OnInit {
           alert('Your session has expired. Please log in again.');
         } else {
           alert('Failed to complete quest. Please try again.');
+        }
+      }
+    });
+  }
+
+  deleteQuest(quest: QuestWithState): void {
+    if (!this.auth.currentUser()) {
+      alert('You must be logged in to delete a quest.');
+      return;
+    }
+
+    if (quest.author_user_id !== this.currentUserId) {
+      alert('Only the quest creator can delete it.');
+      return;
+    }
+
+    if (quest.status !== 'created') {
+      alert('Cannot delete a quest that has been accepted or completed.');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete "${quest.title}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    quest.isDeleting = true;
+
+    this.postsService.deleteQuest(quest.post_id).subscribe({
+      next: (response) => {
+        console.log('Quest deleted:', response);
+        // Remove from local list by filtering it out
+        this.allQuests.update(quests => quests.filter(q => q.post_id !== quest.post_id));
+        alert('Quest deleted successfully!');
+      },
+      error: (err) => {
+        console.error('Failed to delete quest:', err);
+        quest.isDeleting = false;
+        this.allQuests.update(quests => [...quests]);
+        
+        if (err.status === 403) {
+          alert(err.error?.message || 'Only the quest creator can delete it.');
+        } else if (err.status === 400) {
+          alert(err.error?.message || 'Cannot delete this quest.');
+        } else if (err.status === 401) {
+          alert('Your session has expired. Please log in again.');
+        } else {
+          alert('Failed to delete quest. Please try again.');
         }
       }
     });

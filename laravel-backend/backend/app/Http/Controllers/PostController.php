@@ -342,4 +342,51 @@ class PostController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Delete a quest (post) - soft delete by changing status to 'deleted'
+     * - Only the quest creator can delete it
+     * - Cannot delete quests that are in progress or completed
+     */
+    public function deleteQuest(Request $request, $postId)
+    {
+        $userId = $request->user()->user_id;
+
+        // Get the post
+        $post = DB::table('posts')
+            ->where('post_id', $postId)
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Quest not found',
+            ], 404);
+        }
+
+        // Check if user is the creator
+        if ($post->author_user_id !== $userId) {
+            return response()->json([
+                'message' => 'Only the quest creator can delete it',
+            ], 403);
+        }
+
+        // Check if quest can be deleted (only if status is 'created')
+        if ($post->status !== 'created') {
+            return response()->json([
+                'message' => 'Cannot delete a quest that has been accepted or completed',
+            ], 400);
+        }
+
+        // Soft delete by updating status to 'deleted'
+        DB::table('posts')
+            ->where('post_id', $postId)
+            ->update([
+                'status' => 'deleted',
+                'updated_at' => now(),
+            ]);
+
+        return response()->json([
+            'message' => 'Quest deleted successfully',
+        ]);
+    }
 }

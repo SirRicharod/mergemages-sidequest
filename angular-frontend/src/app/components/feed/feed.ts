@@ -154,12 +154,6 @@ export class FeedComponent implements OnInit {
             } as Sidequest;
           });
           
-        console.log('=== Loaded Posts ===');
-        console.log('Total posts:', posts.length);
-        posts.forEach(p => {
-          console.log(`Post: "${p.title}" | Status: ${p.status} | Author: ${p.authorUserId} | Current User: ${this.auth.currentUser()?.user_id}`);
-        });
-        
         this.items.set(posts);
         this.loading.set(false);
       },
@@ -274,11 +268,6 @@ export class FeedComponent implements OnInit {
   }
 
   acceptQuest(quest: Sidequest): void {
-    console.log('=== Accept Quest Clicked ===');
-    console.log('Quest:', quest);
-    console.log('Current User:', this.auth.currentUser());
-    console.log('Auth Token:', localStorage.getItem('auth_token'));
-    
     if (!this.auth.currentUser()) {
       alert('You must be logged in to accept a quest.');
       return;
@@ -292,11 +281,8 @@ export class FeedComponent implements OnInit {
     quest.isAccepting = true;
     this.items.update(items => [...items]);
 
-    console.log('Sending accept request for quest:', quest.realId);
-
     this.postsService.acceptQuest(quest.realId).subscribe({
       next: (response) => {
-        console.log('Quest accepted successfully:', response);
         quest.status = 'in_progress';
         quest.isAccepting = false;
         this.items.update(items => [...items]);
@@ -305,11 +291,6 @@ export class FeedComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to accept quest:', err);
-        console.error('Error details:', {
-          status: err.status,
-          message: err.error?.message,
-          error: err.error
-        });
         quest.isAccepting = false;
         this.items.update(items => [...items]);
         this.cdRef.detectChanges();
