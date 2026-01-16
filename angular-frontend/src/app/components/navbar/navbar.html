@@ -1,18 +1,11 @@
-<!-- src/app/components/navbar/navbar.html -->
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
-        <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" routerLink="/">
             <i class="bi bi-compass me-2 d-none d-lg-inline"></i>
             SideQuest
         </a>
 
-        <!-- Mobile actions (phone only): Search + Logout -->
         <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
-            <!-- <button class="btn btn-outline-light btn-sm" type="button" aria-label="Search"
-                (click)="openMobileSearch?.()">
-                <i class="bi bi-search"></i>
-            </button> -->
             <a *ngIf="!isAuthenticated" class="btn btn-outline-light btn-sm" routerLink="/login">
                 <i class="bi bi-box-arrow-in-right me-1"></i> Login
             </a>
@@ -21,12 +14,10 @@
             </button>
         </div>
 
-        <!-- Desktop nav -->
         <div class="collapse navbar-collapse" id="sqNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: true }">Feed</a>
+                    <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Feed</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/quests" routerLinkActive="active">Ongoing Quests</a>
@@ -36,7 +27,30 @@
                 </li>
             </ul>
 
-            <!-- Desktop actions -->
+            <div class="mx-auto position-relative search-container d-none d-lg-block" *ngIf="isAuthenticated">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-secondary border-secondary text-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control bg-secondary border-secondary text-white" 
+                           placeholder="Search accounts..." 
+                           [(ngModel)]="searchQuery" 
+                           (input)="onSearchChange()">
+                </div>
+
+                <ul class="list-group position-absolute w-100 mt-1 shadow-lg search-results" *ngIf="showResults && searchResults.length > 0">
+                    <li class="list-group-item list-group-item-action d-flex align-items-center pointer" 
+                        *ngFor="let user of searchResults" 
+                        (click)="viewProfile(user.user_id)">
+                        <img [src]="user.avatar_url || 'assets/default-avatar.png'" 
+                             class="rounded-circle me-2" 
+                             style="width: 30px; height: 30px; object-fit: cover;">
+                        <span>{{ user.name }}</span>
+                    </li>
+                </ul>
+            </div>
+
             <div class="d-none d-lg-flex align-items-center gap-2 ms-auto">
                 <a *ngIf="!isAuthenticated" class="btn btn-outline-light btn-sm" routerLink="/login">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Login

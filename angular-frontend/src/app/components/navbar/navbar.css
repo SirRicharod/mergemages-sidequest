@@ -29,3 +29,21 @@
         padding: 0.25rem 0.5rem;
     }
 }
+/* src/app/components/navbar/navbar.css */
+.search-container {
+    width: 300px; /* Breedte van de zoekbalk */
+}
+
+.search-results {
+    z-index: 1050; /* Zorgt dat de lijst bovenop andere elementen staat */
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.list-group-item-action:hover {
+    background-color: #f8f9fa;
+}
