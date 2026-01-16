@@ -1,3 +1,230 @@
+<div class="container-fluid px-3 py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <h2 class="mb-4">My Quests</h2>
+
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'ongoing'" (click)="activeTab = 'ongoing'">
+            <i class="bi bi-hourglass-split me-2"></i>Ongoing
+            @if (ongoingQuests().length > 0) {
+              <span class="badge bg-primary ms-1">{{ ongoingQuests().length }}</span>
+            }
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'completed'" (click)="activeTab = 'completed'">
+            <i class="bi bi-check-circle me-2"></i>Completed
+            @if (completedQuests().length > 0) {
+              <span class="badge bg-success ms-1">{{ completedQuests().length }}</span>
+            }
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'created'" (click)="activeTab = 'created'">
+            <i class="bi bi-pencil-square me-2"></i>My Posts
+            @if (createdQuests().length > 0) {
+              <span class="badge bg-info ms-1">{{ createdQuests().length }}</span>
+            }
+          </a>
+        </li>
+      </ul>
+
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3 text-muted">Loading your quests...</p>
+        </div>
+      }
+
+      <!-- Ongoing Quests Tab -->
+      @if (!loading() && activeTab === 'ongoing') {
+        @if (ongoingQuests().length === 0) {
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            You don't have any ongoing quests. Accept a quest from the feed to get started!
+          </div>
+        } @else {
+          @for (quest of ongoingQuests(); track quest.post_id) {
+            <div class="card mb-3 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
+                  <h5 class="card-title mb-0">{{ quest.title }}</h5>
+                  <span class="badge bg-warning">In Progress</span>
+                </div>
+                
+                <p class="card-text text-muted mb-3">{{ quest.body }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex gap-3">
+                    <span class="text-muted small">
+                      <i class="bi bi-star-fill text-warning me-1"></i>
+                      {{ quest.bounty_points }} XP
+                    </span>
+                    <span class="text-muted small">
+                      @if (quest.author_user_id === currentUserId) {
+                        <i class="bi bi-person-check me-1"></i>
+                        Accepted by: {{ quest.accepter?.name || 'Unknown' }}
+                      } @else {
+                        <i class="bi bi-person me-1"></i>
+                        Posted by: {{ quest.author?.name || 'Unknown' }}
+                      }
+                    </span>
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    @if (quest.author_user_id === currentUserId) {
+                      <button class="btn btn-sm btn-success" 
+                              (click)="completeQuest(quest)"
+                              [disabled]="quest.isCompleting">
+                        @if (quest.isCompleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Completing...
+                        } @else {
+                          <i class="bi bi-check2-circle me-1"></i>
+                          Mark Complete
+                        }
+                      </button>
+                    } @else {
+                      <button class="btn btn-sm btn-warning" 
+                              (click)="cancelQuest(quest)"
+                              [disabled]="quest.isCanceling">
+                        @if (quest.isCanceling) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Canceling...
+                        } @else {
+                          <i class="bi bi-x-circle me-1"></i>
+                          Cancel Quest
+                        }
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      }
+
+      <!-- Completed Quests Tab -->
+      @if (!loading() && activeTab === 'completed') {
+        @if (completedQuests().length === 0) {
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            No completed quests yet.
+          </div>
+        } @else {
+          @for (quest of completedQuests(); track quest.post_id) {
+            <div class="card mb-3 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
+                  <h5 class="card-title mb-0">{{ quest.title }}</h5>
+                  <span class="badge bg-success">Completed</span>
+                </div>
+                
+                <p class="card-text text-muted mb-3">{{ quest.body }}</p>
+                
+                <div class="d-flex gap-3">
+                  <span class="text-muted small">
+                    <i class="bi bi-star-fill text-warning me-1"></i>
+                    {{ quest.bounty_points }} XP
+                  </span>
+                  <span class="text-muted small">
+                    @if (quest.author_user_id === currentUserId) {
+                      <i class="bi bi-person-check me-1"></i>
+                      Completed by: {{ quest.accepter?.name || 'Unknown' }}
+                    } @else {
+                      <i class="bi bi-trophy-fill text-warning me-1"></i>
+                      You earned {{ quest.bounty_points }} XP!
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      }
+
+      <!-- Created Quests Tab -->
+      @if (!loading() && activeTab === 'created') {
+        @if (createdQuests().length === 0) {
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            You haven't created any quests yet. Create one from the home page!
+          </div>
+        } @else {
+          @for (quest of createdQuests(); track quest.post_id) {
+            <div class="card mb-3 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2 text-break text-wrap">
+                  <h5 class="card-title mb-0">{{ quest.title }}</h5>
+                  @if (quest.status === 'created') {
+                    <span class="badge bg-secondary">Open</span>
+                  } @else if (quest.status === 'in_progress') {
+                    <span class="badge bg-warning">In Progress</span>
+                  } @else {
+                    <span class="badge bg-success">Completed</span>
+                  }
+                </div>
+                
+                <p class="card-text text-muted mb-3">{{ quest.body }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex gap-3">
+                    <span class="text-muted small">
+                      <i class="bi bi-star-fill text-warning me-1"></i>
+                      {{ quest.bounty_points }} XP
+                    </span>
+                    @if (quest.accepted_user_id) {
+                      <span class="text-muted small">
+                        <i class="bi bi-person-check me-1"></i>
+                        Accepted by: {{ quest.accepter?.name || 'Unknown' }}
+                      </span>
+                    }
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    @if (quest.status === 'in_progress') {
+                      <button class="btn btn-sm btn-success" 
+                              (click)="completeQuest(quest)"
+                              [disabled]="quest.isCompleting">
+                        @if (quest.isCompleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Completing...
+                        } @else {
+                          <i class="bi bi-check2-circle me-1"></i>
+                          Mark Complete
+                        }
+                      </button>
+                    }
+                    @if (quest.status === 'created') {
+                      <button class="btn btn-sm btn-danger" 
+                              (click)="deleteQuest(quest)"
+                              [disabled]="quest.isDeleting">
+                        @if (quest.isDeleting) {
+                          <span class="spinner-border spinner-border-sm me-1"></span>
+                          Deleting...
+                        } @else {
+                          <i class="bi bi-trash me-1"></i>
+                          Delete
+                        }
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      }
+    </div>
+  </div>
+</div>
+
 <!-- Phone-Mode -->
 <app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
     (openSearch)="mobileSearchVisible = true">

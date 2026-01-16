@@ -5,7 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface AuthUser {
-  id: number;
+  user_id: string;
   name: string;
   email: string;
   xp_balance: number;

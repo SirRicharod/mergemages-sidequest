@@ -47,16 +47,29 @@
           }
           <span>
             by <strong>{{ item.author }}</strong>
-            @if (auth.currentUser()?.id?.toString() === item.authorUserId) {
+            @if (auth.currentUser()?.user_id === item.authorUserId) {
             <span class="badge bg-info text-dark ms-1">You</span>
             }
             • {{ item.createdAt }}
           </span>
         </div>
-        @if (auth.currentUser()?.id?.toString() !== item.authorUserId) {
-        <button class="btn btn-sm btn-accept">
+        @if (auth.currentUser()?.user_id !== item.authorUserId) {
+        <button class="btn btn-sm btn-accept" 
+                (click)="acceptQuest(item)"
+                [disabled]="item.status !== 'created' || item.isAccepting">
           <i class="bi bi-check2-circle"></i>
-          <span class="ms-1">Accept quest</span>
+          <span class="ms-1">
+            @if (item.isAccepting) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+              Accepting...
+            } @else if (item.status === 'in_progress') {
+              In Progress
+            } @else if (item.status === 'completed') {
+              Completed
+            } @else {
+              Accept quest
+            }
+          </span>
         </button>
         }
       </div>
