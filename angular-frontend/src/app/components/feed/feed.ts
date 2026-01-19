@@ -128,8 +128,9 @@ export class FeedComponent implements OnInit {
           .map((post, idx) => {
             const idNum = parseInt(post.post_id);
             const avatarUrl = post.author?.avatar_url;
+            // Check if avatar_url is already a full URL or just a path
             const fullAvatarUrl = avatarUrl && avatarUrl.trim() 
-              ? `http://127.0.0.1:8000/storage/${avatarUrl}`
+              ? (avatarUrl.startsWith('http') ? avatarUrl : `http://127.0.0.1:8000/storage/${avatarUrl}`)
               : null;
             
             return {

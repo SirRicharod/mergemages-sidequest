@@ -11,16 +11,38 @@ class ReviewController extends Controller
     // 1. Alle reviews ophalen (voor de algemene Feed)
     public function index()
     {
-        $reviews = Review::orderBy('created_at', 'desc')->get();
+        $reviews = Review::with('reviewer')->orderBy('created_at', 'desc')->get();
+        
+        // Transform avatar paths to full URLs
+        $reviews->transform(function($review) {
+            if ($review->reviewer) {
+                $review->reviewer->avatar_url = $review->reviewer->avatar 
+                    ? asset('storage/' . $review->reviewer->avatar) 
+                    : null;
+            }
+            return $review;
+        });
+        
         return response()->json($reviews);
     }
 
     // 2. Reviews voor de ingelogde gebruiker (Mijn Profiel)
     public function userReviews(Request $request)
     {
-        $reviews = Review::where('target_user_id', Auth::id())
+        $reviews = Review::with('reviewer')
+                        ->where('target_user_id', Auth::id())
                         ->orderBy('created_at', 'desc')
                         ->get();
+
+        // Transform avatar paths to full URLs
+        $reviews->transform(function($review) {
+            if ($review->reviewer) {
+                $review->reviewer->avatar_url = $review->reviewer->avatar 
+                    ? asset('storage/' . $review->reviewer->avatar) 
+                    : null;
+            }
+            return $review;
+        });
 
         return response()->json($reviews);
     }
@@ -29,9 +51,20 @@ class ReviewController extends Controller
     public function show($id)
     {
         // Zoek reviews waar 'target_user_id' gelijk is aan het ID uit de URL
-        $reviews = Review::where('target_user_id', $id)
+        $reviews = Review::with('reviewer')
+                        ->where('target_user_id', $id)
                         ->orderBy('created_at', 'desc')
                         ->get();
+
+        // Transform avatar paths to full URLs
+        $reviews->transform(function($review) {
+            if ($review->reviewer) {
+                $review->reviewer->avatar_url = $review->reviewer->avatar 
+                    ? asset('storage/' . $review->reviewer->avatar) 
+                    : null;
+            }
+            return $review;
+        });
 
         return response()->json($reviews);
     }
