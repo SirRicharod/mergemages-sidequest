@@ -52,6 +52,13 @@ export class NavbarComponent {
   }
 
   onLogout(): void {
-    this.auth.logout(); // Zonder .subscribe() omdat het void is
+    this.auth.logout().subscribe({
+      next: () => {
+        // Successfully logged out
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+      }
+    });
   }
 }
