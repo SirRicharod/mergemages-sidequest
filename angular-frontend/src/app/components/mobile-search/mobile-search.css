@@ -25,7 +25,8 @@
     flex-direction: column;
 }
 
-.popup-header {
+.popup-header,
+.popup-footer {
     padding: 12px 16px;
     display: flex;
     justify-content: space-between;
@@ -38,9 +39,19 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.btn-close {
-    border: none;
-    background: transparent;
-    width: 1.5rem;
-    height: 1.5rem;
+.section-title {
+    margin: 0 0 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.divider {
+    opacity: 0.2;
+    margin: 8px 0 16px;
+}
+
+.search-btn {
+    background-color: var(--sq-primary);
+    border-color: var(--sq-primary);
+    color: #fff;
 }

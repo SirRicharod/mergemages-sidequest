@@ -19,14 +19,15 @@ export class MobileSearchComponent {
 
   visible = false;
 
-  // Feed search model
+  // Sidequests search
   query = '';
   mode: QueryMode = 'keywords';
 
-  // Profile search model/results
+  // Profile search
   profileQuery = '';
   results: User[] = [];
   loadingProfiles = false;
+  searchedOnce = false;
 
   @Output() searchChange = new EventEmitter<{ query: string; mode: QueryMode }>();
 
@@ -38,13 +39,14 @@ export class MobileSearchComponent {
   close(): void {
     this.visible = false;
     document.body.style.overflow = '';
-    // Optional: clear transient state when closing
+    // reset transient profile state
     this.profileQuery = '';
     this.results = [];
     this.loadingProfiles = false;
+    this.searchedOnce = false;
   }
 
-  // Feed search submit
+  // Sidequests submit
   submit(): void {
     this.searchChange.emit({ query: this.query.trim(), mode: this.mode });
     this.close();
@@ -54,13 +56,16 @@ export class MobileSearchComponent {
     this.query = '';
   }
 
-  // Profile search handlers
-  onProfileInput(): void {
+  // Profile search via button
+  searchProfiles(): void {
     const q = this.profileQuery.trim();
+    this.searchedOnce = true;
+
     if (q.length <= 1) {
       this.results = [];
       return;
     }
+
     this.loadingProfiles = true;
     this.userService.searchUsers(q).subscribe({
       next: (users) => {
@@ -75,7 +80,6 @@ export class MobileSearchComponent {
   }
 
   viewProfile(userId: string): void {
-    // Navigate to user’s profile, then close the popup
     this.router.navigate(['/user', userId]).then(() => this.close());
   }
 }

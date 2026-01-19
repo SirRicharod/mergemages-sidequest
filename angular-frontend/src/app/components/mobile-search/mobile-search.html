@@ -8,68 +8,75 @@
         </div>
 
         <div class="popup-body">
-            <!-- Feed search -->
-            <form (submit)="$event.preventDefault(); submit()">
-                <div class="mb-3">
-                    <label for="mobileQuery" class="form-label">Sidequests</label>
+            <!-- Sidequests -->
+            <section class="mb-3">
+                <h6 class="section-title">Sidequests</h6>
+                <form (submit)="$event.preventDefault(); submit()">
+                    <div class="mb-2">
+                        <label for="mobileQuery" class="form-label">Query</label>
+                        <div class="input-group">
+                            <input id="mobileQuery" [(ngModel)]="query" name="mobileQuery" class="form-control"
+                                type="text" placeholder="Search sidequests..." />
+                            <button class="btn btn-outline-secondary" type="button" (click)="clear()"
+                                [disabled]="!query">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mobileMode" class="form-label">Mode</label>
+                        <select id="mobileMode" [(ngModel)]="mode" name="mobileMode" class="form-select">
+                            <option value="keywords">Keywords</option>
+                            <option value="profile">Profile</option>
+                            <option value="skills">Skills</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-secondary me-2" type="button" (click)="close()">Cancel</button>
+                        <button class="btn search-btn" type="submit">Search</button>
+                    </div>
+                </form>
+            </section>
+
+            <hr class="divider" />
+
+            <!-- Profiles -->
+            <section>
+                <h6 class="section-title">Profiles</h6>
+                <div class="mb-2">
+                    <label for="profileQuery" class="form-label">Name or email</label>
                     <div class="input-group">
-                        <input id="mobileQuery" [(ngModel)]="query" name="mobileQuery" class="form-control" type="text"
-                            placeholder="Search sidequests..." />
-                        <button class="btn btn-outline-secondary" type="button" (click)="clear()" [disabled]="!query">
-                            Clear
+                        <input id="profileQuery" [(ngModel)]="profileQuery" name="profileQuery" class="form-control"
+                            type="text" placeholder="Search accounts..." />
+                        <button class="btn search-btn" type="button" (click)="searchProfiles()">
+                            <i class="bi"></i> Search
                         </button>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="mobileMode" class="form-label">Mode</label>
-                    <select id="mobileMode" [(ngModel)]="mode" name="mobileMode" class="form-select">
-                        <option value="keywords">Keywords</option>
-                        <option value="profile">Profile</option>
-                        <option value="skills">Skills</option>
-                    </select>
+                <div *ngIf="loadingProfiles" class="text-muted small py-2 d-flex align-items-center gap-2">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    <span>Searching profiles…</span>
                 </div>
 
-                <div class="d-flex justify-content-end mb-4">
-                    <button class="btn btn-secondary me-2" type="button" (click)="close()">Cancel</button>
-                    <button class="btn btn-primary" type="submit">Search</button>
-                </div>
-            </form>
-
-            <hr class="my-2">
-
-            <!-- Profile search -->
-            <div>
-                <label for="mobileProfileQuery" class="form-label">Profiles</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-secondary border-secondary text-white">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input id="mobileProfileQuery" [(ngModel)]="profileQuery" name="mobileProfileQuery"
-                        class="form-control" type="text" placeholder="Search accounts..." (input)="onProfileInput()" />
+                <div *ngIf="!loadingProfiles && searchedOnce && results.length === 0" class="text-muted small py-2">
+                    No matching profiles found.
                 </div>
 
-                <div class="mt-2">
-                    <div *ngIf="loadingProfiles" class="text-muted small">
-                        <div class="spinner-border spinner-border-sm me-1" role="status"></div>
-                        Searching…
-                    </div>
-
-                    <ul class="list-group mt-2" *ngIf="!loadingProfiles && results.length > 0">
-                        <li class="list-group-item list-group-item-action d-flex align-items-center pointer"
-                            *ngFor="let user of results" (click)="viewProfile(user.user_id)">
-                            <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle me-2"
-                                style="width: 30px; height: 30px; object-fit: cover;">
-                            <span>{{ user.name }}</span>
-                        </li>
-                    </ul>
-
-                    <div *ngIf="!loadingProfiles && profileQuery.trim().length > 1 && results.length === 0"
-                        class="text-muted small">
-                        No accounts found.
-                    </div>
-                </div>
-            </div>
+                <ul *ngIf="results.length > 0" class="list-group mt-2">
+                    <li class="list-group-item list-group-item-action d-flex align-items-center pointer"
+                        *ngFor="let user of results" (click)="viewProfile(user.user_id)">
+                        <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle me-2"
+                            style="width: 30px; height: 30px; object-fit: cover;">
+                        <div class="d-flex flex-column">
+                            <strong>{{ user.name }}</strong>
+                            <small class="text-muted">{{ user.email }}</small>
+                        </div>
+                    </li>
+                </ul>
+            </section>
         </div>
     </div>
 </div>
