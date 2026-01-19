@@ -19,9 +19,9 @@ export class ProfileComponent implements OnInit {
   mobileSearchVisible = false;
   showAvatarMenu = false;
 
-  // NIEUW: Houdt bij of we naar onszelf kijken of naar iemand anders
+  // NEW: Tracks whether we're looking at ourselves or someone else
   isOwnProfile: boolean = true; 
-  currentUserId: string | null = null; // Handig om later aan de Reviews component te geven
+  currentUserId: string | null = null; // Useful to pass to the Reviews component later
 
   defaultAvatar = 'https://ui-avatars.com/api/?name=Sage+Stockmans&background=0D8ABC&color=fff&size=150';
 
@@ -44,22 +44,22 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // 1. Check of er een ID in de URL staat (bijv. /profile/12)
+    // 1. Check if there's an ID in the URL (e.g. /profile/12)
     const userIdFromUrl = this.route.snapshot.paramMap.get('id');
 
     if (userIdFromUrl) {
-      // SITUATIE A: We bezoeken iemand anders
+      // SITUATION A: We're visiting someone else
       this.isOwnProfile = false;
       this.currentUserId = userIdFromUrl;
       this.fetchOtherUser(userIdFromUrl);
     } else {
-      // SITUATIE B: We bezoeken ons eigen profiel
+      // SITUATION B: We're visiting our own profile
       this.isOwnProfile = true;
       this.fetchMyProfile();
     }
   }
 
-  // --- OPHALEN EIGEN PROFIEL ---
+  // --- FETCH OWN PROFILE ---
   fetchMyProfile() {
     this.http.get<any>('http://127.0.0.1:8000/api/profile').subscribe({
       next: (response) => {
@@ -69,7 +69,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // --- OPHALEN ANDER PROFIEL ---
+  // --- FETCH OTHER PROFILE ---
   fetchOtherUser(id: string) {
     this.http.get<any>(`http://127.0.0.1:8000/api/users/${id}`).subscribe({
       next: (user) => {
@@ -79,8 +79,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // --- ALGEMENE FUNCTIE OM DATA TE VERWERKEN ---
-  // Dit voorkomt dat we dezelfde code twee keer moeten schrijven
+  // --- GENERAL FUNCTION TO PROCESS DATA ---
+  // This prevents us from having to write the same code twice
   updateUserData(data: any) {
     setTimeout(() => {
         const fullName = data.name || 'Gebruiker';
@@ -93,11 +93,11 @@ export class ProfileComponent implements OnInit {
             points: data.points || 0,
             badges: data.badges || [],
             bio: data.bio || '',
-            // Avatar URL of default
+            // Avatar URL or default
             avatarUrl: data.avatar_url ? data.avatar_url : this.defaultAvatar
         };
 
-        // Als we op ons eigen profiel zitten, slaan we ons ID op (als de backend die teruggeeft)
+        // If we're on our own profile, save our ID (if the backend returns it)
         if (this.isOwnProfile && data.user_id) {
             this.currentUserId = data.user_id;
         }
@@ -108,18 +108,18 @@ export class ProfileComponent implements OnInit {
   }
 
   handleError(err: any) {
-    console.error('Fout bij laden profiel:', err);
+    console.error('Error loading profile:', err);
     setTimeout(() => {
-        this.user.firstName = 'Onbekende';
-        this.user.lastName = 'Avonturier';
+        this.user.firstName = 'Unknown';
+        this.user.lastName = 'Adventurer';
         this.cd.detectChanges();
     }, 0);
   }
 
-  // --- AVATAR FUNCTIES ---
+  // --- AVATAR FUNCTIONS ---
 
   toggleAvatarMenu(): void {
-    // Beveiliging: Je mag het menu niet openen op andermans profiel
+    // Security: You can't open the menu on someone else's profile
     if (!this.isOwnProfile) return;
     this.showAvatarMenu = !this.showAvatarMenu;
   }

@@ -20,7 +20,7 @@ export class UsersComponent implements OnInit {
 
   users: any[] = []; 
   selectedUser: any = null; 
-  reviews: any[] = []; // NIEUW: Hier slaan we de reviews van anderen op
+  reviews: any[] = []; // NEW: Here we store reviews of others
   isSingleProfile: boolean = false;
   loading: boolean = false;
 
@@ -35,7 +35,7 @@ export class UsersComponent implements OnInit {
       if (userId) {
         this.isSingleProfile = true; 
         this.selectedUser = null; 
-        this.reviews = []; // Maak de lijst leeg voor de nieuwe gebruiker
+        this.reviews = []; // Clear the list for the new user
         this.loading = true;
         this.cdr.detectChanges(); 
         this.loadUserProfile(userId);
@@ -88,10 +88,10 @@ export class UsersComponent implements OnInit {
       comment: this.reviewComment
     }).subscribe({
       next: () => {
-        alert('Review geplaatst!');
+        alert('Review posted!');
         this.reviewComment = '';
         this.submitting = false;
-        // Herlaad het profiel zodat je eigen review direct in de lijst verschijnt
+        // Reload the profile so your own review appears directly in the list
         this.loadUserProfile(this.selectedUser.user_id);
       },
       error: () => {

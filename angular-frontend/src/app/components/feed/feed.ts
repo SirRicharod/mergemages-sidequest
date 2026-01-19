@@ -25,15 +25,15 @@ export interface Sidequest {
   createdAt: string;
   status: PostStatus;
   
-  // Dit veld slaat het aantal op
+  // This field stores the count
   commentsCount?: number;
 
-  // Velden voor comments logica
+  // Fields for comments logic
   comments?: any[];
   showComments?: boolean;
   isLoadingComments?: boolean;
   
-  // Voor quest acceptance
+  // For quest acceptance
   isAccepting?: boolean;
 }
 
@@ -242,12 +242,12 @@ export class FeedComponent implements OnInit {
           if (!post.comments) post.comments = [];
           post.comments.push(newComment);
           
-          // Teller ophogen bij plaatsen
+          // Increment counter when posting
           post.commentsCount = (post.commentsCount || 0) + 1;
 
           inputField.value = '';
           inputField.disabled = false;
-          this.items.update(items => [...items]); // comments direct weergeven
+          this.items.update(items => [...items]); // Display comments immediately
           this.cdRef.detectChanges();
         },
         error: (err) => {

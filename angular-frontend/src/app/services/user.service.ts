@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface User {
-  user_id: string; // Veranderd van 'id' naar 'user_id' voor jouw database
+  user_id: string; // Changed from 'id' to 'user_id' for your database
   name: string;
   email: string;
   bio?: string;
@@ -19,17 +19,17 @@ export class UserService {
   private http = inject(HttpClient);
   private apiUrl = 'http://127.0.0.1:8000/api';
 
-  // Bestaande functie (mag blijven staan)
+  // Existing function (can remain)
   getUsers(): Observable<{ users: User[] }> {
     return this.http.get<{ users: User[] }>(`${this.apiUrl}/users`);
   }
 
-  // NIEUW: Zoek gebruikers voor de navbar (zoals Facebook)
+  // NEW: Search users for the navbar (like Facebook)
   searchUsers(query: string): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/search/users?query=${query}`);
   }
 
-  // NIEUW: Haal profiel van een ander op via hun UUID
+  // NEW: Fetch another user's profile via their UUID
   getUserProfile(userId: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/users/${userId}`);
   }

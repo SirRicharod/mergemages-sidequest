@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UsersComponent } from './users'; // Hier stond 'Users', moet 'UsersComponent' zijn
+import { UsersComponent } from './users'; // This was 'Users', must be 'UsersComponent'
 
 describe('UsersComponent', () => {
   let component: UsersComponent;
@@ -7,7 +7,7 @@ describe('UsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UsersComponent] // Ook hier aanpassen naar 'UsersComponent'
+      imports: [UsersComponent] // Also adjust to 'UsersComponent' here
     })
     .compileComponents();
 

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ReviewService {
-  // De URL naar jouw Laravel backend
+  // The URL to your Laravel backend
   private apiUrl = 'http://localhost:8000/api/reviews';
 
   constructor(private http: HttpClient) { }

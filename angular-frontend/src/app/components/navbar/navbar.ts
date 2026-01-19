@@ -1,14 +1,14 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router'; // Router toegevoegd
-import { FormsModule } from '@angular/forms'; // Nodig voor de zoekbalk (ngModel)
+import { RouterLink, RouterLinkActive, Router } from '@angular/router'; // Router added
+import { FormsModule } from '@angular/forms'; // Needed for the search bar (ngModel)
 import { AuthService } from '../../services/auth.service';
-import { UserService, User } from '../../services/user.service'; // UserService toegevoegd
+import { UserService, User } from '../../services/user.service'; // UserService added
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule], // FormsModule toegevoegd
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule], // FormsModule added
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
@@ -26,7 +26,7 @@ export class NavbarComponent {
   searchResults: User[] = [];
   showResults: boolean = false;
 
-  // Wordt aangeroepen bij elke letter die je typt
+  // Called on every letter you type
   onSearchChange(): void {
     if (this.searchQuery.length > 1) {
       this.userService.searchUsers(this.searchQuery).subscribe({
@@ -44,11 +44,11 @@ export class NavbarComponent {
     }
   }
 
-  // Navigeer naar het profiel en maak de zoekbalk leeg
+  // Navigate to the profile and clear the search bar
   viewProfile(userId: string): void {
     this.showResults = false;
     this.searchQuery = '';
-    this.router.navigate(['/user', userId]); // Stuurt je naar /user/UUID
+    this.router.navigate(['/user', userId]); // Sends you to /user/UUID
   }
 
   onLogout(): void {

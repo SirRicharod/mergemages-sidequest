@@ -10,15 +10,15 @@ import { authGuard, guestGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [authGuard] },
 
-  // Public/profile routes (jouw eigen profiel)
+  // Public/profile routes (your own profile)
   { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
 
-  // NIEUW: Deze route linkt de zoekbalk aan de Users-pagina
-  // Wanneer je klikt op een user, stuurt de navbar je naar /user/UUID
+  // NEW: This route links the search bar to the Users page
+  // When you click on a user, the navbar sends you to /user/UUID
   { path: 'user/:id', component: UsersComponent, canActivate: [authGuard] },
 
-  // De lijst met alle gebruikers (bestaande route)
+  // The list of all users (existing route)
   { path: 'users', component: UsersComponent, canActivate: [authGuard] },
 
   // Auth

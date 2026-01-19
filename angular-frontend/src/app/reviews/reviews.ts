@@ -33,9 +33,9 @@ export class Reviews implements OnInit, OnChanges {
     this.fetchReviews();
   }
 
-  // Als de targetUserId verandert (omdat je op een ander profiel klikt), halen we nieuwe reviews op
+  // When the targetUserId changes (because you click on another profile), we fetch new reviews
   ngOnChanges(changes: SimpleChanges) {
-    // Check of targetUserId is veranderd OF isOwnProfile is veranderd
+    // Check if targetUserId has changed OR isOwnProfile has changed
     if (changes['targetUserId'] || changes['isOwnProfile']) {
       this.fetchReviews();
     }
@@ -45,27 +45,27 @@ export class Reviews implements OnInit, OnChanges {
     let url = '';
 
     if (this.isOwnProfile) {
-        // 1. Mijn eigen profiel: Haal reviews op die over MIJ gaan
+        // 1. My own profile: Fetch reviews that are about ME
         url = 'http://127.0.0.1:8000/api/user/reviews';
     } else if (this.targetUserId) {
-        // 2. Iemand anders: Haal reviews op voor DIT ID
+        // 2. Someone else: Fetch reviews for THIS ID
         url = `http://127.0.0.1:8000/api/reviews/${this.targetUserId}`; 
     } else {
-        // 3. GEEN ID? STOP! 🛑
-        // Hier zat de fout. Vroeger laadde hij de algemene feed. 
-        // Nu doen we niks totdat het ID geladen is.
-        this.reviews = []; // Maak de lijst leeg voor de zekerheid
+        // 3. NO ID? STOP! 🛑
+        // This is where the bug was. Previously it loaded the general feed. 
+        // Now we do nothing until the ID is loaded.
+        this.reviews = []; // Clear the list to be safe
         return; 
     }
 
-    // Alleen ophalen als we een geldige URL hebben
+    // Only fetch if we have a valid URL
     if (url) {
       this.http.get<any[]>(url).subscribe({
         next: (data) => {
           this.reviews = data; 
           this.cdr.detectChanges();
         },
-        error: (err) => console.error('Kon reviews niet laden:', err)
+        error: (err) => console.error('Could not load reviews:', err)
       });
     }
   }
@@ -76,7 +76,7 @@ export class Reviews implements OnInit, OnChanges {
     this.errorMessage = '';
 
     if (!this.targetUserId) {
-      this.errorMessage = 'Geen gebruiker geselecteerd om te reviewen.';
+      this.errorMessage = 'No user selected to review.';
       this.isSubmitting = false;
       return;
     }
@@ -89,15 +89,15 @@ export class Reviews implements OnInit, OnChanges {
 
     this.reviewService.postReview(data).subscribe({
       next: (res) => {
-        this.successMessage = 'Review geplaatst! 🎉';
+        this.successMessage = 'Review posted! 🎉';
         this.comment = ''; 
         this.isSubmitting = false;
-        this.fetchReviews(); // Lijst verversen
+        this.fetchReviews(); // Refresh list
         this.cdr.detectChanges(); 
       },
       error: (err) => {
-        console.error('Foutje:', err);
-        this.errorMessage = 'Er ging iets mis.';
+        console.error('Error:', err);
+        this.errorMessage = 'Something went wrong.';
         this.isSubmitting = false;
         this.cdr.detectChanges();
       }
