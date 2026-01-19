@@ -57,7 +57,7 @@ class PostController extends Controller
                 'comments_count' => $post->comments_count, 
                 'author' => [
                     'name' => $post->author_name,
-                    'avatar_url' => $post->author_avatar,
+                    'avatar_url' => $post->author_avatar ? asset('storage/' . $post->author_avatar) : null,
                 ],
             ];
 
@@ -66,7 +66,7 @@ class PostController extends Controller
                 $result['accepter'] = [
                     'user_id' => $post->accepted_user_id,
                     'name' => $post->accepter_name,
-                    'avatar_url' => $post->accepter_avatar,
+                    'avatar_url' => $post->accepter_avatar ? asset('storage/' . $post->accepter_avatar) : null,
                 ];
             }
 
