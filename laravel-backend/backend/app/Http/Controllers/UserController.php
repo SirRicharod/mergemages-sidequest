@@ -53,6 +53,7 @@ class UserController extends Controller
         // Voeg voor elk resultaat de volledige avatar URL toe
         $users->transform(function($user) {
             $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
+            unset($user->avatar); // Remove the internal path from response
             return $user;
         });
 
@@ -71,9 +72,13 @@ class UserController extends Controller
 
     // Maak de avatar URL compleet
     $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
+    
+    // Remove the internal avatar path from response
+    $userData = $user->toArray();
+    unset($userData['avatar']);
 
     // We sturen de gebruiker terug, Laravel plakt de reviews er automatisch bij in het JSON-object
-    return response()->json($user);
+    return response()->json($userData);
 }
 
     public function index() {}

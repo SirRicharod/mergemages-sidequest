@@ -21,7 +21,15 @@ use App\Http\Controllers\PostController;
 Route::get('/posts', [PostController::class, 'index']);
 
 Route::get('/users', function () {
-    $users = User::select('user_id as id', 'name', 'email', 'bio', 'avatar_url', 'birth_date', 'created_at')->get();
+    $users = User::select('user_id as id', 'name', 'email', 'bio', 'avatar', 'birth_date', 'created_at')->get();
+    
+    // Transform avatar paths to full URLs
+    $users->transform(function($user) {
+        $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
+        unset($user->avatar); // Remove the internal path from response
+        return $user;
+    });
+    
     return response()->json(['users' => $users]);
 });
 
