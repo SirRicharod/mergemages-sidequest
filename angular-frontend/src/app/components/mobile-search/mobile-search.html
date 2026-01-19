@@ -8,9 +8,10 @@
         </div>
 
         <div class="popup-body">
+            <!-- Feed search -->
             <form (submit)="$event.preventDefault(); submit()">
                 <div class="mb-3">
-                    <label for="mobileQuery" class="form-label">Query</label>
+                    <label for="mobileQuery" class="form-label">Sidequests</label>
                     <div class="input-group">
                         <input id="mobileQuery" [(ngModel)]="query" name="mobileQuery" class="form-control" type="text"
                             placeholder="Search sidequests..." />
@@ -29,11 +30,46 @@
                     </select>
                 </div>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-end mb-4">
                     <button class="btn btn-secondary me-2" type="button" (click)="close()">Cancel</button>
                     <button class="btn btn-primary" type="submit">Search</button>
                 </div>
             </form>
+
+            <hr class="my-2">
+
+            <!-- Profile search -->
+            <div>
+                <label for="mobileProfileQuery" class="form-label">Profiles</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-secondary border-secondary text-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input id="mobileProfileQuery" [(ngModel)]="profileQuery" name="mobileProfileQuery"
+                        class="form-control" type="text" placeholder="Search accounts..." (input)="onProfileInput()" />
+                </div>
+
+                <div class="mt-2">
+                    <div *ngIf="loadingProfiles" class="text-muted small">
+                        <div class="spinner-border spinner-border-sm me-1" role="status"></div>
+                        Searching…
+                    </div>
+
+                    <ul class="list-group mt-2" *ngIf="!loadingProfiles && results.length > 0">
+                        <li class="list-group-item list-group-item-action d-flex align-items-center pointer"
+                            *ngFor="let user of results" (click)="viewProfile(user.user_id)">
+                            <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle me-2"
+                                style="width: 30px; height: 30px; object-fit: cover;">
+                            <span>{{ user.name }}</span>
+                        </li>
+                    </ul>
+
+                    <div *ngIf="!loadingProfiles && profileQuery.trim().length > 1 && results.length === 0"
+                        class="text-muted small">
+                        No accounts found.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
