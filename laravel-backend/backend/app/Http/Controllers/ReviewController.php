@@ -47,7 +47,7 @@ class ReviewController extends Controller
         return response()->json($reviews);
     }
 
-    // 3. 👇 NIEUW: Reviews ophalen van een SPECIFIEKE gebruiker (Ander Profiel)
+    // 3.  Reviews ophalen van een SPECIFIEKE gebruiker (Ander Profiel)
     public function show($id)
     {
         // Zoek reviews waar 'target_user_id' gelijk is aan het ID uit de URL
@@ -75,8 +75,8 @@ class ReviewController extends Controller
         // Validatie
         $validated = $request->validate([
             'target_user_id' => 'required|exists:users,user_id', // Check of gebruiker bestaat
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|max:1000',
+            'rating' => 'required|integer|min:1|max:5', // rating tussen 1 en 5
+            'comment' => 'required|string|max:1000', // comment max 1000 tekens
         ]);
 
         // Review aanmaken
