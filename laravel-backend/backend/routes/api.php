@@ -56,7 +56,6 @@ Route::post('/register', function (Request $request) {
             'name' => $user->name,
             'email' => $user->email,
             'xp_balance' => $user->xp_balance,
-            'weekly_xp_allowance' => $user->weekly_xp_allowance,
         ],
     ], 201); 
 });
@@ -84,7 +83,6 @@ Route::post('/login', function (Request $request) {
             'name' => $user->name,
             'email' => $user->email,
             'xp_balance' => $user->xp_balance,
-            'weekly_xp_allowance' => $user->weekly_xp_allowance,
         ],
     ]);
 });
@@ -138,7 +136,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 'name' => $user->name,
                 'email' => $user->email,
                 'xp_balance' => $user->xp_balance,
-                'weekly_xp_allowance' => $user->weekly_xp_allowance,
                 'avatar_url' => $user->avatar_url,
             ]
         ]);

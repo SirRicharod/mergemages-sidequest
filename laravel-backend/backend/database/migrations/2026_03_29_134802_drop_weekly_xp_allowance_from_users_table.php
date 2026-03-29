@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('xp_balance')->default(1000)->after('avatar_url');
+            $table->dropColumn('weekly_xp_allowance');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['xp_balance']);
+            $table->integer('weekly_xp_allowance')->default(1000)->after('xp_balance');
         });
     }
 };

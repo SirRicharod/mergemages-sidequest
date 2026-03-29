@@ -9,7 +9,6 @@ export interface AuthUser {
   name: string;
   email: string;
   xp_balance: number;
-  weekly_xp_allowance: number;
   avatar_url: string | null;
 }
 
