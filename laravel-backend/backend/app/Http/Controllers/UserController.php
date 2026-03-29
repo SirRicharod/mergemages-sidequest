@@ -80,9 +80,4 @@ class UserController extends Controller
     // We sturen de gebruiker terug, Laravel plakt de reviews er automatisch bij in het JSON-object
     return response()->json($userData);
 }
-
-    public function index() {}
-    public function store(Request $request) {}
-    public function update(Request $request, string $id) {}
-    public function destroy(string $id) {}
 }
