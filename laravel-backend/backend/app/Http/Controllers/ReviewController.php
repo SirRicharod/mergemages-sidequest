@@ -17,7 +17,7 @@ class ReviewController extends Controller
         $reviews->transform(function($review) {
             if ($review->reviewer) {
                 $review->reviewer->avatar_url = $review->reviewer->avatar 
-                    ? asset('storage/' . $review->reviewer->avatar) 
+                    ? asset('storage/' . $review->reviewer->avatar)
                     : null;
             }
             return $review;
@@ -37,8 +37,8 @@ class ReviewController extends Controller
         // Transform avatar paths to full URLs
         $reviews->transform(function($review) {
             if ($review->reviewer) {
-                $review->reviewer->avatar_url = $review->reviewer->avatar 
-                    ? asset('storage/' . $review->reviewer->avatar) 
+            $review->reviewer->avatar_url = $review->reviewer->avatar 
+                    ? asset('storage/' . $review->reviewer->avatar)
                     : null;
             }
             return $review;
@@ -59,8 +59,8 @@ class ReviewController extends Controller
         // Transform avatar paths to full URLs
         $reviews->transform(function($review) {
             if ($review->reviewer) {
-                $review->reviewer->avatar_url = $review->reviewer->avatar 
-                    ? asset('storage/' . $review->reviewer->avatar) 
+            $review->reviewer->avatar_url = $review->reviewer->avatar 
+                    ? asset('storage/' . $review->reviewer->avatar)
                     : null;
             }
             return $review;

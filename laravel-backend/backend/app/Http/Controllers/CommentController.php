@@ -19,7 +19,7 @@ class CommentController extends Controller
         $comments->transform(function ($comment) {
             if ($comment->user) {
                 $comment->user->avatar_url = $comment->user->avatar 
-                    ? asset('storage/' . $comment->user->avatar) 
+                    ? asset('storage/' . $comment->user->avatar)
                     : null;
             }
             return $comment;

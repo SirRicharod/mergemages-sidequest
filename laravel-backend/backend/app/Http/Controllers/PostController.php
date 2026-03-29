@@ -172,7 +172,7 @@ class PostController extends Controller
                 'comments_count' => 0, 
                 'author' => [
                     'name' => $post->author_name,
-                    'avatar_url' => $post->author_avatar,
+                    'avatar_url' => $post->author_avatar ? asset('storage/' . $post->author_avatar) : null,
                 ],
             ],
             'xp_balance' => $updatedUser->xp_balance
