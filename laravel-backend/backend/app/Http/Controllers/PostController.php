@@ -32,7 +32,7 @@ class PostController extends Controller
                 'author.avatar as author_avatar',
                 'accepter.name as accepter_name',
                 'accepter.avatar as accepter_avatar',
-                // 👇 NIEUW: Telt de comments via een subquery
+                //  Telt de comments via een subquery
                 DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.post_id) as comments_count')
             )
             ->whereIn('posts.status', ['created', 'in_progress', 'completed'])
@@ -53,7 +53,7 @@ class PostController extends Controller
                 'urgent' => $post->urgent,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
-                // 👇 NIEUW: Geef de teller mee aan de frontend
+                //  NIEUW: Geef de teller mee aan de frontend
                 'comments_count' => $post->comments_count, 
                 'author' => [
                     'name' => $post->author_name,
