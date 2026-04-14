@@ -190,8 +190,8 @@ export class FeedComponent implements OnInit {
     });
   }
 
-  
-  toggleComments(post: Sidequest) {
+  // Comments logic 
+  toggleComments(post: Sidequest)  {
     if (post.showComments) {
       post.showComments = false;
       return;
@@ -200,7 +200,7 @@ export class FeedComponent implements OnInit {
     post.showComments = true;
     post.isLoadingComments = true;
 
-    this.http.get<any[]>(`http://127.0.0.1:8000/api/posts/${post.realId}/comments`)
+    this.http.get<any[]>(`http://127.0.0.1:8000/api/posts/${post.realId}/comments`) // Use realId for API calls
       .subscribe({
         next: (data) => {
           post.comments = data;

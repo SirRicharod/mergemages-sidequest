@@ -11,7 +11,7 @@ class CommentController extends Controller
     public function index($postId)
     {
         $comments = Comment::where('post_id', $postId)
-            ->with('user') // Haal direct de gegevens van de schrijver erbij
+            ->with('user') // Haal direct de gegevens op en voorkomen de N+1 query problem door eager loading van de user relatie.
             ->orderBy('created_at', 'asc') // Oudste eerst
             ->get();
 
