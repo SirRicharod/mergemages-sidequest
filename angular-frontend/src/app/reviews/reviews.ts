@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReviewService } from '../services/review'; 
 import { HttpClient } from '@angular/common/http';
+import { API_BASE } from '../services/api';
 
 @Component({
   selector: 'app-reviews',
@@ -45,11 +46,11 @@ export class Reviews implements OnInit, OnChanges {
     let url = '';
 
     if (this.isOwnProfile) {
-        // 1. My own profile: Fetch reviews that are about ME
-        url = 'http://127.0.0.1:8000/api/user/reviews';
+      // 1. My own profile: Fetch reviews that are about ME
+      url = `${API_BASE}/user/reviews`;
     } else if (this.targetUserId) {
-        // 2. Someone else: Fetch reviews for THIS ID
-        url = `http://127.0.0.1:8000/api/reviews/${this.targetUserId}`; 
+      // 2. Someone else: Fetch reviews for THIS ID
+      url = `${API_BASE}/reviews/${this.targetUserId}`; 
     } else {
         // 3. NO ID? STOP! 🛑
         // This is where the bug was. Previously it loaded the general feed. 

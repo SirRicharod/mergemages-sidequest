@@ -5,6 +5,7 @@ import { RouterModule, ActivatedRoute, Router, NavigationEnd } from '@angular/ro
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { UserService } from '../../services/user.service';
+import { API_BASE } from '../../services/api';
 
 @Component({
   selector: 'app-users',
@@ -75,7 +76,7 @@ export class UsersComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.http.get<any>('http://127.0.0.1:8000/api/users').subscribe({
+    this.http.get<any>(`${API_BASE}/users`).subscribe({
       next: (response) => {
         this.users = response.users;
         this.loading = false;

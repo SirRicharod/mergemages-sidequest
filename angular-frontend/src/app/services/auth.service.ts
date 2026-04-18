@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { API_BASE } from './api';
 
 export interface AuthUser {
   user_id: string;
@@ -27,7 +28,7 @@ export interface RegisterResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = API_BASE;
   private tokenKey = 'auth_token';
   private platformId = inject(PLATFORM_ID);
   private isBrowser: boolean;

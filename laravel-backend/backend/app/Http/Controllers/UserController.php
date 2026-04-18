@@ -40,25 +40,7 @@ class UserController extends Controller
     /**
      * NIEUW: Zoek gebruikers op naam voor de search button.
      */
-    public function search(Request $request)
-    {
-        $query = $request->query('query');
-        
-        // We zoeken in de bestaande users tabel op naam
-        $users = User::where('name', 'LIKE', "%{$query}%")
-            ->select('user_id', 'name', 'avatar') // Alleen de nodige info voor de zoeklijst
-            ->limit(5)
-            ->get();
-
-        // Voeg voor elk resultaat de volledige avatar URL toe
-        $users->transform(function($user) {
-            $user->avatar_url = $user->avatar ? asset('storage/' . $user->avatar) : null;
-            unset($user->avatar); // Remove the internal path from response
-            return $user;
-        });
-
-        return response()->json($users);
-    }
+    /* Search functionality removed — feature deprecated */
 
     /**
      * Haal een specifiek profiel op via user_id.

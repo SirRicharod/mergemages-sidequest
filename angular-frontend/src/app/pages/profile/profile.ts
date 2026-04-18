@@ -5,6 +5,7 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { Router, ActivatedRoute } from '@angular/router'; // <--- ActivatedRoute toegevoegd
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { HttpClient } from '@angular/common/http';
+import { API_BASE } from '../../services/api';
 
 @Component({
   selector: 'app-profile',
@@ -57,7 +58,7 @@ export class ProfileComponent implements OnInit {
 
   // --- FETCH OWN PROFILE ---
   fetchMyProfile() {
-    this.http.get<any>('http://127.0.0.1:8000/api/profile').subscribe({
+    this.http.get<any>(`${API_BASE}/profile`).subscribe({
       next: (response) => {
         this.updateUserData(response.user);
       },
@@ -67,7 +68,7 @@ export class ProfileComponent implements OnInit {
 
   // --- FETCH OTHER PROFILE ---
   fetchOtherUser(id: string) {
-    this.http.get<any>(`http://127.0.0.1:8000/api/users/${id}`).subscribe({
+    this.http.get<any>(`${API_BASE}/users/${id}`).subscribe({
       next: (user) => {
         this.updateUserData(user);
       },
@@ -137,7 +138,7 @@ export class ProfileComponent implements OnInit {
       const formData = new FormData();
       formData.append('avatar', file);
 
-      this.http.post<any>('http://127.0.0.1:8000/api/user/avatar', formData).subscribe({
+      this.http.post<any>(`${API_BASE}/user/avatar`, formData).subscribe({
         next: (response) => {
            setTimeout(() => {
                this.user.avatarUrl = response.avatar_url;

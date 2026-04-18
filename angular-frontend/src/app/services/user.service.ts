@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api';
 
 export interface User {
   user_id: string; // Changed from 'id' to 'user_id' for your database
@@ -17,7 +18,7 @@ export interface User {
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = API_BASE;
 
   // Existing function (can remain)
   getUsers(): Observable<{ users: User[] }> {

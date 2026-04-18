@@ -11,10 +11,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   
   // Only access localStorage in browser
   if (isPlatformBrowser(platformId)) {
-    const token = localStorage.getItem('auth_token');
-    
+    // Read token from either localStorage (remembered) or sessionStorage (temporary)
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+
     if (token) {
-      // Clone the request and add the authorization header
       const clonedRequest = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`

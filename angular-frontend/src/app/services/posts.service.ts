@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api';
 
 export type PostStatus = 'created' | 'in_progress' | 'completed' | 'deleted';
 export type PostType = 'request' | 'offer';
@@ -47,7 +48,7 @@ export interface CreatePostResponse {
   providedIn: 'root'
 })
 export class PostsService {
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = API_BASE;
 
   constructor(private http: HttpClient) {}
 
