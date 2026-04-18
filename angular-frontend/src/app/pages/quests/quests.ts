@@ -8,8 +8,6 @@ import { PostsService, Post } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 
-type QueryMode = 'keywords' | 'profile' | 'skills' | 'tags';
-
 interface QuestWithState extends Post {
   isCompleting?: boolean;
   isDeleting?: boolean;
@@ -29,9 +27,6 @@ export class QuestsComponent implements OnInit {
   private auth = inject(AuthService);
   
   searchMode: 'requests' | 'offers' = 'requests';
-  mobileSearchVisible = false;
-  mobileQuery = '';
-  mobileQueryMode: QueryMode = 'keywords';
   activeTab: 'ongoing' | 'completed' | 'created' = 'ongoing';
 
   loading = signal(false);

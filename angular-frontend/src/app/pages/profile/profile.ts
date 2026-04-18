@@ -4,24 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
 import { Router, ActivatedRoute } from '@angular/router'; // <--- ActivatedRoute toegevoegd
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
-import { Reviews } from '../../reviews/reviews';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, BottomNavComponent, Reviews],
+  imports: [CommonModule, FormsModule, BottomNavComponent],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css']
 })
 export class ProfileComponent implements OnInit {
   searchMode: 'requests' | 'offers' = 'requests';
-  mobileSearchVisible = false;
   showAvatarMenu = false;
 
   // NEW: Tracks whether we're looking at ourselves or someone else
-  isOwnProfile: boolean = true; 
-  currentUserId: string | null = null; // Useful to pass to the Reviews component later
+  isOwnProfile: boolean = true;
 
   defaultAvatar = 'https://ui-avatars.com/api/?name=Sage+Stockmans&background=0D8ABC&color=fff&size=150';
 
@@ -50,7 +47,6 @@ export class ProfileComponent implements OnInit {
     if (userIdFromUrl) {
       // SITUATION A: We're visiting someone else
       this.isOwnProfile = false;
-      this.currentUserId = userIdFromUrl;
       this.fetchOtherUser(userIdFromUrl);
     } else {
       // SITUATION B: We're visiting our own profile
@@ -96,12 +92,6 @@ export class ProfileComponent implements OnInit {
             // Avatar URL or default
             avatarUrl: data.avatar_url ? data.avatar_url : this.defaultAvatar
         };
-
-        // If we're on our own profile, save our ID (if the backend returns it)
-        if (this.isOwnProfile && data.user_id) {
-            this.currentUserId = data.user_id;
-        }
-
         this.cd.markForCheck(); 
         this.cd.detectChanges();
     }, 0); 

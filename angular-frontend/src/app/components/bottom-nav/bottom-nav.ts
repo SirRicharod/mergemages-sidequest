@@ -15,7 +15,6 @@ export class BottomNavComponent {
   @Input() mode: Mode = 'requests';
   @Output() toggleMode = new EventEmitter<void>();
   @Output() makePost = new EventEmitter<void>();
-  @Output() openSearch = new EventEmitter<void>();
 
   constructor(private router: Router) { }
 

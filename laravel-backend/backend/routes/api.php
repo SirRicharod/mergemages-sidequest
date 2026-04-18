@@ -1,10 +1,8 @@
 <?php
-use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController; 
 
@@ -36,12 +34,16 @@ Route::get('/users', function () {
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:120',
-        'email' => 'required|string|email|max:255|unique:users',
+        'email' => 'required|string|max:255|unique:users',
         'password' => 'required|string|min:8|confirmed',
     ]);
 
     $sanitizedName = trim(strip_tags($validated['name']));
     $sanitizedEmail = trim(strtolower($validated['email']));
+
+    if (!filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL)) {
+        return response()->json(['message' => 'Invalid email format'], 422);
+    }
 
     $user = User::create([
         'name' => $sanitizedName,
@@ -62,11 +64,16 @@ Route::post('/register', function (Request $request) {
 
 Route::post('/login', function (Request $request) {
     $validated = $request->validate([
-        'email' => 'required|email',
+        'email' => 'required|string',
         'password' => 'required',
     ]);
 
     $sanitizedEmail = trim(strtolower($validated['email']));
+
+    if (!filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL)) {
+        return response()->json(['message' => 'Invalid email format'], 422);
+    }
+
     $user = User::where('email', $sanitizedEmail)->first();
 
     if (!$user || !Hash::check($validated['password'], $user->password_hash)) {
@@ -96,12 +103,6 @@ Route::post('/login', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // --- REVIEWS ---
-    Route::get('/reviews', [ReviewController::class, 'index']); 
-    Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
-    Route::get('/reviews/{id}', [ReviewController::class, 'show']);
-    Route::post('/reviews', [ReviewController::class, 'store']); 
-
     // --- POSTS ---
     Route::post('/posts', [PostController::class, 'store']);
     Route::patch('/posts/{postId}/status', [PostController::class, 'updateStatus']);
@@ -112,7 +113,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- USERS & PROFIEL ---
     Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
-    Route::get('/search/users', [UserController::class, 'search']);
     Route::get('/users/{id}', [UserController::class, 'show']);
 
     // --- LOGOUT ---
@@ -120,10 +120,6 @@ Route::middleware('auth:sanctum')->group(function () {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }); // <--- DEZE HAAKJES SLUITEN DE LOGOUT FUNCTIE AF
-
-    // --- COMMENTS ROUTES (Nu staan ze op de juiste plek!) ---
-    Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
-    Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
 
     // --- PROFILE ---
     Route::get('/profile', function (Request $request) {
