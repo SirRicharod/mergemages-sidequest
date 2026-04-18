@@ -7,6 +7,7 @@ import { PostComposerComponent } from '../../components/post-composer/post-compo
 import { FeedComponent } from '../../components/feed/feed';
 import { RightSidebarComponent } from '../../components/search-sidebar/search-sidebar';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav';
+import { MobileSearchComponent } from '../../components/mobile-search/mobile-search';
 
 import { ComposerCoordinatorService } from '../../services/composer-coordinator.service';
 import { AuthService } from '../../services/auth.service';
@@ -22,7 +23,8 @@ import { Subscription } from 'rxjs';
     PostComposerComponent,
     FeedComponent,
     RightSidebarComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    MobileSearchComponent
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
@@ -33,6 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('composerRef') composerRef?: PostComposerComponent;
   @ViewChild('feedRef') feedRef?: FeedComponent;
+  @ViewChild('mobileSearchRef') mobileSearchRef?: MobileSearchComponent;
 
   private subs = new Subscription();
 
@@ -40,6 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchMode: 'requests' | 'offers' = 'requests';
   urgentOnly = false;
   searchQuery: string = '';
+  queryMode: 'keywords' | 'profile' | 'skills' = 'keywords';
 
   // Example badges
   badges = ['Helper', 'Designer', 'Top Contributor'];
@@ -76,5 +80,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSearch(q: string) {
     this.searchQuery = q;
+  }
+
+  onSearchChange(ev: { query: string; mode: 'keywords' | 'profile' | 'skills' }) {
+    this.searchQuery = ev.query || '';
+    this.queryMode = ev.mode || 'keywords';
   }
 }

@@ -8,6 +8,7 @@ export type PostType = 'request' | 'offer';
 export interface Post {
   post_id: string;
   author_user_id: string;
+  accepted_user_id?: string | null;
   title: string;
   body: string;
   type: PostType;
@@ -19,6 +20,11 @@ export interface Post {
     name: string;
     avatar_url?: string;
   };
+  accepter?: {
+    user_id: string;
+    name: string;
+    avatar_url?: string;
+  } | null;
 }
 
 export interface CreatePostRequest {
@@ -47,6 +53,34 @@ export class PostsService {
    */
   getPosts(): Observable<{ posts: Post[] }> {
     return this.http.get<{ posts: Post[] }>(`${this.apiUrl}/posts`);
+  }
+
+  /**
+   * Accept a quest
+   */
+  acceptQuest(postId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/accept`, {});
+  }
+
+  /**
+   * Cancel (un-accept) a quest
+   */
+  cancelQuest(postId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/cancel`, {});
+  }
+
+  /**
+   * Complete a quest (creator only)
+   */
+  completeQuest(postId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/${postId}/complete`, {});
+  }
+
+  /**
+   * Delete a quest (soft-delete)
+   */
+  deleteQuest(postId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posts/${postId}`);
   }
 
   /**

@@ -20,6 +20,8 @@ export interface Sidequest {
   authorUserId: string;
   createdAt: string;
   status: PostStatus;
+  postId?: string;
+  isAccepting?: boolean;
 }
 
 @Component({
@@ -125,6 +127,7 @@ export class FeedComponent implements OnInit {
               author: post.author?.name || 'Unknown',
               authorAvatar: fullAvatarUrl,
               authorUserId: post.author_user_id,
+              postId: post.post_id,
               createdAt: new Date(post.created_at).toISOString().slice(0, 10),
               status: post.status
             } as Sidequest;
@@ -135,6 +138,37 @@ export class FeedComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load posts:', err);
         this.loading.set(false);
+      }
+    });
+  }
+
+  acceptQuest(item: Sidequest): void {
+    if (!this.auth.currentUser()) {
+      alert('You must be logged in to accept a quest.');
+      return;
+    }
+
+    if (!item.postId) {
+      console.error('Missing postId for item', item);
+      return;
+    }
+
+    item.isAccepting = true;
+    this.postsService.acceptQuest(item.postId).subscribe({
+      next: (res) => {
+        item.status = 'in_progress';
+        item.isAccepting = false;
+        this.items.update(list => [...list]);
+      },
+      error: (err) => {
+        console.error('Failed to accept quest:', err);
+        item.isAccepting = false;
+        this.items.update(list => [...list]);
+        if (err.status === 401) {
+          alert('Please log in to accept quests.');
+        } else {
+          alert(err.error?.message || 'Failed to accept quest.');
+        }
       }
     });
   }
