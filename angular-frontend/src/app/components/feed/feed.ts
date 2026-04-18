@@ -1,16 +1,14 @@
-import { Component, Input, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { PostsService, PostStatus } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
-import { ToastService } from '../../services/toast.service';
 
 type PostType = 'request' | 'offer';
 type SearchMode = 'requests' | 'offers';
+type QueryMode = 'keywords' | 'profile' | 'skills';
 
 export interface Sidequest {
   id: number;
-  realId: string; 
   title: string;
   description: string;
   type: PostType;
@@ -22,29 +20,28 @@ export interface Sidequest {
   authorUserId: string;
   createdAt: string;
   status: PostStatus;
-  
-  // For quest acceptance
-  isAccepting?: boolean;
 }
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './feed.html',
   styleUrls: ['./feed.css']
 })
 export class FeedComponent implements OnInit {
   private postsService = inject(PostsService);
-  private cdRef = inject(ChangeDetectorRef);
-  private toast = inject(ToastService);
   auth = inject(AuthService);
 
   @Input() set urgentOnly(value: boolean) { this._urgentOnly.set(value); }
   @Input() set searchMode(value: SearchMode) { this._searchMode.set(value); }
+  @Input() set searchQuery(value: string) { this._searchQuery.set(value); }
+  @Input() set queryMode(value: QueryMode) { this._queryMode.set(value); }
 
   private _urgentOnly = signal(false);
   private _searchMode = signal<SearchMode>('requests');
+  private _searchQuery = signal('');
+  private _queryMode = signal<QueryMode>('keywords');
 
   items = signal<Sidequest[]>([]);
   loading = signal(true);
@@ -54,9 +51,21 @@ export class FeedComponent implements OnInit {
     const allItems = this.items();
     const mode = this._searchMode();
     const urgent = this._urgentOnly();
+    const query = this._searchQuery();
+    const qMode = this._queryMode();
 
     let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
     if (urgent) base = base.filter(x => x.urgent);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      base = base.filter(x => {
+        switch (qMode) {
+          case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
+          case 'profile': return x.author.toLowerCase().includes(q);
+          default: return true;
+        }
+      });
+    }
     return base.slice(0, this.visibleCount());
   });
 
@@ -64,9 +73,21 @@ export class FeedComponent implements OnInit {
     const allItems = this.items();
     const mode = this._searchMode();
     const urgent = this._urgentOnly();
+    const query = this._searchQuery();
+    const qMode = this._queryMode();
 
     let base = allItems.filter(x => mode === 'requests' ? x.type === 'request' : x.type === 'offer');
     if (urgent) base = base.filter(x => x.urgent);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      base = base.filter(x => {
+        switch (qMode) {
+          case 'keywords': return (x.title + ' ' + x.description).toLowerCase().includes(q);
+          case 'profile': return x.author.toLowerCase().includes(q);
+          default: return true;
+        }
+      });
+    }
     return base.length;
   });
 
@@ -89,18 +110,16 @@ export class FeedComponent implements OnInit {
           .map((post, idx) => {
             const idNum = parseInt(post.post_id);
             const avatarUrl = post.author?.avatar_url;
-            // Check if avatar_url is already a full URL or just a path
             const fullAvatarUrl = avatarUrl && avatarUrl.trim() 
-              ? (avatarUrl.startsWith('http') ? avatarUrl : `http://127.0.0.1:8000/storage/${avatarUrl}`)
+              ? `http://127.0.0.1:8000/storage/${avatarUrl}`
               : null;
             
             return {
-              id: Number.isFinite(idNum) ? idNum : Date.now() + idx,
-              realId: post.post_id,
+              id: Number.isFinite(idNum) ? idNum : Date.now() + idx, // guard against NaN to fix track keys
               title: post.title,
               description: post.body,
               type: post.type as PostType,
-              urgent: post.urgent || false,
+              urgent: false,
               deadline: null,
               points: post.bounty_points,
               author: post.author?.name || 'Unknown',
@@ -110,7 +129,6 @@ export class FeedComponent implements OnInit {
               status: post.status
             } as Sidequest;
           });
-          
         this.items.set(posts);
         this.loading.set(false);
       },
@@ -121,13 +139,12 @@ export class FeedComponent implements OnInit {
     });
   }
 
-  addPost(title: string, description: string, type: PostType, points: number, boost?: boolean): void {
+  addPost(title: string, description: string, type: PostType, points: number): void {
     this.postsService.createPost({
       title,
       body: description,
       type,
-      bounty_points: points,
-      boost: boost ?? false
+      bounty_points: points
     }).subscribe({
       next: (response) => {
         this.auth.updateXpBalance(response.xp_balance);
@@ -136,50 +153,9 @@ export class FeedComponent implements OnInit {
       error: (err) => {
         console.error('Failed to create post:', err);
         if (err.status === 400 && err.error?.message === 'Insufficient XP balance') {
-          this.toast.error(`Insufficient XP! You have ${err.error.current_balance} XP but need ${err.error.required} XP.`);
+          alert(`Insufficient XP! You have ${err.error.current_balance} XP but need ${err.error.required} XP.`);
         } else {
-          this.toast.error('Failed to create post. Please try again.');
-        }
-      }
-    });
-  }
-
-  acceptQuest(quest: Sidequest): void {
-    if (!this.auth.currentUser()) {
-      this.toast.warning('You must be logged in to accept a quest.');
-      return;
-    }
-
-    if (quest.status !== 'created') {
-      this.toast.warning('This quest is not available for acceptance.');
-      return;
-    }
-
-    quest.isAccepting = true;
-    this.items.update(items => [...items]);
-
-    this.postsService.acceptQuest(quest.realId).subscribe({
-      next: (response) => {
-        quest.status = 'in_progress';
-        quest.isAccepting = false;
-        this.items.update(items => [...items]);
-        this.cdRef.detectChanges();
-        this.toast.success(`Quest accepted! You can now work on "${quest.title}".`);
-      },
-      error: (err) => {
-        console.error('Failed to accept quest:', err);
-        quest.isAccepting = false;
-        this.items.update(items => [...items]);
-        this.cdRef.detectChanges();
-        
-        if (err.status === 403) {
-          this.toast.error(err.error?.message || 'You cannot accept your own quest.');
-        } else if (err.status === 400) {
-          this.toast.error(err.error?.message || 'This quest is not available.');
-        } else if (err.status === 401) {
-          this.toast.error('Your session has expired. Please log in again.');
-        } else {
-          this.toast.error(`Failed to accept quest. Error: ${err.status} - ${err.error?.message || 'Unknown error'}`);
+          alert('Failed to create post. Please try again.');
         }
       }
     });

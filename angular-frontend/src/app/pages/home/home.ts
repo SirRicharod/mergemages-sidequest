@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Feed filters
   searchMode: 'requests' | 'offers' = 'requests';
   urgentOnly = false;
+  searchQuery: string = '';
 
   // Example badges
   badges = ['Helper', 'Designer', 'Top Contributor'];
@@ -72,4 +73,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Filters
   toggleUrgent(): void { this.urgentOnly = !this.urgentOnly; }
   toggleSearchMode(): void { this.searchMode = this.searchMode === 'requests' ? 'offers' : 'requests'; }
+
+  onSearch(q: string) {
+    this.searchQuery = q;
+  }
 }

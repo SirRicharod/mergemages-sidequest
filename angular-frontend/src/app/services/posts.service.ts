@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_BASE } from './api';
 
 export type PostStatus = 'created' | 'in_progress' | 'completed' | 'deleted';
 export type PostType = 'request' | 'offer';
@@ -9,22 +8,14 @@ export type PostType = 'request' | 'offer';
 export interface Post {
   post_id: string;
   author_user_id: string;
-  accepted_user_id?: string | null;
   title: string;
   body: string;
   type: PostType;
   status: PostStatus;
   bounty_points: number;
-  urgent?: boolean;
   created_at: string;
   updated_at: string;
-  comments_count?: number;
   author?: {
-    name: string;
-    avatar_url?: string;
-  };
-  accepter?: {
-    user_id: string;
     name: string;
     avatar_url?: string;
   };
@@ -35,7 +26,6 @@ export interface CreatePostRequest {
   body: string;
   type: PostType;
   bounty_points: number;
-  boost?: boolean;
 }
 
 export interface CreatePostResponse {
@@ -48,7 +38,7 @@ export interface CreatePostResponse {
   providedIn: 'root'
 })
 export class PostsService {
-  private apiUrl = API_BASE;
+  private apiUrl = 'http://127.0.0.1:8000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -71,33 +61,5 @@ export class PostsService {
    */
   updatePostStatus(postId: string, status: PostStatus): Observable<any> {
     return this.http.patch(`${this.apiUrl}/posts/${postId}/status`, { status });
-  }
-
-  /**
-   * Accept a quest
-   */
-  acceptQuest(postId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/posts/${postId}/accept`, {});
-  }
-
-  /**
-   * Cancel/Un-accept a quest
-   */
-  cancelQuest(postId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/posts/${postId}/cancel`, {});
-  }
-
-  /**
-   * Complete a quest (creator only)
-   */
-  completeQuest(postId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/posts/${postId}/complete`, {});
-  }
-
-  /**
-   * Delete a quest (creator only, must be in 'created' status)
-   */
-  deleteQuest(postId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/posts/${postId}`);
   }
 }
