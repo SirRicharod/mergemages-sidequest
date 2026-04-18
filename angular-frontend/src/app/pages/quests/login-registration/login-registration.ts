@@ -2,13 +2,14 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login-registration',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login-registration.html',
-  styleUrl: './login-registration.css',
+  styleUrls: ['./login-registration.css'],
 })
 export class LoginRegistration {
   // Toggle between login and register
@@ -78,13 +79,13 @@ export class LoginRegistration {
     this.loading.set(true);
 
     this.authService.login(this.loginData.email, this.loginData.password, this.loginData.rememberMe).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading.set(false);
         this.successMessage.set('Login successful!');
         // Redirect to home or dashboard after 500ms
         setTimeout(() => this.router.navigate(['/']), 500);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading.set(false);
         this.errorMessage.set(error.error?.message || 'Login failed. Please check your credentials.');
       }
@@ -116,7 +117,7 @@ export class LoginRegistration {
       this.registerData.password,
       this.registerData.passwordConfirmation
     ).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading.set(false);
         this.successMessage.set('Registration successful! Please login.');
         const registeredEmail = this.registerData.email;
@@ -128,7 +129,7 @@ export class LoginRegistration {
           this.clearMessages();
         }, 1500);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading.set(false);
         const errorMsg = error.error?.message || 'Registration failed. Please try again.';
         this.errorMessage.set(errorMsg);
