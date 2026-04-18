@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home';
 import { ProfileComponent } from './pages/profile/profile';
-import { LoginRegistration } from './pages/login-registration/login-registration';
+import { LoginRegistration } from './pages/quests/login-registration/login-registration';
 import { QuestsComponent } from './pages/quests/quests';
 import { UsersComponent } from './pages/users/users';
 import { authGuard, guestGuard } from './guards/auth.guard';
