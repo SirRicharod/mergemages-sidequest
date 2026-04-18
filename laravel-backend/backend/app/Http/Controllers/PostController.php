@@ -31,9 +31,7 @@ class PostController extends Controller
                 'author.name as author_name',
                 'author.avatar as author_avatar',
                 'accepter.name as accepter_name',
-                'accepter.avatar as accepter_avatar',
-                //  Telt de comments via een subquery
-                DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.post_id) as comments_count')
+                'accepter.avatar as accepter_avatar'
             )
             ->whereIn('posts.status', ['created', 'in_progress', 'completed'])
             ->orderBy('posts.created_at', 'desc')
@@ -53,8 +51,6 @@ class PostController extends Controller
                 'urgent' => $post->urgent,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
-                //  NIEUW: Geef de teller mee aan de frontend
-                'comments_count' => $post->comments_count, 
                 'author' => [
                     'name' => $post->author_name,
                     'avatar_url' => $post->author_avatar ? asset('storage/' . $post->author_avatar) : null,
@@ -168,8 +164,6 @@ class PostController extends Controller
                 'urgent' => $post->urgent,
                 'created_at' => $post->created_at,
                 'updated_at' => $post->updated_at,
-                // Bij een nieuwe post zijn er 0 comments
-                'comments_count' => 0, 
                 'author' => [
                     'name' => $post->author_name,
                     'avatar_url' => $post->author_avatar ? asset('storage/' . $post->author_avatar) : null,

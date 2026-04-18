@@ -59,16 +59,7 @@
       }
     </div>
   </div>
-
-  <div class="reviews-section">
-    <app-reviews 
-        [isOwnProfile]="isOwnProfile" 
-        [targetUserId]="currentUserId">
-    </app-reviews>
-  </div>
-
 </div>
 
-<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()"
-  (openSearch)="mobileSearchVisible = true">
+<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()">
 </app-bottom-nav>

@@ -1,7 +1,6 @@
 <app-navbar
     [isAuthenticated]="auth.isAuthenticated()"
-    [username]="auth.currentUser()?.name || null"
-    [openMobileSearch]="openMobileSearch">
+    [username]="auth.currentUser()?.name || null">
 </app-navbar>
 
 <app-toast></app-toast>

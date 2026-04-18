@@ -6,12 +6,6 @@
             <span class="label">{{ isOnFeed ? (mode === 'requests' ? 'Requests' : 'Offers') : 'Feed' }}</span>
         </button>
 
-        <!-- Search (replaces Messages) -->
-        <button class="nav-btn" type="button" (click)="openSearch.emit()" aria-label="Search">
-            <i class="bi bi-search"></i>
-            <span class="label">Search</span>
-        </button>
-
         <!-- Make Post -->
         <button class="nav-btn make-post" type="button" (click)="onMakePost()" aria-label="Make post">
             <i class="bi bi-plus-circle-fill"></i>

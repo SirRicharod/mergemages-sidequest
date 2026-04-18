@@ -1,34 +1,10 @@
 <div class="card right-sidebar shadow-sm">
     <div class="card-body">
-        <!-- Search box on top -->
-        <h6 class="card-title mb-2">Search</h6>
-        <form (submit)="$event.preventDefault(); submitSearch()">
-            <!-- input + clear button -->
-            <div class="input-group mb-2">
-                <input [(ngModel)]="query" (ngModelChange)="onQueryChange($event)" name="query" class="form-control"
-                    type="text" placeholder="Search sidequests..." aria-label="Search sidequests" />
-                <button class="btn btn-outline-secondary" type="button" (click)="clearQuery()" [disabled]="!query">
-                    Clear
-                </button>
-            </div>
+        <h6 class="card-title mb-2">Filters</h6>
 
-            <!-- mode select -->
-            <div class="mb-3">
-                <select [(ngModel)]="mode" name="mode" class="form-select" (change)="onModeChange()">
-                    <option value="keywords">Keywords</option>
-                    <option value="profile">Profile</option>
-                    <option value="skills">Skills</option>
-                </select>
-            </div>
-
-            <button class="btn btn-primary w-100 search-btn" type="submit">Search</button>
-        </form>
-
-        <!-- active filters summary (subtle) -->
         <div class="text-muted small mt-2">
             {{ searchMode === 'offers' ? 'Offers' : 'Requests' }}
             <span *ngIf="urgentOnly">• Urgent only</span>
-            <span *ngIf="query">• "{{ query }}" ({{ mode }})</span>
         </div>
 
         <hr class="my-3" />

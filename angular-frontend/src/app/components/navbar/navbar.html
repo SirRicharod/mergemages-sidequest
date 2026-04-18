@@ -33,33 +33,25 @@
                 </li>
             </ul>
 
-            <!-- Center search (desktop only): visible for authenticated users on large screens.
-                 Placed in the center of the navbar for quick account searching. -->
-            @if (isAuthenticated) {
-                <div class="mx-auto position-relative search-container d-none d-lg-block">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-secondary border-secondary text-white">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control bg-secondary border-secondary text-white"
-                            placeholder="Search accounts..." [(ngModel)]="searchQuery" (input)="onSearchChange()">
-                    </div>
-
-                    <!-- Search results dropdown: appears below the input when results are available. -->
-                    @if (showResults && searchResults.length > 0) {
-                        <ul class="list-group position-absolute w-100 mt-1 shadow-lg search-results">
-                            @for (user of searchResults; track user.user_id) {
-                                <li class="list-group-item list-group-item-action d-flex align-items-center pointer"
-                                    (click)="viewProfile(user.user_id)">
-                                    <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle me-2"
-                                        style="width: 30px; height: 30px; object-fit: cover;">
-                                    <span>{{ user.name }}</span>
-                                </li>
-                            }
-                        </ul>
-                    }
+            <div class="mx-auto position-relative search-container d-none d-lg-block" *ngIf="isAuthenticated">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-secondary border-secondary text-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control bg-secondary border-secondary text-white"
+                        placeholder="Search accounts..." [(ngModel)]="searchQuery" (input)="onSearchChange()">
                 </div>
-            }
+
+                <ul class="list-group position-absolute w-100 mt-1 shadow-lg search-results"
+                    *ngIf="showResults && searchResults.length > 0">
+                    <li class="list-group-item list-group-item-action d-flex align-items-center pointer"
+                        *ngFor="let user of searchResults" (click)="viewProfile(user.user_id)">
+                        <img [src]="user.avatar_url || 'assets/default-avatar.png'" class="rounded-circle me-2"
+                            style="width: 30px; height: 30px; object-fit: cover;">
+                        <span>{{ user.name }}</span>
+                    </li>
+                </ul>
+            </div>
 
             <!-- Desktop auth controls: visible on large screens (d-none d-lg-flex).
                  Separate from mobile controls to match the horizontal layout and show username. -->

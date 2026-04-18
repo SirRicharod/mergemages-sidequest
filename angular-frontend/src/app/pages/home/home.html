@@ -26,16 +26,14 @@
             </app-post-composer>
 
             <!-- Feed (desktop/tablet) -->
-            <app-feed class="d-none d-lg-block" #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode"
-                [searchQuery]="searchQuery" [queryMode]="queryMode">
+            <app-feed class="d-none d-lg-block" #feedRef [urgentOnly]="urgentOnly" [searchMode]="searchMode">
             </app-feed>
         </div>
 
         <!-- Right sidebar: hide on phone -->
         <div class="col-12 col-lg-3 d-none d-lg-block">
             <app-right-sidebar [searchMode]="searchMode" [urgentOnly]="urgentOnly"
-                (toggleSearchMode)="toggleSearchMode()" (toggleUrgent)="toggleUrgent()"
-                (searchChange)="onSearchChange($event)">
+                (toggleSearchMode)="toggleSearchMode()" (toggleUrgent)="toggleUrgent()">
             </app-right-sidebar>
         </div>
     </div>
@@ -43,15 +41,10 @@
 
 <!-- Mobile feed (phone view) with fixed width -->
 <div class="feed-fixed-width d-lg-none">
-    <app-feed [urgentOnly]="urgentOnly" [searchMode]="searchMode" [searchQuery]="searchQuery" [queryMode]="queryMode">
+    <app-feed [urgentOnly]="urgentOnly" [searchMode]="searchMode">
     </app-feed>
 </div>
 
-<!-- Mobile Search Popup -->
-<app-mobile-search #mobileSearchRef (searchChange)="onSearchChange($event)">
-</app-mobile-search>
-
 <!-- Bottom nav (phone mode only) -->
-<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()"
-    (openSearch)="openMobileSearchFromNav()">
+<app-bottom-nav class="d-lg-none" [mode]="searchMode" (toggleMode)="toggleSearchMode()" (makePost)="openPostPopup()">
 </app-bottom-nav>
