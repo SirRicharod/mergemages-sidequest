@@ -9,12 +9,15 @@ import { ToastService } from '../../services/toast.service';
   template: `
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
       @for (toast of toastService.toasts(); track toast.id) {
-        <div class="toast show" role="alert" [class.border-success]="toast.type === 'success'"
-             [class.border-danger]="toast.type === 'error'" [class.border-info]="toast.type === 'info'"
-             [class.border-warning]="toast.type === 'warning'">
-          <div class="toast-header" [class.bg-success]="toast.type === 'success'"
-               [class.bg-danger]="toast.type === 'error'" [class.bg-info]="toast.type === 'info'"
-               [class.bg-warning]="toast.type === 'warning'" [class.text-white]="toast.type !== 'warning'">
+        <div class="toast show" role="alert" 
+            [class.border-success]="toast.type === 'success'"
+            [class.border-danger]="toast.type === 'error'" [class.border-info]="toast.type === 'info'"
+            [class.border-warning]="toast.type === 'warning'">
+          <div class="toast-header" 
+            [class.bg-success]="toast.type === 'success'"
+            [class.bg-danger]="toast.type === 'error'" [class.bg-info]="toast.type === 'info'"
+            [class.bg-warning]="toast.type === 'warning'" [class.text-white]="toast.type !== 'warning'">
+            
             @if (toast.type === 'success') {
               <i class="bi bi-check-circle-fill me-2"></i>
             } @else if (toast.type === 'error') {

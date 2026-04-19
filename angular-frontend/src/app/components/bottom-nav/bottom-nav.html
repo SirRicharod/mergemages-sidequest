@@ -6,11 +6,18 @@
             <span class="label">{{ isOnFeed ? (mode === 'requests' ? 'Requests' : 'Offers') : 'Feed' }}</span>
         </button>
 
+        <!-- Search (mobile) -->
+        <button class="nav-btn" type="button" (click)="onSearch()" aria-label="Search">
+            <i class="bi bi-search"></i>
+            <span class="label">Search</span>
+        </button>
+        
         <!-- Make Post -->
         <button class="nav-btn make-post" type="button" (click)="onMakePost()" aria-label="Make post">
             <i class="bi bi-plus-circle-fill"></i>
             <span class="label">Post</span>
         </button>
+
 
         <!-- Quests -->
         <a class="nav-btn" routerLink="/quests" routerLinkActive="active" aria-label="Quests">
