@@ -170,4 +170,39 @@ class PostController extends Controller
             'message' => 'Post status updated successfully',
         ]);
     }
+
+    /**
+     * Soft-delete a post. Only the author can delete a post and only when it's still 'created'.
+     */
+    public function deleteQuest(Request $request, $postId)
+    {
+        $post = DB::table('posts')->where('post_id', $postId)->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        // Only the author may delete their post
+        if ($post->author_user_id !== $request->user()->user_id) {
+            return response()->json(['message' => 'Only the quest creator can delete this post'], 403);
+        }
+
+        // Only allow deleting posts that haven't been accepted or completed
+        if ($post->status !== 'created') {
+            return response()->json(['message' => 'Cannot delete a quest that has been accepted or completed'], 400);
+        }
+
+        $updated = DB::table('posts')
+            ->where('post_id', $postId)
+            ->update([
+                'status' => 'deleted',
+                'updated_at' => now(),
+            ]);
+
+        if (!$updated) {
+            return response()->json(['message' => 'Failed to delete post'], 500);
+        }
+
+        return response()->json(['message' => 'Post deleted successfully']);
+    }
 }
